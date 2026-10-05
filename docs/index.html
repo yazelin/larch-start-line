@@ -30,12 +30,16 @@
 /* 紙色薄紗：只蓋封面左半（天空與跑道）和最上面一條導覽列，右半的兩人不蓋 */
 .hero-veil{position:absolute;inset:0;pointer-events:none;--L:max(16px,calc(50% - 560px));
   background:linear-gradient(to bottom,rgb(var(--paper-rgb)/.8),rgb(var(--paper-rgb)/0) 110px),
-             linear-gradient(90deg,rgb(var(--paper-rgb)/.95) 0,rgb(var(--paper-rgb)/.92) calc(var(--L) + 480px),rgb(var(--paper-rgb)/.55) calc(var(--L) + 580px),rgb(var(--paper-rgb)/0) calc(var(--L) + 700px))}
+             linear-gradient(90deg,rgb(var(--paper-rgb)/var(--veil-1,.95)) 0,rgb(var(--paper-rgb)/var(--veil-2,.92)) calc(var(--L) + 480px),rgb(var(--paper-rgb)/var(--veil-3,.55)) calc(var(--L) + 580px),rgb(var(--paper-rgb)/0) calc(var(--L) + 700px))}
+/* 程徹版左半不要壓太深：讓天空與跑道透出來，字靠光暈撐清楚 */
+:root[data-skin="cheng"] .hero-veil,:root:not([data-skin]) .hero-veil{--veil-1:.72;--veil-2:.6;--veil-3:.3}
 /* 導覽列還沒變實心前，連結放在一塊紙色底上，壓在樹和天空上也看得清 */
 .top:not(.solid) nav{background:rgb(var(--paper-rgb)/.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:99px;padding:4px}
 .hero-in{position:relative;padding:110px 0 120px}
 .hero-copy{position:relative;max-width:470px;color:var(--ink)}
 .hero-copy>*{text-shadow:0 0 14px rgb(var(--paper-rgb)/.9),0 0 3px rgb(var(--paper-rgb)/.8)}
+/* 按鈕自己有底色，不要光暈（字會糊） */
+.hero .btn,.hero .btn *{text-shadow:none}
 .hero h1{white-space:nowrap}
 .kicker{font-size:13.5px;letter-spacing:.16em;color:var(--ink-2);margin:0 0 22px;font-weight:500}
 .hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,6.4vw,80px);line-height:1.12;margin:0 0 26px;letter-spacing:.04em}
@@ -44,6 +48,11 @@
 .tag{font-family:var(--f-serif);font-size:clamp(17px,1.9vw,20px);line-height:1.9;margin:0 0 6px;color:var(--ink)}
 .sticker{position:absolute;width:96px;height:96px;object-fit:contain;right:-6px;top:58px;rotate:8deg;pointer-events:none;filter:drop-shadow(0 4px 8px rgb(var(--shadow)/.18));display:none}
 :root[data-skin="cheng"] .sticker.cheng,:root[data-skin="lin"] .sticker.lin{display:block}
+/* 程徹版：Q 版程徹放到標題右上外側，不碰到「始前」 */
+.sticker.cheng{top:-6px;right:-74px}
+/* 引句：桌機照逗號斷成剛好兩行；手機改成自動平衡斷行 */
+@media (min-width:900px){.hero .tag{white-space:nowrap;max-width:none}}
+@media (max-width:899px){.hero .tag br{display:none}.hero .tag{text-wrap:balance}}
 .ecg{display:block;width:240px;height:40px;margin:8px 0 26px;overflow:visible}
 .ecg path{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;animation:ecg 2.6s cubic-bezier(.6,.1,.3,1) infinite}
 :root[data-skin="lin"] .ecg path{animation-duration:1.7s}
@@ -261,7 +270,7 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
       <img class="sticker lin" data-a="art/cards/doodle-hearts.webp" alt="" aria-hidden="true">
       <p class="kicker">Larch 第三屆創作者挑戰《自由與限制》投稿作品</p>
       <h1><span>起跑</span><span>總在開始前</span></h1>
-      <p class="tag"><span class="for-cheng">在槍響之前，在所有裁判與觀眾以為一切正要開始之前，有些事早就已經塵埃落定。</span><span class="for-lin">可是程徹，在我的世界裡，比賽在那之前早就開始了。我蹲在起跑線上的時間，比你想像的都要長。</span></p>
+      <p class="tag"><span class="for-cheng">在槍響之前，在所有裁判與觀眾以為一切正要開始之前，<br>有些事早就已經塵埃落定。</span><span class="for-lin">可是程徹，在我的世界裡，比賽在那之前早就開始了。<br>我蹲在起跑線上的時間，比你想像的都要長。</span></p>
       <svg class="ecg" viewBox="0 0 240 40" aria-hidden="true"><path d="M0 24 H70 l7 -5 l6 5 H104 l5 8 l8 -30 l8 34 l6 -12 H150 l9 -6 l9 6 H240"/></svg>
       <div class="cta">
         <a class="btn primary" data-play aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>即將上架</span></a>
