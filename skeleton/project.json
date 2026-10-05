@@ -1,0 +1,50 @@
+{
+ "schemaVersion": 1,
+ "id": "project-c0f31c1f-2b06-44d8-a62e-374bff81fd60",
+ "name": "起跑總在開始前",
+ "description": "新的 Larch 視覺小說專案",
+ "locale": "zh-Hant",
+ "languages": [
+  {
+   "code": "zh-Hant",
+   "label": "繁體中文"
+  }
+ ],
+ "nodes": [],
+ "edges": [],
+ "media": [],
+ "variables": [],
+ "characters": [],
+ "settings": {
+  "resolution": {
+   "width": 1920,
+   "height": 1080
+  },
+  "textSpeed": 32,
+  "typingEffect": true,
+  "autoAdvanceDelay": 1800,
+  "showRpgHud": false,
+  "aiMode": "authored",
+  "aiDirectorAllowPlayerInput": true,
+  "aiDirectorMediaScope": "board-only",
+  "aiDirectorAllowImprovisation": true,
+  "aiDirectorUseBgm": true,
+  "plugins": {
+   "larch-rpg-system": {
+    "enabled": true,
+    "settings": {}
+   }
+  }
+ },
+ "boards": [
+  {
+   "id": "main",
+   "name": "起跑總在開始前",
+   "description": "",
+   "kind": "story",
+   "nodes": [],
+   "edges": []
+  }
+ ],
+ "activeBoardId": "main"
+}
