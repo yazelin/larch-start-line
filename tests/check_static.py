@@ -378,7 +378,7 @@ def round2_inner_voice_with_faces():
     """第二輪三個時刻用她自己的口吻，配表情立繪。"""
     p, ms = _maps()
     nodes = {n['id']: n for n in p['boards'][0]['nodes']}
-    for eid, card_id, face in [('peek', 'r2-peek', 'lin-hs-shy'), ('seen6', 'r2-caught', 'lin-hs-flustered'), ('race2-after', 'r2-watch-distracted', 'lin-hs-shy'), ('race2-after', 'r2-watch-steady', 'lin-hs-shy')]:
+    for eid, card_id, face in [('peek', 'r2-peek', 'lin-hs-shy'), ('seen13', 'r2-caught', 'lin-hs-flustered'), ('race2-after', 'r2-watch-distracted', 'lin-hs-shy'), ('race2-after', 'r2-watch-steady', 'lin-hs-shy')]:
         m, e = _event('m-stadium', eid)
         d = next(a for pg in [e] + e.get('pages', []) for a in pg['actions'] if a['kind'] == 'dialogue' and a.get('cardId') == card_id)
         assert d.get('presentation') == 'portrait', f'{eid} 要用立繪呈現'
@@ -432,6 +432,18 @@ def cg_gallery_only_real_cgs():
     urls = [i['url'] for i in st['cgGalleryItems']]
     assert len(urls) == 6 and all(('/cg/cg-' in u) or ('/cover/' in u) for u in urls), urls
     assert all(i.get('title') for i in st['cgGalleryItems'])
+
+@test
+def stairs_reachable_from_the_side():
+    """看台前那排只有他正前方會被看到；樓梯口兩側要能橫著走過去，不必從跑道正下方直上。"""
+    import map_stadium as S
+    p, ms = _maps()
+    m = next(mm for n, mm in ms if n['id'] == S.MAP_ID)
+    seen = {(e['x'], e['y']) for e in m['events'] if e['id'].startswith('seen')}
+    for sx in sorted(S.STAIR_XS):
+        for dx in (-2, -1, 1, 2):
+            assert (sx + dx, 5) not in seen, f'樓梯口 x={sx} 旁邊 ({sx + dx},5) 會被看到，從側面走不過去'
+    assert seen and all(13 <= x <= 26 for x, _ in seen), sorted(seen)
 
 if __name__ == '__main__':
     only = sys.argv[1:]

@@ -123,7 +123,7 @@ try {
     await ui.waitText(/差點被看到/); if (i === 0) { await sleep(1500); await shot('06b-caught'); } await drainUntil(/去看台後面/);
   }
   assert(true, '走出看台遮蔽被發現兩次，都被拉回');
-  const SEEN = Array.from({ length: 28 }, (_, k) => [k + 6, 5]).filter(([x]) => x !== 10 && x !== 29);
+  const SEEN = Array.from({ length: 14 }, (_, k) => [k + 13, 5]);
   await goto(19, 1, SEEN); await goto(20, 1, SEEN);
   await ui.waitText(/拉筋/); await drainUntil(/看看秩序冊|問問他的隊友|自己走一趟/);
   assert(true, '在看台後面偷看他熱身');

@@ -142,8 +142,7 @@ def round2_events(art):
                {'id': 'stop', 'label': new('就到這裡'), 'actions': [jump('fin-b')]}]})]),
     ]
     # 走出看台的遮蔽（看台前那一排，樓梯口除外）就會被看到
-    for x in range(6, 34):
-        if x in STAIR_XS: continue
+    for x in range(13, 27):   # 只有他正前方（熱身位置 x=20 左右）看得到；兩個樓梯口旁邊都留路
         out.append(ev(f'seen{x}', x, 5, trigger='touch', conditions=[R2, cond('phase', 'watch')],
                       actions=[balloon('exclamation', target='event', event_id='che-warm'), balloon('sweat', target='player'), setv('bpm', 150),
                                card('r2-caught', 'portrait'), setv('bpm', 110),
