@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{color-scheme:light}
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#f3ece2;color:#2b2522}
+#scene{position:absolute;inset:0;background:linear-gradient(#e9dfd2 0 30%,#c8584a 30% 100%);background-size:cover;background-position:center}
+#scene.has-bg{background-color:#f3ece2}
+#lanes{position:absolute;left:0;right:0;top:30%;bottom:0;background:repeating-linear-gradient(90deg,transparent 0 22%,rgba(255,255,255,.75) 22% 22.6%)}
+#line{position:absolute;left:0;right:0;bottom:22%;height:1.4vh;background:#fffaf2;box-shadow:0 0 6px rgba(255,255,255,.6)}
+#scene.has-bg #lanes,#scene.has-bg #line{display:none}
+#heart{position:absolute;top:4vh;right:4vw;font-size:6vh;color:#b23a3a;transition:scale .08s}
+#flash{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s}
+#tap{position:absolute;inset:0}
+#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.9);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none;min-height:8vh}
+#hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+#choices{position:absolute;left:50%;top:40%;translate:-50% -50%;display:flex;flex-direction:column;gap:12px;min-width:min(80vw,420px)}
+#choices button{min-height:52px;font:600 18px "Noto Sans TC",sans-serif;border-radius:10px;border:1px solid #8b7b6c;background:#fffaf2;color:#2b2522;cursor:pointer;transition:scale .2s}
+#choices button:active{scale:.96}
+@media (prefers-reduced-motion:reduce){#heart{transition:none}}
+</style></head>
+<body>
+<div id="scene"><div id="lanes"></div><div id="line"></div></div>
+<div id="heart" aria-hidden="true">&#9829;</div>
+<div id="flash"></div>
+<div id="tap"></div>
+<div id="panel"><span id="msg"></span></div>
+<div id="hint">點畫面或按空白鍵</div>
+<div id="choices"></div>
+<script src="common.js"></script>
+<script>
+var S = {}, st = '', q = [], qi = 0, thoughtDone = false, fouls = 0, bpm = 0, gunT = 0, beatT = 0;
+var msg = document.getElementById('msg'), choices = document.getElementById('choices'), heart = document.getElementById('heart'), flash = document.getElementById('flash');
+function show(t) { msg.textContent = t; }
+function setBpm(v) { bpm = v; L.set('bpm', v); }
+function beat() {
+  clearTimeout(beatT); if (!bpm) return;
+  heart.style.scale = '1.25'; setTimeout(function () { heart.style.scale = '1'; }, 90);
+  if (st === 'set') setBpm(Math.min(bpm + 6, 190));
+  beatT = setTimeout(beat, 60000 / bpm);
+}
+function flashColor(c) { flash.style.background = c; flash.style.opacity = '.7'; setTimeout(function () { flash.style.opacity = '0'; }, 220); }
+function lines(arr, next) { st = 'lines'; q = arr; qi = 0; show(q[0]); lines.next = next; }
+function go(s) {
+  st = s; choices.innerHTML = '';
+  if (s === 'marks') show(S.marks);
+  if (s === 'think') {
+    show(S.ask);
+    S.thoughts.forEach(function (t, i) {
+      if (S.gone.indexOf(i) >= 0) return;
+      var b = document.createElement('button'); b.textContent = t;
+      b.onclick = function () { pick(i); }; choices.appendChild(b);
+    });
+  }
+  if (s === 'set') {
+    show(S.ready); setBpm(Math.max(bpm, 110)); beat();
+    var wait = S.gunMin + Math.random() * (S.gunMax - S.gunMin);
+    gunT = setTimeout(function () { if (st === 'set') go('gun'); }, wait);
+  }
+  if (s === 'foul') {
+    clearTimeout(gunT); fouls += 1; L.set('fouls', fouls); flashColor('#d23b3b'); show(S.foul);
+    setTimeout(function () { go('marks'); }, 1200);
+  }
+  if (s === 'gun') {
+    clearTimeout(gunT); setBpm(150); flashColor('#ffffff'); show(S.bang);
+    setTimeout(function () { lines(S.after, function () { st = 'done'; L.set('bpm', 150); L.done(); }); }, 900);
+  }
+}
+function pick(i) {
+  if (i < S.thoughts.length - 1) { S.gone.push(i); go('think'); show(S.fade); return; }
+  thoughtDone = true; L.set('thought', i + 1); go('set');
+}
+L.press(function () {
+  if (st === 'lines') { qi += 1; if (qi < q.length) show(q[qi]); else lines.next(); }
+  else if (st === 'marks') { if (thoughtDone) go('set'); else go('think'); }
+  else if (st === 'set') go('foul');
+});
+L.onInit(function (values, vars, assets) {
+  S = L.script(); S.gone = [];
+  S.gunMin = S.gunMin || 1500; S.gunMax = S.gunMax || 3000;
+  fouls = Number(L.get('fouls', 0)) || 0; bpm = Number(L.get('bpm', 0)) || 96; beat();
+  if (values.bg) { var sc = document.getElementById('scene'); sc.style.backgroundImage = 'url("' + values.bg + '")'; sc.classList.add('has-bg'); }
+  lines(S.intro, function () { go('marks'); });
+});
+</script>
+</body></html>

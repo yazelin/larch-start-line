@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent;overflow:hidden}
+body{display:flex;align-items:center;gap:6px;height:100vh;padding:0 10px;box-sizing:border-box;font:600 15px "Noto Sans TC",system-ui,sans-serif;color:#2b2522}
+#box{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(255,250,242,.88);border:1px solid #d8cbb8}
+.dark #box{background:rgba(43,37,34,.85);border-color:#6b5d52;color:#f4ece2}
+#h{display:inline-block;color:#b23a3a;font-size:20px;line-height:1}
+#h.on{animation:p var(--t,1s) ease-in-out infinite}
+@keyframes p{0%,100%{scale:1}14%{scale:1.3}28%{scale:1}42%{scale:1.18}}
+@media (prefers-reduced-motion:reduce){#h.on{animation:none}}
+</style></head><body><div id="box" hidden><span id="h">&#9829;</span><span id="v">--</span></div>
+<script>
+addEventListener('message', function (e) {
+  if (e.source !== parent) return; var d = e.data;
+  if (!d || (d.type !== 'larch:hud:init' && d.type !== 'larch:hud:update')) return;
+  document.documentElement.className = d.theme || '';
+  var b = Number((d.variables || {}).bpm) || 0, box = document.getElementById('box'), h = document.getElementById('h');
+  box.hidden = b <= 0;
+  document.getElementById('v').textContent = b;
+  h.style.setProperty('--t', (60 / Math.max(b, 30)) + 's');
+  h.className = (d.active === false || b <= 0) ? '' : 'on';
+});
+parent.postMessage({ type: 'larch:ready' }, '*');
+</script></body></html>

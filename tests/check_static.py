@@ -30,6 +30,26 @@ def every_original_para_used():
     missing = [s[:24] for s in text.all_paras() if s[:24] not in blob]
     assert not missing, '原文沒放進遊戲的段落：' + ' / '.join(missing)
 
+def gate_problems(card_html, read, write):
+    sets = set(re.findall(r"L\.set\('(\w+)'", card_html))
+    gets = set(re.findall(r"L\.get\('(\w+)'", card_html))
+    return sorted(f'寫 {n} 不在 write 名單' for n in sets - set(write)) + sorted(f'讀 {n} 不在 read 名單' for n in gets - set(read))
+
+@test
+def gate_checker_catches_missing():
+    probs = gate_problems("L.set('a',1);L.set('b',2);L.get('c')", read=[], write=['a'])
+    assert probs == ['寫 b 不在 write 名單', '讀 c 不在 read 名單'], probs
+
+@test
+def plugin_variable_gate():
+    import plugin, variables
+    for cid, c in plugin.CARDS.items():
+        probs = gate_problems(plugin.html(cid), c['read'], c['write'])
+        assert not probs, f'{cid}: {probs}'
+        unknown = [n for n in c['read'] + c['write'] if n not in variables.VARS]
+        assert not unknown, f'{cid}: 變數表沒有 {unknown}'
+    assert set(plugin.HUD['readVariables']) <= set(variables.VARS)
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

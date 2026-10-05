@@ -27,8 +27,12 @@ export async function open(base, { mobile = false } = {}) {
     while (Date.now() < end) { const t = await text(); if (re.test(t)) return t; await sleep(250); }
     throw new Error('等不到 ' + re + '；畫面：' + (await text()).slice(0, 400));
   };
-  const clickText = async (s) => {
-    for (const f of page.frames()) { const l = f.getByText(s, { exact: false }); if (await l.count()) { await l.first().click(); return; } }
+  const clickText = async (s, ms = 15000) => {
+    const end = Date.now() + ms;
+    while (Date.now() < end) {
+      for (const f of page.frames()) { const l = f.getByText(s, { exact: false }); if (await l.count()) { await l.first().click(); return; } }
+      await sleep(300);
+    }
     throw new Error('找不到可點的「' + s + '」');
   };
   const frameWith = async (sel) => { for (const f of page.frames()) if (await f.locator(sel).count()) return f; return null; };
