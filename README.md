@@ -6,6 +6,8 @@ Larch 第三屆創作者挑戰《自由與限制》投稿作品。程徹與林�
 - 新寫文字：`canon/新寫.md`（結局 B、草稿、線索、簡介…，每段的 `##` 標題是程式取用的鍵）
 - 規格：`docs/specs/2026-10-05-design.md`；計畫：`docs/plans/2026-10-05-start-line.md`
 - Larch 專案：`project-c0f31c1f-2b06-44d8-a62e-374bff81fd60`
+- 遊玩：https://larch.ink/play/market/yaze/start-line （公開站「在 Larch 上遊玩」按鈕讀 `docs/site.json` 的 `playUrl`）
+- 公開站：https://yazelin.github.io/larch-start-line/
 
 ## 結構
 
