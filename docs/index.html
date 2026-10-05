@@ -30,7 +30,7 @@
 /* 紙色薄紗：只蓋封面左半（天空與跑道）和最上面一條導覽列，右半的兩人不蓋 */
 .hero-veil{position:absolute;inset:0;pointer-events:none;--L:max(16px,calc(50% - 560px));
   background:linear-gradient(to bottom,rgb(var(--paper-rgb)/.8),rgb(var(--paper-rgb)/0) 110px),
-             linear-gradient(90deg,rgb(var(--paper-rgb)/var(--veil-1,.95)) 0,rgb(var(--paper-rgb)/var(--veil-2,.92)) calc(var(--L) + 480px),rgb(var(--paper-rgb)/var(--veil-3,.55)) calc(var(--L) + 580px),rgb(var(--paper-rgb)/0) calc(var(--L) + 700px))}
+             linear-gradient(90deg,rgb(var(--paper-rgb)/var(--veil-1,.95)) calc(var(--L) + 0px),rgb(var(--paper-rgb)/var(--veil-2,.92)) calc(var(--L) + 380px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.86)) calc(var(--L) + 460px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.68)) calc(var(--L) + 540px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.48)) calc(var(--L) + 620px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.3)) calc(var(--L) + 700px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.16)) calc(var(--L) + 780px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0.07)) calc(var(--L) + 860px),rgb(var(--paper-rgb)/calc(var(--veil-2,.92) * 0)) calc(var(--L) + 940px))}
 /* 程徹版左半不要壓太深：讓天空與跑道透出來，字靠光暈撐清楚 */
 :root[data-skin="cheng"] .hero-veil,:root:not([data-skin]) .hero-veil{--veil-1:.72;--veil-2:.6;--veil-3:.3}
 /* 向晚版跟著變淡，比程徹版稍濃一點，保留粉色的柔和 */
