@@ -1,3 +1,4 @@
 dist/
 .superpowers/
 __pycache__/
+snapshots/

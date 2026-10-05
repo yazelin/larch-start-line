@@ -16,7 +16,7 @@ FILES = {
     'cg-kitchen': ('art/cg/cg-kitchen.webp', None), 'style': ('art/anchors/style-b.webp', None),
     'start-pov': ('art/cards/start-pov.webp', None), 'pace-eyes': ('art/cards/pace-eyes.webp', None),
     'coin-bg': ('art/cards/coin-bg.webp', None),
-    'p-cheng': ('art/portraits/cheng-hs-calm.png', None), 'p-lin': ('art/portraits/lin-hs-calm.png', None),
+    'p-cheng': ('art/portraits/cheng-hs-calm.webp', None), 'p-lin': ('art/portraits/lin-hs-calm.webp', None),
 }
 
 

@@ -8,6 +8,9 @@ try {
   await ui.clickText('開始遊戲').catch(() => {});
   await ui.waitText(/在槍響之前/);
   assert(true, '序章第一句出現');
+  await new Promise(r => setTimeout(r, 1500));
+  const hudFrame = await ui.frameWith('#box');
+  assert(hudFrame && !(await hudFrame.locator('#box').isVisible()), '心跳 0 時 HUD 藏起來');
   for (let i = 0; i < 8 && !/去檢錄處拿號碼布/.test(await ui.text()); i++) { await ui.advance(); await new Promise(r => setTimeout(r, 1200)); }
   await ui.waitText(/去檢錄處拿號碼布/);
   assert(true, '進到田徑場，任務提示出現');
