@@ -19,7 +19,7 @@ window.TRACKS = [
     cover: "art/cards/lin-avatar.webp", pos: "50% 40%", slides: ["art/maps/stadium.webp", "art/cards/coin-bg.webp", "art/cg/cg-vending.webp"] },
   { n: 6, bpm: 66, file: "audio/bgm-06-ending-a.mp3", title: "Tea and Midnight Rain", scene: "結局 A：防波堤後半、台北廚房", dur: 172,
     line: "窗外的雨聲細碎，像極了多年前田徑場上細碎的風聲。",
-    cover: "art/cg/cg-kitchen.webp", pos: "50% 35%", slides: ["art/cg/cg-seawall.webp", "art/cg/cg-kitchen.webp"] },
+    cover: "art/cg/cg-kitchen.webp", pos: "50% 35%", slides: ["art/cg/cg-seawall.webp", "art/cg/cg-kitchen-backhug.webp", "art/cg/cg-kitchen.webp"] },
   { n: 7, bpm: 60, file: "audio/bgm-07-ending-b.mp3", title: "Weight of an Empty Chair", scene: "結局 B", dur: 93,
     line: "她一直很自由，自由到始終沒有起跑。",
     cover: "art/cards/coin-bg.webp", pos: "62% 50%", slides: ["art/cards/coin-bg.webp", "art/cards/pace-sky.webp"] }
