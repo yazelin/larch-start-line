@@ -162,6 +162,68 @@ def flow_reachable():
     for must in ('ending-b', 'fin', 'm-kitchen', 'c-coin', 'c-notebook'):
         assert must in nodes, f'少了 {must}'
 
+def _holds(c, st):
+    import variables
+    v = st.get(c['variable'], variables.VARS.get(c['variable'], ('', ''))[1])
+    v = str(v).lower() if isinstance(v, bool) else str(v)
+    return (v == c['value']) if c.get('op', 'eq') == 'eq' else (v != c['value'])
+
+def _active(e, st):
+    """回傳此狀態下事件生效的分頁（最後一個條件全成立的），都不成立回 None。"""
+    act = e if all(_holds(c, st) for c in e.get('conditions', [])) else None
+    for pg in e.get('pages', []):
+        if all(_holds(c, st) for c in pg['conditions']): act = pg
+    return act
+
+def _jumps(acts):
+    for a in acts:
+        if a['kind'] == 'jump': yield a['cardId']
+        for o in (a.get('choice') or {}).get('options', []): yield from _jumps(o.get('actions', []))
+
+@test
+def card_reentry_after_unfinished():
+    """地圖跳去插件卡、卡片沒玩完就讀檔回地圖時，地圖上要還有事件能再進那張卡。"""
+    import plugin
+    p, ms = _maps()
+    cardset = set(plugin.NODE.values())
+    for n, m in ms:
+        for e in m['events']:
+            for pg in [e] + e.get('pages', []):
+                def walk(acts, st):
+                    for a in acts:
+                        if a['kind'] == 'variable' and not a.get('op'): st = dict(st, **{a['variable']: a['value']})
+                        if a['kind'] == 'jump' and a['cardId'] in cardset:
+                            # 跳卡當下的狀態：這張卡的條件＋跳之前寫的變數
+                            ok = any(_active(e2, st) and a['cardId'] in set(_jumps(_active(e2, st).get('actions', []))) for e2 in m['events'])
+                            assert ok, f"{n['id']}/{e['id']}：玩到 {a['cardId']} 一半讀檔回地圖，沒有事件能再進去（狀態 {st}）"
+                        for o in (a.get('choice') or {}).get('options', []): walk(o.get('actions', []), dict(st))
+                base = {c['variable']: c['value'] for c in pg.get('conditions', []) if c.get('op', 'eq') == 'eq'}
+                walk(pg.get('actions', []), base)
+
+@test
+def caught_is_not_a_shortcut():
+    import map_stadium as S
+    p, ms = _maps()
+    m = dict(ms)[next(n for n, _ in ms if n['id'] == S.MAP_ID)] if False else next(mm for n, mm in ms if n['id'] == S.MAP_ID)
+    for e in m['events']:
+        if e['id'].startswith('seen'):
+            arr = next(a['arrive'] for a in e['actions'] if a['kind'] == 'jump')
+            d = abs(arr['x'] - S.PEEK[0]) + abs(arr['y'] - S.PEEK[1])
+            assert d > 5, f"被看到後落在 {arr}，離目標只有 {d} 格"
+
+@test
+def ending_b_close_has_no_kitchen():
+    import art
+    p, ms = _maps()
+    nodes = {n['id']: n for n in p['boards'][0]['nodes']}
+    for n, m in ms:
+        for e in m['events']:
+            if e['id'] == 'ending-b-menu':
+                stop = [o for o in e['actions'][0]['choice']['options'] if o['id'] == 'stop'][0]
+                cid = next(_jumps(stop['actions']))
+                bg = nodes[cid]['data'].get('background', '')
+                assert 'kitchen' not in bg, f'結局 B 收尾卡用了廚房圖 {bg}'
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

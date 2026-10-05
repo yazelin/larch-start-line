@@ -7,25 +7,51 @@ sys.path.insert(0, os.path.dirname(__file__))
 import build
 
 ROOT = build.ROOT
-KEY = open(os.path.expanduser('~/.config/larch/key')).read().strip()
+KEY = open(os.path.expanduser(os.environ.get('LARCH_KEY_FILE', '~/.config/larch/key'))).read().strip()
 BASE = f'https://larch.ink/api/agent/projects/{build.PROJECT_ID}'
 UPLOADED = ROOT / 'assets/uploaded.json'
 MIME = {'.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg'}
 
 
-def req(method, path='', body=None, etag=None):
+_open, _sleep = urllib.request.urlopen, time.sleep   # 測試會換掉
+
+
+def req(method, path='', body=None, etag=None, tries=6):
+    """429、5xx、網路錯誤都退避重試；其他 HTTP 錯誤直接結束。"""
     h = {'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json'}
     if etag: h['If-Match'] = etag
-    for t in range(6):
+    last = None
+    for t in range(tries):
         try:
             r = urllib.request.Request(BASE + path, method=method, headers=h, data=json.dumps(body).encode() if body is not None else None)
-            with urllib.request.urlopen(r, timeout=180) as resp:
+            with _open(r, timeout=180) as resp:
                 return resp.headers.get('ETag'), json.loads(resp.read() or b'{}')
         except urllib.error.HTTPError as e:
-            msg = e.read()[:300]
-            if e.code == 429: print('429，等 30 秒'); time.sleep(30); continue
-            raise SystemExit(f'{method} {path} → {e.code} {msg}')
-    raise SystemExit('一直 429')
+            last = f'{e.code} {e.read()[:300]}'
+            if e.code != 429 and e.code < 500: raise SystemExit(f'{method} {path} → {last}')
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            last = repr(e)
+        print(f'{method} {path} 失敗（{last}），{10 * (t + 1)} 秒後重試', flush=True)
+        _sleep(10 * (t + 1))
+    raise SystemExit(f'{method} {path} 重試 {tries} 次仍失敗：{last}')
+
+
+GENERATED_PLUGINS = ('start-line',)
+GENERATED_KEYS = ('titleCoverImage', 'projectThumbnail')
+
+
+def merge_settings(online, built):
+    """以線上設定為底，只覆寫產生器負責的鍵：自製插件、RPG 角色資料庫、封面與縮圖。作者在網頁改的其他設定保留。"""
+    m = json.loads(json.dumps(online or {}))
+    plugins = m.setdefault('plugins', {})
+    for k in GENERATED_PLUGINS:
+        plugins[k] = built['plugins'][k]
+    rpg = plugins.setdefault('larch-rpg-system', {'enabled': True, 'settings': {}})
+    rpg['enabled'] = True
+    rpg.setdefault('settings', {})['database'] = built['plugins']['larch-rpg-system']['settings']['database']
+    for k in GENERATED_KEYS:
+        if k in built: m[k] = built[k]
+    return m
 
 
 def upload_all(text):
@@ -67,21 +93,32 @@ def main(summary):
     etag, cur = req('GET')  # 上傳會改 media，重抓
     online = cur.get('project', cur)
     project = dict(online)
-    for k in ('boards', 'nodes', 'edges', 'variables', 'settings', 'activeBoardId', 'name', 'description'):
+    if len(online.get('boards', [])) > len(built['boards']):
+        raise SystemExit(f"線上有 {len(online['boards'])} 塊白板、本機只有 {len(built['boards'])} 塊；推送會蓋掉多的那塊，先確認")
+    for k in ('boards', 'nodes', 'edges', 'variables', 'activeBoardId', 'name', 'description'):
         project[k] = built[k]
-    req('PUT', '', {'project': project, 'summary': summary}, etag)
+    project['settings'] = merge_settings(online.get('settings'), built['settings'])
+    try:
+        req('PUT', '', {'project': project, 'summary': summary}, etag, tries=1)
+    except SystemExit as e:   # PUT 可能其實寫進去了：讀回比對再決定要不要重送
+        _, chk = req('GET'); chk = chk.get('project', chk)
+        if len(chk['boards'][0]['nodes']) != len(built['boards'][0]['nodes']):
+            print('PUT 失敗且線上未更新，重送一次：', e)
+            et2, _ = req('GET'); req('PUT', '', {'project': project, 'summary': summary}, et2)
 
     _, back = req('GET')
     back = back.get('project', back)
     b0, w0 = back['boards'][0], built['boards'][0]
-    assert len(b0['nodes']) == len(w0['nodes']), ('節點數不符', len(b0['nodes']), len(w0['nodes']))
-    assert len(b0['edges']) == len(w0['edges']), ('連線數不符', len(b0['edges']), len(w0['edges']))
+    def check(ok, msg):
+        if not ok: raise SystemExit('讀回比對失敗：' + msg)
+    check(len(b0['nodes']) == len(w0['nodes']), f"節點數 {len(b0['nodes'])} ≠ {len(w0['nodes'])}")
+    check(len(b0['edges']) == len(w0['edges']), f"連線數 {len(b0['edges'])} ≠ {len(w0['edges'])}")
     for n in w0['nodes']:
         if n['data'].get('pluginCardId') == 'map':
             got = next(x for x in b0['nodes'] if x['id'] == n['id'])
-            assert len(json.loads(got['data']['pluginValues']['map'])['events']) == len(json.loads(n['data']['pluginValues']['map'])['events']), n['id']
-    assert 'start-line' in back['settings']['plugins'], '插件設定不見了'
-    assert len(back['variables']) == len(built['variables']), '變數數量不符'
+            check(len(json.loads(got['data']['pluginValues']['map'])['events']) == len(json.loads(n['data']['pluginValues']['map'])['events']), n['id'] + ' 事件數')
+    check('start-line' in back['settings']['plugins'], '插件設定不見了')
+    check(len(back['variables']) == len(built['variables']), '變數數量不符')
     print('推送完成，讀回比對通過：', len(b0['nodes']), '張卡、', len(b0['edges']), '條線')
 
 

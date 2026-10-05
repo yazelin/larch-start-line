@@ -63,6 +63,7 @@ def story_cards(board, a):
     N(cards.dialogue(KITCHEN, '冬夜', para('幾年後的一個冬夜', '世人總在等那聲槍響'), bg=a['cg-kitchen']))
     N(cards.dialogue(VENDING, '販賣機前', [('程徹', '妳的十塊錢。')], bg=a['cg-vending']))
     N(cards.dialogue(FIN, '完', [new('完')], bg=a['cg-kitchen']))
+    N(cards.dialogue('fin-b', '完（結局 B）', [new('完')], bg=a['coin-bg']))
 
 
 def main():

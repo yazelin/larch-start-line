@@ -86,6 +86,7 @@ CHE_WARM = (20, 7)
 CHE_RACE = (24, 21)
 LIN_R2_START = (14, 24)
 STAIRS = (10, 29)
+ALL_CLUES = [cond('clue_order', True), cond('clue_mate', True), cond('clue_walk', True)]
 
 
 def round2_events(art):
@@ -100,16 +101,16 @@ def round2_events(art):
            actions=[say(new('偷看')), setv('bpm', 110), setv('phase', 'clue')]),
         ev('board', *BOARD, conditions=[R2], actions=[say(new('線索秩序冊')), setv('clue_order', True)]),
         ev('clues-done', 4, 28, trigger='condition',
-           conditions=[R2, cond('phase', 'clue'), cond('clue_order', True), cond('clue_mate', True), cond('clue_walk', True)],
-           actions=[setv('phase', 'calc'), jump(plugin.NODE['notebook'])]),
-        npc('che-race', *CHE_RACE, che, conditions=[R2, cond('phase', 'calc'), cond('calc_ok', True)], direction='left',
+           conditions=[R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES,
+           actions=[jump(plugin.NODE['notebook'])]),   # 跳卡前不改狀態：卡沒玩完就讀檔，販賣機那格還能重進
+        npc('che-race', *CHE_RACE, che, conditions=[R2, cond('phase', 'clue'), cond('calc_ok', True)], direction='left',
             trigger='auto', once=True,
             actions=[camera(*CHE_RACE, hold=600, back=False), move([('left', CHE_RACE[0] - FINISH[0])], who='self', face='up'),
                      balloon('heart', target='player', ms=2200), say(new('看他比賽')), setv('bpm', 140), setv('phase', 'vending2')]),
         ev('ending-b-menu', 5, 28, trigger='condition', conditions=[R2, cond('ending', 'B')],
            actions=[A('choice', text='', choice={'options': [
                {'id': 'again', 'label': new('回到販賣機前'), 'actions': [setv('ending', '')]},
-               {'id': 'stop', 'label': new('就到這裡'), 'actions': [jump('fin')]}]})]),
+               {'id': 'stop', 'label': new('就到這裡'), 'actions': [jump('fin-b')]}]})]),
     ]
     # 走出看台的遮蔽（看台前那一排，樓梯口除外）就會被看到
     for x in range(6, 34):
@@ -117,7 +118,7 @@ def round2_events(art):
         out.append(ev(f'seen{x}', x, 5, trigger='touch', conditions=[R2, cond('phase', 'watch')],
                       actions=[balloon('exclamation', target='event', event_id='che-warm'), setv('bpm', 150),
                                say(new('差點被看到')), setv('bpm', 110),
-                               jump(MAP_ID, arrive={'x': PEEK[0], 'y': PEEK[1], 'direction': 'down'})]))
+                               jump(MAP_ID, arrive={'x': LIN_R2_START[0], 'y': LIN_R2_START[1], 'direction': 'up'})]))  # 被看到就退回起點，不是送到目標
     return out
 
 
@@ -132,7 +133,8 @@ def round2_pages(events, art):
         page('walk-clue', [R2, cond('phase', 'clue'), cond('clue_walk', False)],
              [say(new('線索步行')), setv('clue_walk', True)], trigger='touch'),
         page('too-early', [R2, cond('phase', 'clue'), cond('clue_walk', True)], [say(new('線索不夠'))]),
-        page('vending2', [R2, cond('phase', 'vending2'), cond('ending', '')],
+        page('calc-again', [R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES, [jump(plugin.NODE['notebook'])]),
+        page('vending2', [R2, cond('phase', 'vending2'), cond('ending', 'B', 'neq')],
              [item('pocari', '寶礦力'), A('choice', text='', choice={'options': [
                  {'id': 'drop', 'label': '讓零錢掉下去', 'actions': [setv('ending', 'A'), jump(plugin.NODE['coin-drop'])]},
                  {'id': 'leave', 'label': '轉身離開', 'actions': [setv('ending', 'B'), jump('ending-b')]}]})]),
@@ -144,6 +146,7 @@ GUIDE_R2 = [
     ('看看秩序冊', 'board', [R2, cond('phase', 'clue'), cond('clue_order', False)]),
     ('問問他的隊友', 'mate-r1', [R2, cond('phase', 'clue'), cond('clue_mate', False)]),
     ('自己走一趟體育館後門', 'coins', [R2, cond('phase', 'clue'), cond('clue_walk', False)]),
+    ('算算他的時間', 'coins', [R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES),
     ('去體育館後門的販賣機', 'coins', [R2, cond('phase', 'vending2')]),
 ]
 

@@ -37,6 +37,7 @@ send.onclick = function () {
   L.set('drafted', true);
   setTimeout(function () { L.done(); }, 1200);
 };
+L.press(function () { if (!send.disabled) send.click(); });
 L.onInit(function () {
   S = L.script(); send.textContent = S.sendLabel; document.getElementById('head').textContent = S.to;
   next();

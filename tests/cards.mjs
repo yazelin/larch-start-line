@@ -7,14 +7,14 @@ import { serve, open, assert, sleep } from './lib.mjs';
 async function card(id, play) {
   execFileSync('python3', ['src/plugin.py', '--test', id.replace('-onbeat', '')], { stdio: 'inherit' });
   const s = await serve(`dist/test-${id.replace('-onbeat', '')}.json`);
-  const ui = await open(s.base);
+  const ui = await open(s.base, { mobile: !!process.env.MOBILE });
   try {
     await ui.clickText('開始遊戲');
     await ui.waitText(/測試：/);
     await sleep(800); await ui.page.keyboard.press('Enter');
     const f = await waitFrame(ui, '#tap');
     await play(ui, f);
-    await ui.page.screenshot({ path: `dist/shots/card-${id}.png` }).catch(() => {});
+    await ui.page.screenshot({ path: `dist/shots/card-${id}${process.env.MOBILE ? '-mobile' : ''}.png` }).catch(() => {});
     await ui.waitText(/RESULT/, 20000); await sleep(3500);
     const r = await ui.text();
     console.log('RESULT 畫面：', r.slice(r.indexOf('RESULT'), r.indexOf('RESULT') + 120));
@@ -95,7 +95,8 @@ export const CARDS = {
   },
   'drafts': async (ui, f) => {
     for (let i = 0; i < 4; i++) {
-      await f.locator('#send:not([disabled])').click({ timeout: 15000 });
+      if (i === 0) { await f.locator('#send:not([disabled])').waitFor({ timeout: 15000 }); await f.locator('#head').click(); await ui.page.keyboard.press('Space'); }   // 第一次用鍵盤
+      else await f.locator('#send:not([disabled])').click({ timeout: 15000 });
       if (i < 3) { await f.waitForFunction(n => document.querySelectorAll('#sent .bubble').length === 0 && document.body.dataset.round === String(n), i + 1, { timeout: 15000 }); }
     }
     await f.waitForFunction(() => document.querySelectorAll('#sent .bubble').length === 1, null, { timeout: 15000 });
