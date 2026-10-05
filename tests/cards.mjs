@@ -11,8 +11,9 @@ async function card(id, play) {
   try {
     await ui.clickText('開始遊戲');
     await ui.waitText(/測試：/);
-    await sleep(800); await ui.page.keyboard.press('Enter');
-    const f = await waitFrame(ui, '#tap');
+    let f = null;   // 開頭對話卡在打字時按 Enter 只會補完文字，所以一直翻到插件卡出現為止
+    for (let i = 0; i < 20 && !(f = await ui.frameWith('#tap')); i++) { await sleep(700); await ui.advance(); }
+    if (!f) f = await waitFrame(ui, '#tap');
     await play(ui, f);
     await ui.page.screenshot({ path: `dist/shots/card-${id}${process.env.MOBILE ? '-mobile' : ''}.png` }).catch(() => {});
     await ui.waitText(/RESULT/, 20000); await sleep(3500);
