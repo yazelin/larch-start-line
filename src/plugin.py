@@ -18,13 +18,34 @@ def _script(card_id):
                 'ready': para('「預備——」', '「預備——」')[0], 'ask': new('想法題目'), 'thoughts': text.lines('想法選項'),
                 'fade': new('想法散掉'), 'foul': new('偷跑'), 'bang': new('槍響'),
                 'after': para('在那個「預備」的停頓裡', '他的起跑，比發令槍早了')}
+    if card_id == 'pace':
+        eyes = next(p for p in text.all_paras() if '清澈又倔強的眼神' in p)
+        eyes = eyes[eyes.index('她剛才抬頭'):].rstrip('。')
+        return {'intro': new('配速開場'), 'sprintText': new('配速衝刺'), 'endGood': new('配速終點好'),
+                'endMessy': new('配速終點亂'), 'eyes': eyes}
+    if card_id == 'notebook':
+        return {'title': new('筆記標題'), 'question': new('筆記題目'), 'answer': new('筆記答案'),
+                'hint1': new('筆記提示一'), 'hint2': new('筆記提示二'), 'right': new('筆記答對'),
+                'submit': '就這個時間', 'next': '繼續',
+                'clues': [{'var': 'clue_order', 'text': new('線索秩序冊')}, {'var': 'clue_mate', 'text': new('線索隊友')},
+                          {'var': 'clue_walk', 'text': new('線索步行')}]}
+    if card_id == 'drafts':
+        return {'drafts': text.lines('草稿'), 'sendLabel': '送出', 'to': '林向晚'}
+    if card_id == 'coin-drop':
+        return {'intro': new('零錢開場'), 'earlyText': new('零錢太早'), 'lateText': new('零錢太晚')}
     raise KeyError(card_id)
 
 
 # 卡片：檔名、讀、寫、呈現方式。write 名單少一個名字，larch:set 會被靜默丟掉。
 CARDS = {
     'start-gun': {'name': '起跑', 'read': ['bpm', 'fouls'], 'write': ['bpm', 'fouls', 'thought'], 'presentation': 'fullscreen'},
+    'pace': {'name': '配速', 'read': ['bpm'], 'write': ['bpm', 'pace_score'], 'presentation': 'fullscreen'},
+    'notebook': {'name': '她的筆記', 'read': ['clue_order', 'clue_mate', 'clue_walk', 'calc_tries'], 'write': ['calc_ok', 'calc_tries'], 'presentation': 'fullscreen'},
+    'drafts': {'name': '三次草稿', 'read': [], 'write': ['drafted'], 'presentation': 'fullscreen'},
+    'coin-drop': {'name': '零錢', 'read': ['bpm', 'coin_tries'], 'write': ['bpm', 'coin_ok', 'coin_tries'], 'presentation': 'fullscreen'},
 }
+# 單卡測試時的變數初始值（模擬走到這張卡之前的狀態）
+TEST_PRESET = {'notebook': {'clue_order': True, 'clue_mate': True, 'clue_walk': True}}
 HUD = {'id': 'heart', 'title': '心跳', 'anchor': 'top-right', 'width': 132, 'height': 44, 'offsetX': 16, 'offsetY': 16,
        'interactive': False, 'readVariables': ['bpm']}
 
@@ -77,6 +98,8 @@ def test_project(card_id):
     b['nodes'], b['edges'] = [], []
     p['nodes'], p['edges'] = b['nodes'], b['edges']
     p['variables'] = variables.project_variables()
+    for v in p['variables']:
+        if v['name'] in TEST_PRESET.get(card_id, {}): v['defaultValue'] = TEST_PRESET[card_id][v['name']]
     p['settings']['plugins'][PLUGIN_ID] = settings_entry()
     b['nodes'].append(cards.dialogue('t-start', '測試開始', ['測試：' + card_id], start=True))
     b['nodes'].append(card_node(card_id, 't-card'))

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#f3ece2;color:#2b2522}
+#scene{position:absolute;inset:0;background:linear-gradient(#e9dfd2 0 35%,#c8584a 35%);background-size:cover;background-position:center}
+#track{position:absolute;left:0;right:0;top:58%;height:10vh;background:rgba(255,250,242,.35);border-top:2px solid #fffaf2;border-bottom:2px solid #fffaf2}
+#ring{position:absolute;left:18%;top:63%;width:9vh;height:9vh;translate:-50% -50%;border:4px solid #fffaf2;border-radius:50%;transition:scale .1s}
+.dot{position:absolute;top:63%;width:4vh;height:4vh;translate:-50% -50%;border-radius:50%;background:#fffaf2;box-shadow:0 0 8px rgba(255,255,255,.8)}
+#eyes{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .6s;pointer-events:none;background:rgba(243,236,226,.55)}
+#eyes.on{opacity:1}
+#eyes img{max-width:70vw;max-height:55vh;border-radius:12px}
+#eyes p{font-size:clamp(18px,3vh,30px);margin:0 8vw;text-align:center}
+#tap{position:absolute;inset:0}
+#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.9);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
+#score{position:absolute;left:4vw;top:4vh;font:600 16px "Noto Sans TC",sans-serif;color:#fffaf2;text-shadow:0 1px 3px #0006}
+#hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+</style></head>
+<body data-phase="intro" data-onbeat="0">
+<div id="scene"></div><div id="track"></div><div id="ring"></div><div id="dots"></div>
+<div id="eyes"><p id="eyesText"></p></div>
+<div id="score"></div>
+<div id="tap"></div>
+<div id="panel"><span id="msg"></span></div>
+<div id="hint">照節拍點畫面或按空白鍵</div>
+<script src="common.js"></script>
+<script>
+var S = {}, t0 = 0, beats = [], hits = 0, sprint = 0, raf = 0, phase = 'intro';
+var msg = document.getElementById('msg'), dots = document.getElementById('dots'), eyes = document.getElementById('eyes'), ring = document.getElementById('ring');
+var SPEED = 0.06; /* 每毫秒移動的 vw */
+function setPhase(p) { phase = p; document.body.dataset.phase = p; }
+function plan() {
+  /* 預先排好每一拍的時間：平常 650ms 一拍，她浮上來的那兩段亂掉 */
+  var t = 1200, end = S.duration * 0.85;
+  while (t < end) {
+    var f = t / S.duration, mess = (f > .33 && f < .45) || (f > .58 && f < .70);
+    t += mess ? 380 + Math.random() * 600 : 650;
+    beats.push({ t: t, hit: false });
+  }
+}
+function tick() {
+  var now = performance.now() - t0, f = now / S.duration;
+  eyes.classList.toggle('on', (f > .33 && f < .45) || (f > .58 && f < .70));
+  if (f > .85 && phase === 'run') { setPhase('sprint'); msg.textContent = S.sprintText; }
+  if (f >= 1) { finish(); return; }
+  dots.innerHTML = '';
+  var near = Infinity;
+  beats.forEach(function (b) {
+    var dx = (b.t - now) * SPEED;
+    if (Math.abs(b.t - now) < Math.abs(near)) near = b.t - now;
+    if (dx < -5 || dx > 90 || b.hit) return;
+    var d = document.createElement('div'); d.className = 'dot'; d.style.left = (18 + dx) + 'vw'; dots.appendChild(d);
+  });
+  document.body.dataset.onbeat = (phase === 'run' && Math.abs(near) < 90) ? '1' : '0';
+  document.getElementById('score').textContent = hits + sprint;
+  raf = requestAnimationFrame(tick);
+}
+function finish() {
+  cancelAnimationFrame(raf); setPhase('end'); dots.innerHTML = ''; eyes.classList.remove('on');
+  document.body.dataset.onbeat = '0';
+  msg.textContent = (hits >= beats.length * 0.6) ? S.endGood : S.endMessy;
+}
+L.press(function () {
+  if (phase === 'intro') { setPhase('run'); msg.textContent = S.intro; t0 = performance.now(); raf = requestAnimationFrame(tick); return; }
+  if (phase === 'run') {
+    var now = performance.now() - t0, best = null;
+    beats.forEach(function (b) { if (!b.hit && Math.abs(b.t - now) < 130 && (!best || Math.abs(b.t - now) < Math.abs(best.t - now))) best = b; });
+    if (best) { best.hit = true; hits += 1; ring.style.scale = '1.25'; setTimeout(function () { ring.style.scale = '1'; }, 100); }
+    return;
+  }
+  if (phase === 'sprint') { sprint = Math.min(sprint + 1, 15); return; }
+  if (phase === 'end') { setPhase('done'); L.set('pace_score', hits + sprint); L.set('bpm', 170); L.done(); }
+});
+L.onInit(function (values) {
+  S = L.script(); S.duration = S.duration || 22000;
+  document.getElementById('eyesText').textContent = S.eyes || '';
+  if (values.eyesImg) { var im = document.createElement('img'); im.src = values.eyesImg; im.alt = ''; eyes.prepend(im); }
+  if (values.bg) document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")';
+  msg.textContent = S.intro; plan();
+});
+</script>
+</body></html>

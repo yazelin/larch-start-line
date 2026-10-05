@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#e9e2d6;font-family:"Noto Sans TC",system-ui,sans-serif;color:#222}
+#phone{position:absolute;left:50%;top:50%;translate:-50% -50%;width:min(86vw,380px);height:min(86vh,720px);background:#fbfaf7;border:10px solid #2b2522;border-radius:36px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 24px rgb(0 0 0/.12)}
+#head{padding:16px;text-align:center;font-weight:600;border-bottom:1px solid #e3ddd2}
+#sent{flex:1;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px}
+.bubble{align-self:flex-end;max-width:80%;padding:10px 14px;border-radius:16px 16px 4px 16px;background:#b23a3a;color:#fff;font-size:16px;line-height:1.5;animation:pop .5s cubic-bezier(.2,1.5,.35,1)}
+@keyframes pop{from{scale:.6}}
+#bar{display:flex;gap:8px;padding:12px;border-top:1px solid #e3ddd2}
+#draft{flex:1;min-height:44px;padding:10px 12px;border:1px solid #8b8d85;border-radius:22px;font-size:16px;line-height:1.5;background:#fff}
+#draft::after{content:'|';animation:blink 1s steps(1) infinite;color:#b23a3a}
+@keyframes blink{50%{opacity:0}}
+#send{min-width:64px;min-height:44px;border:0;border-radius:22px;background:#2b2522;color:#fff;font:600 15px inherit;cursor:pointer}
+#send[disabled]{opacity:.4;cursor:default}
+#msg{position:absolute;left:0;right:0;bottom:2vh;text-align:center;font-size:14px;color:#6b5d52}
+#tap{display:none}
+</style></head>
+<body data-round="0">
+<div id="tap"></div>
+<div id="phone"><div id="head"></div><div id="sent"></div><div id="bar"><div id="draft"></div><button id="send" disabled></button></div></div>
+<span id="msg"></span>
+<script src="common.js"></script>
+<script>
+var S = {}, n = 0, draft = document.getElementById('draft'), send = document.getElementById('send');
+function type(t, done) { var i = 0; draft.textContent = ''; (function step() { draft.textContent = t.slice(0, ++i); if (i < t.length) setTimeout(step, 70); else done(); })(); }
+function erase(done) { (function step() { draft.textContent = draft.textContent.slice(0, -1); if (draft.textContent) setTimeout(step, 45); else done(); })(); }
+function next() { send.disabled = true; type(S.drafts[n], function () { send.disabled = false; }); }
+send.onclick = function () {
+  send.disabled = true;
+  if (n < S.drafts.length - 1) {
+    setTimeout(function () { erase(function () { n += 1; document.body.dataset.round = String(n); next(); }); }, 800);
+    return;
+  }
+  var b = document.createElement('div'); b.className = 'bubble'; b.textContent = draft.textContent;
+  document.getElementById('sent').appendChild(b); draft.textContent = '';
+  L.set('drafted', true);
+  setTimeout(function () { L.done(); }, 1200);
+};
+L.onInit(function () {
+  S = L.script(); send.textContent = S.sendLabel; document.getElementById('head').textContent = S.to;
+  next();
+});
+</script>
+</body></html>

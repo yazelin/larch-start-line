@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#efe6d6;color:#2b2522}
+#scene{position:absolute;inset:0;background:linear-gradient(#e7ddcf 0 62%,#cfc3b2 62%);background-size:cover;background-position:center}
+#machine{position:absolute;left:12vw;bottom:30vh;width:14vw;height:38vh;background:#7d9fb6;border-radius:10px;border:3px solid #4b6577}
+#corner{position:absolute;right:0;bottom:30vh;width:12vw;height:52vh;background:#b9ab98}
+#him{position:absolute;bottom:30vh;width:7vh;height:22vh;border-radius:3vh 3vh 1vh 1vh;background:#2f3e5c;left:100vw;transition:left .1s linear}
+#coin{position:absolute;left:30vw;bottom:44vh;width:3vh;height:3vh;border-radius:50%;background:#d8b64a;border:2px solid #9c7f22;opacity:0}
+#coin.drop{opacity:1;animation:drop 1s cubic-bezier(.3,0,.7,1) forwards}
+@keyframes drop{to{translate:12vw 13vh;rotate:540deg}}
+#tap{position:absolute;inset:0}
+#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.92);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
+#hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+</style></head>
+<body data-state="intro">
+<div id="scene"></div><div id="machine"></div><div id="him"></div><div id="corner"></div><div id="coin"></div>
+<div id="tap"></div>
+<div id="panel"><span id="msg"></span></div>
+<div id="hint">在對的那一刻點畫面或按空白鍵，讓零錢掉下去</div>
+<script src="common.js"></script>
+<script>
+var S = {}, t0 = 0, raf = 0, tries = 0, bpm = 120;
+var msg = document.getElementById('msg'), him = document.getElementById('him'), coin = document.getElementById('coin');
+function state(s) { document.body.dataset.state = s; }
+function cur() { return document.body.dataset.state; }
+function start() {
+  coin.className = ''; him.style.left = '100vw'; msg.textContent = S.intro; t0 = performance.now(); state('wait');
+  raf = requestAnimationFrame(tick);
+}
+function tick() {
+  var t = performance.now() - t0;
+  if (t < S.appear) state('wait');
+  else if (t < S.appear + S.window) state('window');
+  else if (t < S.arrive) state('late');
+  else { fail(S.lateText); return; }
+  var walk = Math.max(0, Math.min(1, (t - S.appear) / (S.arrive - S.appear)));
+  him.style.left = (88 - walk * 52) + 'vw';
+  var b = Math.round(120 + walk * 40); if (b !== bpm) { bpm = b; L.set('bpm', b); }
+  raf = requestAnimationFrame(tick);
+}
+function fail(text) { cancelAnimationFrame(raf); tries += 1; L.set('coin_tries', tries); state('retry'); msg.textContent = text; }
+L.press(function () {
+  var s = cur();
+  if (s === 'intro' || s === 'retry') { start(); return; }
+  if (s === 'wait') { coin.className = 'drop'; fail(S.earlyText); return; }
+  if (s === 'late') { fail(S.lateText); return; }
+  if (s === 'window') {
+    cancelAnimationFrame(raf); tries += 1; L.set('coin_tries', tries); state('ok');
+    coin.className = 'drop'; L.set('coin_ok', true);
+    setTimeout(function () { L.done(); }, 1500);
+  }
+});
+L.onInit(function (values) {
+  S = L.script(); S.appear = S.appear || 2000; S.window = S.window || 2000; S.arrive = S.arrive || 6500;
+  tries = Number(L.get('coin_tries', 0)) || 0;
+  if (values.bg) document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")';
+  msg.textContent = S.intro;
+});
+</script>
+</body></html>

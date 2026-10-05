@@ -5,8 +5,8 @@ import { execFileSync } from 'node:child_process';
 import { serve, open, assert, sleep } from './lib.mjs';
 
 async function card(id, play) {
-  execFileSync('python3', ['src/plugin.py', '--test', id], { stdio: 'inherit' });
-  const s = await serve(`dist/test-${id}.json`);
+  execFileSync('python3', ['src/plugin.py', '--test', id.replace('-onbeat', '')], { stdio: 'inherit' });
+  const s = await serve(`dist/test-${id.replace('-onbeat', '')}.json`);
   const ui = await open(s.base);
   try {
     await ui.clickText('開始遊戲');
@@ -55,9 +55,69 @@ export const CARDS = {
     await tapUntil(f, /兩個心跳/);
     await tap(f);
   },
+  // 配速：完全不按也能結束
+  'pace': async (ui, f) => {
+    await tapUntil(f, /節拍/);
+    await tap(f);
+    await waitMsg(f, /終點/, 60000);
+    await tap(f);
+  },
+  // 配速：照節拍按（data-onbeat=1 時按），分數要比不按高
+  'pace-onbeat': async (ui, f) => {
+    await tapUntil(f, /節拍/);
+    await tap(f);
+    await f.evaluate(() => new Promise(done => {
+      const tapEl = document.getElementById('tap'); let last = '0';
+      const t = setInterval(() => {
+        const ob = document.body.dataset.onbeat || '0';
+        if (ob === '1' && last !== '1') tapEl.dispatchEvent(new Event('pointerdown'));
+        if (document.body.dataset.phase === 'sprint') tapEl.dispatchEvent(new Event('pointerdown'));
+        last = ob;
+        if (document.body.dataset.phase === 'end') { clearInterval(t); done(); }
+      }, 20);
+    }));
+    await waitMsg(f, /終點/);
+    await tap(f);
+  },
+  'notebook': async (ui, f) => {
+    assert(await f.locator('#clues li').count() === 3, 'notebook：三條線索都列出來');
+    for (let i = 0; i < 5; i++) {
+      await f.locator('#hh').fill('15'); await f.locator('#mm').fill(String(30 + i));
+      await f.locator('#submit').click();
+      await waitMsg(f, i === 0 ? /馬上去買水/ : /三分鐘/);
+    }
+    assert(await f.locator('#crossed li').count() === 5, 'notebook：答錯的時間都被畫掉');
+    await f.locator('#hh').fill('15'); await f.locator('#mm').fill('44');
+    await f.locator('#submit').click();
+    await waitMsg(f, /算了你的時間/);
+    await tap(f);
+  },
+  'drafts': async (ui, f) => {
+    for (let i = 0; i < 4; i++) {
+      await f.locator('#send:not([disabled])').click({ timeout: 15000 });
+      if (i < 3) { await f.waitForFunction(n => document.querySelectorAll('#sent .bubble').length === 0 && document.body.dataset.round === String(n), i + 1, { timeout: 15000 }); }
+    }
+    await f.waitForFunction(() => document.querySelectorAll('#sent .bubble').length === 1, null, { timeout: 15000 });
+    assert(true, 'drafts：前三次都被刪掉，第四次送出');
+  },
+  'coin-drop': async (ui, f) => {
+    await tapUntil(f, /他快來了|零錢/);
+    await tap(f);
+    const until = st => f.waitForFunction(x => document.body.dataset.state === x, st, { timeout: 15000 });
+    for (let i = 0; i < 5; i++) { await until('wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f); }
+    for (let i = 0; i < 5; i++) { await until('late'); await tap(f); await waitMsg(f, /走到面前/); await tap(f); }
+    assert(true, 'coin-drop：太早、太晚各 5 次都能重來');
+    await until('window'); await tap(f);
+    await f.waitForFunction(() => document.body.dataset.state === 'ok', null, { timeout: 5000 });
+  },
 };
 const expect = {
   'start-gun': v => { assert(v.fouls === '5', 'start-gun：fouls=5（' + v.fouls + '）'); assert(v.bpm === '150', 'start-gun：bpm=150'); assert(v.thought === '3', 'start-gun：thought=3'); },
+  'pace': v => { assert(v.pace_score === '0', 'pace：不按 → pace_score=0（' + v.pace_score + '）'); assert(v.bpm === '170', 'pace：bpm=170'); },
+  'pace-onbeat': v => { assert(Number(v.pace_score) >= 10, 'pace-onbeat：照拍按分數 >= 10（' + v.pace_score + '）'); },
+  'notebook': v => { assert(v.calc_ok === 'true', 'notebook：calc_ok=true'); assert(v.calc_tries === '6', 'notebook：calc_tries=6（' + v.calc_tries + '）'); },
+  'drafts': v => { assert(v.drafted === 'true', 'drafts：drafted=true'); },
+  'coin-drop': v => { assert(v.coin_ok === 'true', 'coin-drop：coin_ok=true'); assert(v.coin_tries === '11', 'coin-drop：coin_tries=11（' + v.coin_tries + '）'); },
 };
 
 const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(CARDS);

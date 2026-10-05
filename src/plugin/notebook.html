@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;height:100%;overflow:auto;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#efe6d6;color:#2b2522}
+#book{position:relative;max-width:980px;margin:4vh auto;display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fffaf0;border:1px solid #d8cbb8;border-radius:12px;box-shadow:0 8px 24px rgb(0 0 0/.08);background-image:repeating-linear-gradient(#fffaf0 0 31px,#e4d9c7 31px 32px)}
+#book>section{padding:28px 32px;min-height:60vh}
+#book>section+section{border-left:1px dashed #d8cbb8}
+h2{margin:0 0 12px;font-size:20px}
+ul{padding-left:1.2em;margin:0;line-height:2}
+#crossed li{text-decoration:line-through;color:#9a4a3f}
+.q{font-size:18px;line-height:1.8;margin:0 0 16px}
+.time{display:flex;align-items:center;gap:8px;font:600 28px "Noto Sans TC",sans-serif}
+.time input{width:3.2em;min-height:52px;font:inherit;text-align:center;border:1px solid #8b7b6c;border-radius:8px;background:#fff}
+.step{display:flex;flex-direction:column;gap:4px}
+.step button{min-height:28px;min-width:52px;border:1px solid #8b7b6c;border-radius:6px;background:#f3ece2;font-size:14px;cursor:pointer}
+#submit{margin-top:16px;min-height:48px;padding:0 20px;font:600 16px "Noto Sans TC",sans-serif;border-radius:8px;border:1px solid #2b2522;background:#2b2522;color:#fffaf2;cursor:pointer;transition:scale .2s}
+#submit:active{scale:.96}
+#msg{display:block;margin-top:16px;min-height:1.8em;font-size:18px;line-height:1.8}
+#tap{display:none}
+@media (max-width:640px){#book{grid-template-columns:1fr;margin:0}#book>section+section{border-left:0;border-top:1px dashed #d8cbb8}#book>section{min-height:auto}}
+</style></head>
+<body>
+<div id="tap"></div>
+<div id="book">
+  <section><h2 id="title"></h2><ul id="clues"></ul><ul id="crossed"></ul></section>
+  <section>
+    <p class="q" id="question"></p>
+    <div class="time">
+      <div class="step"><button data-k="hh" data-d="1" aria-label="時加一">＋</button><button data-k="hh" data-d="-1" aria-label="時減一">－</button></div>
+      <input id="hh" inputmode="numeric" aria-label="時" value="15">:<input id="mm" inputmode="numeric" aria-label="分" value="30">
+      <div class="step"><button data-k="mm" data-d="1" aria-label="分加一">＋</button><button data-k="mm" data-d="-1" aria-label="分減一">－</button></div>
+    </div>
+    <button id="submit"></button>
+    <span id="msg"></span>
+  </section>
+</div>
+<script src="common.js"></script>
+<script>
+var S = {}, tries = 0, solved = false;
+var msg = document.getElementById('msg');
+function pad(n) { return String(n).padStart(2, '0'); }
+document.querySelectorAll('.step button').forEach(function (b) {
+  b.onclick = function () {
+    var el = document.getElementById(b.dataset.k), max = b.dataset.k === 'hh' ? 24 : 60;
+    el.value = pad(((Number(el.value) || 0) + Number(b.dataset.d) + max) % max);
+  };
+});
+document.getElementById('submit').onclick = function () {
+  if (solved) return;
+  var ans = pad(Number(document.getElementById('hh').value) || 0) + ':' + pad(Number(document.getElementById('mm').value) || 0);
+  tries += 1; L.set('calc_tries', tries);
+  if (ans === S.answer) {
+    solved = true; L.set('calc_ok', true); msg.textContent = S.right;
+    document.getElementById('submit').textContent = S.next;
+    document.getElementById('submit').onclick = function () { L.done(); };
+    return;
+  }
+  var li = document.createElement('li'); li.textContent = ans; document.getElementById('crossed').appendChild(li);
+  msg.textContent = tries === 1 ? S.hint1 : S.hint2;
+};
+L.press(function () { if (solved) L.done(); });
+L.onInit(function () {
+  S = L.script(); tries = Number(L.get('calc_tries', 0)) || 0;
+  document.getElementById('title').textContent = S.title;
+  document.getElementById('question').textContent = S.question;
+  document.getElementById('submit').textContent = S.submit;
+  var ul = document.getElementById('clues');
+  S.clues.forEach(function (c) {
+    if (L.get(c.var, false) !== true && L.get(c.var, false) !== 'true') return;
+    var li = document.createElement('li'); li.textContent = c.text; ul.appendChild(li);
+  });
+});
+</script>
+</body></html>
