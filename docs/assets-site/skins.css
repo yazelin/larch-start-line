@@ -50,7 +50,7 @@
     var(--paper);
   background-attachment:fixed}
 :root[data-skin="lin"] .hero h1 span:last-child{color:var(--accent)}
-:root[data-skin="lin"] .hero::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.85;
+:root[data-skin="lin"] .hero::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.55;
   background:radial-gradient(circle at 58% 14%,rgba(255,255,255,.9) 0 3px,transparent 9px),radial-gradient(circle at 66% 30%,rgba(255,230,240,.8) 0 5px,transparent 14px),
     radial-gradient(circle at 82% 10%,rgba(255,255,255,.75) 0 4px,transparent 12px),radial-gradient(circle at 94% 36%,rgba(255,220,235,.8) 0 6px,transparent 18px),
     radial-gradient(circle at 74% 52%,rgba(255,255,255,.6) 0 2px,transparent 7px),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(255,190,215,.22),transparent 70%)}

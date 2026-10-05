@@ -33,6 +33,8 @@
              linear-gradient(90deg,rgb(var(--paper-rgb)/var(--veil-1,.95)) 0,rgb(var(--paper-rgb)/var(--veil-2,.92)) calc(var(--L) + 480px),rgb(var(--paper-rgb)/var(--veil-3,.55)) calc(var(--L) + 580px),rgb(var(--paper-rgb)/0) calc(var(--L) + 700px))}
 /* 程徹版左半不要壓太深：讓天空與跑道透出來，字靠光暈撐清楚 */
 :root[data-skin="cheng"] .hero-veil,:root:not([data-skin]) .hero-veil{--veil-1:.72;--veil-2:.6;--veil-3:.3}
+/* 向晚版跟著變淡，比程徹版稍濃一點，保留粉色的柔和 */
+:root[data-skin="lin"] .hero-veil{--veil-1:.78;--veil-2:.66;--veil-3:.32}
 /* 導覽列還沒變實心前，連結放在一塊紙色底上，壓在樹和天空上也看得清 */
 .top:not(.solid) nav{background:rgb(var(--paper-rgb)/.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:99px;padding:4px}
 .hero-in{position:relative;padding:110px 0 120px}
