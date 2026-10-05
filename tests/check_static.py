@@ -425,6 +425,14 @@ def ending_a_goes_to_site_chapter():
     assert {'variable': 'bpm', 'value': '0'} in [{'variable': o['variable'], 'value': o['value']} for o in ops], '進第二章前要把心跳歸零，HUD 才不會擋住公開站'
 
 @test
+def description_is_authors_intro():
+    """專案介紹以作者在 Larch 上改過的 canon/介紹文.md 為準，push 不能蓋回舊的簡介。"""
+    import build
+    want = (ROOT / 'canon' / '介紹文.md').read_text(encoding='utf-8')
+    assert build.build()['description'] == want, '專案介紹跟 canon/介紹文.md 不一致'
+
+
+@test
 def cg_gallery_only_real_cgs():
     """CG 收藏只放遊戲裡實際演出的 CG（＋封面），不能混進走路圖、立繪、卡片背景。"""
     import build

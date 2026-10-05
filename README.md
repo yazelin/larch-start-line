@@ -3,7 +3,8 @@
 Larch 第三屆創作者挑戰《自由與限制》投稿作品。程徹與林向晚的田徑愛情短篇，改成 RPG 地圖＋自製插件卡的互動作品：同一個下午玩兩次（先程徹、再林向晚），販賣機前分支成兩個結局。
 
 - 原文：`canon/原文.md`（不改字，遊戲內原文一律從這裡讀）
-- 新寫文字：`canon/新寫.md`（結局 B、草稿、線索、簡介…，每段的 `##` 標題是程式取用的鍵）
+- 新寫文字：`canon/新寫.md`（結局 B、草稿、線索…，每段的 `##` 標題是程式取用的鍵）
+- 專案介紹：`canon/介紹文.md`（作者在 Larch 上改過的版本，push 照這個檔寫入，改介紹改這裡）
 - 規格：`docs/specs/2026-10-05-design.md`；計畫：`docs/plans/2026-10-05-start-line.md`
 - Larch 專案：`project-c0f31c1f-2b06-44d8-a62e-374bff81fd60`
 - 遊玩：https://larch.ink/play/market/yaze/start-line （公開站「在 Larch 上遊玩」按鈕讀 `docs/site.json` 的 `playUrl`）

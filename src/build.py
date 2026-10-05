@@ -17,7 +17,7 @@ def build():
     board['nodes'], board['edges'] = [], []
     p['nodes'], p['edges'] = board['nodes'], board['edges']  # 頂層是目前白板的複本
     p['variables'] = variables.project_variables()
-    p['description'] = text.new('簡介')
+    p['description'] = (ROOT / 'canon' / '介紹文.md').read_text(encoding='utf-8')   # 作者在 Larch 上改過的版本，改介紹改這個檔
     p['settings']['plugins'][plugin.PLUGIN_ID] = plugin.settings_entry()
     a = art.paths()
     p['settings']['plugins']['larch-rpg-system']['settings']['database'] = json.dumps(rpg_database(a), ensure_ascii=False)
