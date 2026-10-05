@@ -40,7 +40,31 @@ def build():
     L(plugin.NODE['notebook'], map_stadium.MAP_ID)
     L(plugin.NODE['coin-drop'], SEAWALL2); L(SEAWALL2, map_kitchen.MAP_ID)
     L(ENDING_B, map_stadium.MAP_ID)
+    # 結局 A 演完：自動跳到第二章（內嵌公開站）
+    N({'id': 'to-site', 'type': 'story', 'position': cards._pos(), 'data': {
+        'type': 'boardJump', 'title': '前往第二章', 'text': '', 'jumpBoardId': SITE_BOARD, 'jumpNodeId': 'site'}})
+    N(cards.setvar('hud-off', '收起心跳', [('bpm', 0)]))   # 心跳歸零＝HUD 隱藏，不擋住第二章的網頁
+    L(FIN, 'hud-off'); L('hud-off', 'to-site')
+    p['boards'].append(site_board())
     return p
+
+
+SITE_BOARD = 'board-site'
+SITE_URL = 'https://yazelin.github.io/larch-start-line/'
+
+
+def site_board():
+    """第二章：全螢幕小遊戲卡，用 iframe 嵌入公開站（照香布纏第六章的做法）。看完按「略過」結束。"""
+    shell = ('<!doctype html><html lang="zh-Hant"><meta charset="utf-8">'
+             '<style>html,body{margin:0;height:100%;background:#fbf6ef}iframe{width:100%;height:100%;border:0;display:block}</style>'
+             f'<iframe src="{SITE_URL}" allow="fullscreen; autoplay"></iframe>'
+             "<script>parent.postMessage({type:'larch:ready'},'*');</script></html>")
+    n = {'id': 'site', 'type': 'story', 'position': {'x': 100, 'y': 200}, 'data': {
+        'type': 'miniGame', 'title': '第二章・幕後與原聲帶', 'text': '作品介紹、圖庫、玩法與主題、七首原聲帶。看完按「略過」結束。',
+        'miniGameHtml': shell, 'miniGamePresentation': 'fullscreen', 'miniGameSkippable': True,
+        'miniGameReadVars': [], 'miniGameWriteVars': [], 'miniGameNote': f'薄殼而已，內容在 {SITE_URL}',
+        'start': True, 'voiceMode': 'off', 'stage': {'actors': []}}}
+    return {'id': SITE_BOARD, 'kind': 'story', 'mode': 'story', 'name': '第二章・幕後與原聲帶', 'description': '', 'nodes': [n], 'edges': []}
 
 
 def rpg_database(a):

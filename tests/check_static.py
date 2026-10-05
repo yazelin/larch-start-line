@@ -402,6 +402,27 @@ def vending_choice_not_eaten_by_enter():
     kinds = [a['kind'] for a in v2['actions']]
     assert kinds.index('dialogue') < kinds.index('choice'), kinds
 
+@test
+def ending_a_goes_to_site_chapter():
+    """結局 A 演完自動進第二章（內嵌公開站）。"""
+    import build
+    p = build.build()
+    assert len(p['boards']) == 2, '要有第二章白板'
+    ch2 = p['boards'][1]
+    site = next(n for n in ch2['nodes'] if n['data'].get('type') == 'miniGame')
+    assert 'yazelin.github.io/larch-start-line' in site['data']['miniGameHtml'] and site['data'].get('start'), '第二章要內嵌公開站'
+    b0 = p['boards'][0]
+    nxt = [e['target'] for e in b0['edges'] if e['source'] == 'fin']
+    assert nxt, '「完」之後要接跳章卡'
+    j = next(n for n in b0['nodes'] if n['id'] == 'to-site')['data']
+    assert j['type'] == 'boardJump' and j['jumpBoardId'] == ch2['id'] and j['jumpNodeId'] == site['id'], j
+    assert not [e for e in b0['edges'] if e['source'] == 'fin-b'], '結局 B 不接第二章'
+    path = ['fin']
+    while path[-1] != 'to-site':
+        path.append(next(e['target'] for e in b0['edges'] if e['source'] == path[-1]))
+    ops = [o for nid in path for o in (next(n for n in b0['nodes'] if n['id'] == nid)['data'].get('variableOps') or [])]
+    assert {'variable': 'bpm', 'value': '0'} in [{'variable': o['variable'], 'value': o['value']} for o in ops], '進第二章前要把心跳歸零，HUD 才不會擋住公開站'
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

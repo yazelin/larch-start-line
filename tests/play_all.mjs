@@ -164,8 +164,12 @@ try {
   await goto(6, 4);
   await ui.waitText(/幾年後的一個冬夜/); await sleep(1500); await shot('09-kitchen'); await drainUntil(/我們結婚吧/);
   assert(await hud() === 72, '廚房：心跳平穩 72');
-  await drainUntil(/起跑總在開始前　完|開始遊戲/);
+  await drainUntil(/起跑總在開始前　完|林亞澤（Yaze Lin）/);   // 「完」只有一句，可能被翻頁帶過，直接進到第二章也算
   assert(true, '結局 A 走到底');
+  let siteFrame = null;
+  for (let i = 0; i < 20 && !siteFrame; i++) { siteFrame = ui.page.frames().find(f => f.url().includes('yazelin.github.io/larch-start-line')); if (!siteFrame) { await ui.advance(); await sleep(800); } }
+  assert(!!siteFrame, '結局 A 之後自動進第二章，內嵌公開站');
+  await sleep(3000); await shot('10-chapter2');
   assert(ui.errors.length === 0, '全程沒有頁面例外 ' + ui.errors.join(';'));
   log('自動測試總時間', ((Date.now() - T0) / 1000).toFixed(0), '秒');
 } catch (e) {

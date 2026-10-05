@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{color-scheme:light}
+:root{color-scheme:light;--paper:#fbf6ee;--ink:#3a2f2a}
 html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#f3ece2;color:#2b2522}
 #scene{position:absolute;inset:0;background:linear-gradient(#e9dfd2 0 30%,#c8584a 30% 100%);background-size:cover;background-position:center}
 #scene.has-bg{background-color:#f3ece2}
@@ -11,10 +11,11 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 #heart{position:absolute;top:4vh;right:4vw;font-size:6vh;color:#b23a3a;transition:scale .08s}
 #flash{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s}
 #tap{position:absolute;inset:0}
-#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.9);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none;min-height:8vh}
-#hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.2vh 3.2vw;background:rgba(251,246,238,.92);border-radius:14px;  box-shadow:0 2px 0 rgba(160,120,90,.12),0 6px 22px rgba(90,50,30,.18);font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}#panel::before{content:"";position:absolute;inset:5px;border:1px solid rgba(178,58,58,.18);border-radius:10px;pointer-events:none}
+#hint{position:absolute;right:6vw;bottom:1.4vh;font-size:13px;color:#fbf6ee;text-shadow:0 1px 3px rgba(80,30,20,.6);pointer-events:none}
 #choices{position:absolute;left:50%;top:40%;translate:-50% -50%;display:flex;flex-direction:column;gap:12px;min-width:min(80vw,420px)}
-#choices button{min-height:52px;font:600 18px "Noto Sans TC",sans-serif;border-radius:10px;border:1px solid #8b7b6c;background:#fffaf2;color:#2b2522;cursor:pointer;transition:scale .2s}
+#choices button{min-height:54px;padding:0 22px;font:600 18px "Noto Sans TC",sans-serif;border-radius:14px;border:1px solid rgba(178,58,58,.28);background:rgba(251,246,238,.94);color:var(--ink);cursor:pointer;box-shadow:0 8px 22px rgba(80,30,20,.18);transition:scale .2s,background .2s}
+#choices button:hover{background:#fff}
 #choices button:active{scale:.96}
 @media (prefers-reduced-motion:reduce){#heart{transition:none}}
 </style></head>
