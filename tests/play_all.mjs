@@ -15,6 +15,7 @@ const T0 = Date.now();
 const s = await serve('dist/project.json');
 const ui = await open(s.base);
 const page = ui.page;
+const shot = n => page.screenshot({ path: `dist/shots/${n}.png` });
 const log = (...a) => console.log(`[${((Date.now() - T0) / 1000).toFixed(0)}s]`, ...a);
 
 async function pos() {
@@ -88,29 +89,30 @@ try {
   assert(true, '檢錄拿到號碼布');
 
   await goto(14, 25);
-  await ui.waitText(/程徹第一次見到林向晚/); await drainUntil(/到八百公尺起跑線/);
+  await ui.waitText(/程徹第一次見到林向晚/); await sleep(1500); await shot('01-gaze'); await drainUntil(/到八百公尺起跑線/);
   assert(await hud() === 120, '四目相對後心跳 120');
 
   await goto(24, 22, GAZE);
   let f = await cardFrame();
-  await tapUntil(f, /各就位/); await tap(f); await sleep(300);
+  await tapUntil(f, /各就位/); await tap(f); await sleep(300); await shot('02-start');
   await f.locator('#choices button', { hasText: '認識她' }).click();
   for (let i = 0; i < 2; i++) { await waitMsg(f, /預備/); await tap(f); await waitMsg(f, /偷跑/); await tapUntil(f, /預備/); }
   await waitMsg(f, /砰/, 6000); await tapUntil(f, /兩個心跳/); await tap(f);
   assert(true, '起跑卡：偷跑兩次後起跑');
   f = await cardFrame('#ring');
-  await tapUntil(f, /節拍/); await tap(f); await waitMsg(f, /終點/, 60000); await tap(f);
+  await tapUntil(f, /節拍/); await tap(f); await sleep(8500); await shot('03-pace'); await waitMsg(f, /終點/, 60000); await tap(f);
   assert(true, '配速卡跑完');
   await drainUntil(/去體育館後門的販賣機/);
   assert(true, '回到地圖、看到小組第一、任務指向販賣機');
 
   await interact(32, 26, [32, 27], 'ArrowUp');
-  await ui.waitText(/妳的十塊錢/);
+  await ui.waitText(/妳的十塊錢/); await sleep(1200); await shot('04-vending');
   f = null;
   for (let i = 0; i < 40 && !(f = await ui.frameWith('#send')); i++) { await ui.advance(); await sleep(700); }
   assert(!!f, '中章之後進到草稿卡');
+  await shot('05-drafts');
   for (let i = 0; i < 4; i++) await f.locator('#send:not([disabled])').click({ timeout: 20000 });
-  await drainUntil(/去看台後面/);
+  await drainUntil(/去看台後面/); await sleep(1500); await shot('06-round2');
   assert(true, '防波堤之後換成林向晚，任務：去看台後面');
 
   // 第二輪：被看到兩次
@@ -131,7 +133,7 @@ try {
   await interact(10, 13, [10, 14], 'ArrowUp'); await ui.waitText(/阿徹喔/);
   f = null;
   for (let i = 0; i < 20 && !(f = await ui.frameWith('#hh')); i++) { await ui.advance(); await sleep(700); }
-  assert(!!f, '三條線索齊了 → 筆記卡');
+  assert(!!f, '三條線索齊了 → 筆記卡'); await shot('07-notebook');
   await f.locator('#hh').fill('15'); await f.locator('#mm').fill('47'); await f.locator('#submit').click(); await waitMsg(f, /馬上去買水/);
   await f.locator('#mm').fill('44'); await f.locator('#submit').click(); await waitMsg(f, /算了你的時間/); await f.locator('#submit').click();
   await drainUntil(/去體育館後門的販賣機/);
@@ -146,7 +148,7 @@ try {
   await drainUntil(/去體育館後門的販賣機/);
   await interact(32, 26, [32, 27], 'ArrowUp');
   await drainUntil(/讓零錢掉下去/); await ui.clickText('讓零錢掉下去');
-  f = await cardFrame('#machine');
+  f = await cardFrame('#machine'); await sleep(3500); await shot('08-coin');
   await tapUntil(f, /他快來了/); await tap(f);
   await f.waitForFunction(() => document.body.dataset.state === 'wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f);
   await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await tap(f);
@@ -154,7 +156,7 @@ try {
   assert(true, '零錢卡：太早一次，再成功');
   await drainUntil(/走到她身後/);
   await goto(6, 4);
-  await ui.waitText(/幾年後的一個冬夜/); await drainUntil(/我們結婚吧/);
+  await ui.waitText(/幾年後的一個冬夜/); await sleep(1500); await shot('09-kitchen'); await drainUntil(/我們結婚吧/);
   await drainUntil(/把自己的門，交給另一個人/);
   assert(await hud() === 72, '廚房：心跳平穩 72');
   await drainUntil(/起跑總在開始前　完|開始遊戲/);

@@ -14,6 +14,7 @@ async function card(id, play) {
     await sleep(800); await ui.page.keyboard.press('Enter');
     const f = await waitFrame(ui, '#tap');
     await play(ui, f);
+    await ui.page.screenshot({ path: `dist/shots/card-${id}.png` }).catch(() => {});
     await ui.waitText(/RESULT/, 20000); await sleep(3500);
     const r = await ui.text();
     console.log('RESULT 畫面：', r.slice(r.indexOf('RESULT'), r.indexOf('RESULT') + 120));
@@ -103,6 +104,9 @@ export const CARDS = {
   'coin-drop': async (ui, f) => {
     await tapUntil(f, /他快來了|零錢/);
     await tap(f);
+    await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await sleep(800);
+    await ui.page.screenshot({ path: 'dist/shots/card-coin-window.png' });
+    await f.waitForFunction(() => document.body.dataset.state === 'late', null, { timeout: 15000 }); await tap(f); await waitMsg(f, /走到面前/); await tap(f);
     const until = st => f.waitForFunction(x => document.body.dataset.state === x, st, { timeout: 15000 });
     for (let i = 0; i < 5; i++) { await until('wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f); }
     for (let i = 0; i < 5; i++) { await until('late'); await tap(f); await waitMsg(f, /走到面前/); await tap(f); }
@@ -117,7 +121,7 @@ const expect = {
   'pace-onbeat': v => { assert(Number(v.pace_score) >= 10, 'pace-onbeat：照拍按分數 >= 10（' + v.pace_score + '）'); },
   'notebook': v => { assert(v.calc_ok === 'true', 'notebook：calc_ok=true'); assert(v.calc_tries === '6', 'notebook：calc_tries=6（' + v.calc_tries + '）'); },
   'drafts': v => { assert(v.drafted === 'true', 'drafts：drafted=true'); },
-  'coin-drop': v => { assert(v.coin_ok === 'true', 'coin-drop：coin_ok=true'); assert(v.coin_tries === '11', 'coin-drop：coin_tries=11（' + v.coin_tries + '）'); },
+  'coin-drop': v => { assert(v.coin_ok === 'true', 'coin-drop：coin_ok=true'); assert(v.coin_tries === '12', 'coin-drop：coin_tries=12（' + v.coin_tries + '）'); },
 };
 
 export { waitMsg, tap, tapUntil };

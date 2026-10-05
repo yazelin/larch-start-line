@@ -74,7 +74,7 @@ def round1_events(art):
            actions=[move([('left', START_LINE[0] - FINISH[0])], face='up'), camera(*STANDS_SEAT, hold=1800),
                     card('r1-finish'), setv('bpm', 110), setv('phase', 'vending')]),
         ev('coins', *COINS, conditions=[R1, cond('phase', 'vending')],
-           actions=[item('coin10', '十塊錢'), say('妳的十塊錢。', speaker='player'), remove('coin10', '十塊錢'),
+           actions=[item('coin10', '十塊錢'), card('vending'), remove('coin10', '十塊錢'),
                     setv('phase', 'mid'), jump('mid')]),
     ]
     return ev_list

@@ -6,6 +6,8 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 #machine{position:absolute;left:12vw;bottom:30vh;width:14vw;height:38vh;background:#7d9fb6;border-radius:10px;border:3px solid #4b6577}
 #corner{position:absolute;right:0;bottom:30vh;width:12vw;height:52vh;background:#b9ab98}
 #him{position:absolute;bottom:30vh;width:7vh;height:22vh;border-radius:3vh 3vh 1vh 1vh;background:#2f3e5c;left:100vw;transition:left .1s linear}
+body.has-bg #machine,body.has-bg #corner{display:none}
+#him.sprite{border-radius:0;background-color:transparent;background-repeat:no-repeat;image-rendering:auto;width:12vh;height:16vh}
 #coin{position:absolute;left:30vw;bottom:44vh;width:3vh;height:3vh;border-radius:50%;background:#d8b64a;border:2px solid #9c7f22;opacity:0}
 #coin.drop{opacity:1;animation:drop 1s cubic-bezier(.3,0,.7,1) forwards}
 @keyframes drop{to{translate:12vw 13vh;rotate:540deg}}
@@ -54,7 +56,11 @@ L.press(function () {
 L.onInit(function (values) {
   S = L.script(); S.appear = S.appear || 2000; S.window = S.window || 2000; S.arrive = S.arrive || 6500;
   tries = Number(L.get('coin_tries', 0)) || 0;
-  if (values.bg) document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")';
+  if (values.bg) { document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")'; document.body.classList.add('has-bg'); }
+  if (values.him) {   /* 3 欄 × 4 列走路圖，取第 2 列（面向左）輪播 */
+    him.classList.add('sprite'); him.style.backgroundImage = 'url("' + values.him + '")'; him.style.backgroundSize = '300% 400%';
+    var fr = 0; setInterval(function () { if (cur() === 'window' || cur() === 'late' || cur() === 'wait') { fr = (fr + 1) % 3; him.style.backgroundPosition = (fr * 50) + '% 33.333%'; } }, 180);
+  }
   msg.textContent = S.intro;
 });
 </script>

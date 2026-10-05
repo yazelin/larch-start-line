@@ -11,11 +11,19 @@ FILES = {
     'walk-judge': ('art/walk/walk-judge.png', 'placeholder/walk-judge.png'),
     'walk-mate': ('art/walk/walk-mate.png', 'placeholder/walk-mate.png'),
     'walk-runner': ('art/walk/walk-runner.png', 'placeholder/walk-runner.png'),
+    'cg-gaze': ('art/cg/cg-gaze.webp', None), 'cg-finish': ('art/cg/cg-finish.webp', None),
+    'cg-vending': ('art/cg/cg-vending.webp', None), 'cg-seawall': ('art/cg/cg-seawall.webp', None),
+    'cg-kitchen': ('art/cg/cg-kitchen.webp', None), 'style': ('art/anchors/style-b.webp', None),
+    'start-pov': ('art/cards/start-pov.webp', None), 'pace-eyes': ('art/cards/pace-eyes.webp', None),
+    'coin-bg': ('art/cards/coin-bg.webp', None),
+    'p-cheng': ('art/portraits/cheng-hs-calm.png', None), 'p-lin': ('art/portraits/lin-hs-calm.png', None),
 }
 
 
 def paths():
     out = {}
     for k, (real, ph) in FILES.items():
-        out[k] = '/files/assets/' + (real if (ROOT / 'assets' / real).exists() else ph)
+        if (ROOT / 'assets' / real).exists(): out[k] = '/files/assets/' + real
+        elif ph: out[k] = '/files/assets/' + ph
+        else: out[k] = ''   # 沒有暫代圖的（CG、卡片背景）缺圖就不放
     return out

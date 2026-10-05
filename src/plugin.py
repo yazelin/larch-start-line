@@ -52,6 +52,12 @@ HUD = {'id': 'heart', 'title': '心跳', 'anchor': 'top-right', 'width': 132, 'h
        'interactive': False, 'readVariables': ['bpm']}
 
 
+def card_art(card_id, a):
+    """每張卡從美術路徑表取哪些圖（缺圖就不帶）。"""
+    want = {'start-gun': {'bg': 'start-pov'}, 'pace': {'eyesImg': 'pace-eyes'}, 'coin-drop': {'bg': 'coin-bg', 'him': 'walk-cheng'}}
+    return {k: a[v] for k, v in want.get(card_id, {}).items() if a.get(v)}
+
+
 def html(card_id):
     src = (HERE / f'{card_id}.html').read_text()
     return src.replace('<script src="common.js"></script>', '<script>' + (HERE / 'common.js').read_text() + '</script>')
@@ -104,7 +110,8 @@ def test_project(card_id):
         if v['name'] in TEST_PRESET.get(card_id, {}): v['defaultValue'] = TEST_PRESET[card_id][v['name']]
     p['settings']['plugins'][PLUGIN_ID] = settings_entry()
     b['nodes'].append(cards.dialogue('t-start', '測試開始', ['測試：' + card_id], start=True))
-    b['nodes'].append(card_node(card_id, 't-card'))
+    import art
+    b['nodes'].append(card_node(card_id, 't-card', card_art(card_id, art.paths())))
     shown = ' '.join(f'{k}={{{{{k}}}}}' for k in CARDS[card_id]['write'])
     b['nodes'].append(cards.dialogue('t-result', '結果', ['RESULT ' + shown]))
     cards.link(b, 't-start', 't-card'); cards.link(b, 't-card', 't-result')
@@ -112,9 +119,11 @@ def test_project(card_id):
 
 
 if __name__ == '__main__':
+    import build
     if sys.argv[1:2] == ['--test']:
         cid = sys.argv[2]
         out = ROOT / f'dist/test-{cid}.json'
         out.parent.mkdir(exist_ok=True)
         out.write_text(json.dumps(test_project(cid), ensure_ascii=False))
+        build.mirror_assets(out.parent / 'assets')
         print('wrote', out)
