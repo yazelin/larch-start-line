@@ -109,3 +109,8 @@
 :root[data-skin="cheng"] .btn.ghost{background:var(--ink);color:var(--paper)}
 :root[data-skin="cheng"] .btn[aria-disabled="true"]{background:color-mix(in srgb,var(--ink) 12%,var(--paper));color:var(--ink-2)}
 :root[data-skin="lin"] .btn[aria-disabled="true"]{background:color-mix(in srgb,var(--track) 18%,var(--card));color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* 首屏引句：兩人各一句（都取自原文），跟著主題換 */
+.for-lin{display:none}
+html[data-skin="lin"] .for-cheng{display:none}
+html[data-skin="lin"] .for-lin{display:inline}
