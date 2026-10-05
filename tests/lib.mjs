@@ -36,7 +36,12 @@ export async function open(base, { mobile = false } = {}) {
     throw new Error('找不到可點的「' + s + '」');
   };
   const frameWith = async (sel) => { for (const f of page.frames()) if (await f.locator(sel).count()) return f; return null; };
-  return { browser, page, errors, text, waitText, clickText, frameWith, close: () => browser.close() };
+  // 前進一步：畫面上有對話卡的對話框就點它，否則按 Enter（RPG 地圖上的對話）
+  const advance = async () => {
+    for (const f of page.frames()) { const b = f.locator('.vn2-box'); if (await b.count() && await b.first().isVisible()) { await b.first().click(); return; } }
+    await page.keyboard.press('Enter');
+  };
+  return { advance, browser, page, errors, text, waitText, clickText, frameWith, close: () => browser.close() };
 }
 
 export function assert(cond, msg) { if (!cond) throw new Error('FAIL: ' + msg); console.log('ok  ', msg); }

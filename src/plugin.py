@@ -44,6 +44,8 @@ CARDS = {
     'drafts': {'name': '三次草稿', 'read': [], 'write': ['drafted'], 'presentation': 'fullscreen'},
     'coin-drop': {'name': '零錢', 'read': ['bpm', 'coin_tries'], 'write': ['bpm', 'coin_ok', 'coin_tries'], 'presentation': 'fullscreen'},
 }
+# 卡片在白板上的節點 id（地圖 jump 用）
+NODE = {'start-gun': 'c-start', 'pace': 'c-pace', 'notebook': 'c-notebook', 'drafts': 'c-drafts', 'coin-drop': 'c-coin'}
 # 單卡測試時的變數初始值（模擬走到這張卡之前的狀態）
 TEST_PRESET = {'notebook': {'clue_order': True, 'clue_mate': True, 'clue_walk': True}}
 HUD = {'id': 'heart', 'title': '心跳', 'anchor': 'top-right', 'width': 132, 'height': 44, 'offsetX': 16, 'offsetY': 16,

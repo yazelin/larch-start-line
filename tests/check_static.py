@@ -50,6 +50,96 @@ def plugin_variable_gate():
         assert not unknown, f'{cid}: 變數表沒有 {unknown}'
     assert set(plugin.HUD['readVariables']) <= set(variables.VARS)
 
+def _maps():
+    import build
+    p = build.build()
+    out = []
+    for n in p['boards'][0]['nodes']:
+        if n['data'].get('pluginCardId') == 'map':
+            out.append((n, json.loads(n['data']['pluginValues']['map'])))
+    return p, out
+
+def _walls(m):
+    W = m['width']; cells = set()
+    for L in m['layers']:
+        if L.get('collision'):
+            cells |= {(i % W, i // W) for i, t in enumerate(L['tiles']) if t}
+    return cells
+
+def _event_conds(e):
+    yield from e.get('conditions', [])
+    for pg in e.get('pages', []): yield from pg.get('conditions', [])
+
+def _all_actions(e):
+    def walk(acts):
+        for a in acts:
+            yield a
+            for o in (a.get('choice') or {}).get('options', []): yield from walk(o.get('actions', []))
+    yield from walk(e.get('actions', []))
+    for pg in e.get('pages', []): yield from walk(pg.get('actions', []))
+
+@test
+def maps_exist():
+    _, ms = _maps()
+    assert ms, '還沒有地圖卡'
+
+@test
+def map_events_wellformed():
+    _, ms = _maps()
+    for n, m in ms:
+        seen = {}
+        walls = _walls(m)
+        for e in m['events']:
+            assert e.get('sprite'), f"{n['id']}/{e['id']} 沒有 sprite"
+            c = (e['x'], e['y'])
+            if e.get('environment') is None and m.get('environment'):
+                env = m['environment']
+                for k in ('intensity', 'darkness', 'shake'): assert k in env, f"{n['id']} environment 少了 {k}"
+                assert isinstance(m['picture']['url'], str) and m['picture']['url'].startswith(('/', 'https://')), f"{n['id']} 底圖網址要 / 或 https 開頭"
+            assert c not in seen, f"{n['id']}: {e['id']} 跟 {seen.get(c)} 同格 {c}"
+            seen[c] = e['id']
+            assert c not in walls, f"{n['id']}/{e['id']} 在牆上 {c}"
+            assert 0 <= e['x'] < m['width'] and 0 <= e['y'] < m['height'], f"{e['id']} 出界"
+            for a in _all_actions(e):
+                sp = a.get('speaker')
+                if a['kind'] == 'dialogue' and sp not in (None, '', 'player', 'narrator') and not re.match(r'(party|event):', sp):
+                    raise AssertionError(f"{e['id']} 對話說話者 {sp!r} 不合法（只能 ''/player/narrator/party:id/event:id）")
+                if a['kind'] == 'screen': assert isinstance(a.get('screen'), dict), f"{e['id']} screen 參數沒包在 screen:{{}}"
+        assert isinstance(m.get('guidance'), list), f"{n['id']} guidance 不能是 null"
+        ids = {e['id'] for e in m['events']}
+        for g in m['guidance']:
+            assert g['eventId'] in ids, f"{n['id']} 任務提示指向不存在的事件 {g['eventId']}"
+
+@test
+def map_events_reachable():
+    _, ms = _maps()
+    for n, m in ms:
+        walls = _walls(m); W, H = m['width'], m['height']
+        hero = next(e for e in m['events'] if e['actor'] == 'player')
+        seen, q = {(hero['x'], hero['y'])}, [(hero['x'], hero['y'])]
+        while q:
+            x, y = q.pop()
+            for nx, ny in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+                if 0 <= nx < W and 0 <= ny < H and (nx, ny) not in walls and (nx, ny) not in seen:
+                    seen.add((nx, ny)); q.append((nx, ny))
+        for e in m['events']:
+            if e['sprite'].get('url') == '' and e['trigger'] in ('auto', 'condition', 'parallel'): continue
+            near = {(e['x'], e['y']), (e['x']+1, e['y']), (e['x']-1, e['y']), (e['x'], e['y']+1), (e['x'], e['y']-1)}
+            assert near & seen, f"{n['id']}/{e['id']} 從起點走不到 ({e['x']},{e['y']})"
+
+@test
+def map_variable_gate():
+    import variables
+    _, ms = _maps()
+    for n, m in ms:
+        used = set()
+        for e in m['events']:
+            used |= {c['variable'] for c in _event_conds(e) if c.get('kind') == 'variable'}
+            used |= {a['variable'] for a in _all_actions(e) if a['kind'] == 'variable'}
+        reads, writes = set(n['data']['pluginReadVars']), set(n['data']['pluginWriteVars'])
+        assert used <= reads and used <= writes, f"{n['id']} 讀寫名單漏了 {sorted(used - (reads & writes))}"
+        assert used <= set(variables.VARS), f"{n['id']} 變數表沒有 {sorted(used - set(variables.VARS))}"
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

@@ -1,6 +1,7 @@
 """組出 dist/project.json：骨架＋劇情卡＋地圖＋插件。"""
 import json, pathlib
-import cards, text
+import os, cards, text, variables, plugin, art, mapkit
+import map_stadium
 from text import para, new
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PROJECT_ID = 'project-c0f31c1f-2b06-44d8-a62e-374bff81fd60'
@@ -15,8 +16,28 @@ def build():
     board = p['boards'][0]
     board['nodes'], board['edges'] = [], []
     p['nodes'], p['edges'] = board['nodes'], board['edges']  # 頂層是目前白板的複本
+    p['variables'] = variables.project_variables()
+    p['settings']['plugins'][plugin.PLUGIN_ID] = plugin.settings_entry()
+    a = art.paths()
+    p['settings']['plugins']['larch-rpg-system']['settings']['database'] = json.dumps(rpg_database(a), ensure_ascii=False)
     story_cards(board)
+    N = board['nodes'].append
+    for cid in ('start-gun', 'pace', 'drafts'):
+        N(plugin.card_node(cid, plugin.NODE[cid]))
+    N(map_stadium.build_stadium(a))
+    L = lambda x, y: cards.link(board, x, y)
+    L(PROLOGUE, map_stadium.MAP_ID)
+    L(plugin.NODE['start-gun'], plugin.NODE['pace']); L(plugin.NODE['pace'], map_stadium.MAP_ID)
+    L(MID, plugin.NODE['drafts']); L(plugin.NODE['drafts'], SEAWALL)
     return p
+
+
+def rpg_database(a):
+    def actor(id, name, walk):
+        return {'id': id, 'name': name, 'title': '', 'profile': '', 'role': 'party', 'walk': mapkit.walker(a[walk]),
+                'portrait': '', 'kit': 'none', 'rig': '', 'joinVariable': ''}
+    return {'version': 1, 'heroId': 'chengche', 'leadSwitch': False,
+            'actors': [actor('chengche', '程徹', 'walk-cheng'), actor('xiangwan', '林向晚', 'walk-lin')]}
 
 
 # 卡片 id：地圖事件與插件共用，只在這裡定義
@@ -39,7 +60,18 @@ def main():
     out = ROOT / 'dist/project.json'
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps(p, ensure_ascii=False))
+    mirror_assets(out.parent / 'assets')
     print('wrote', out, len(p['boards'][0]['nodes']), 'nodes')
+
+
+def mirror_assets(dst):
+    """serve.py 只提供 JSON 所在資料夾裡的真實檔案（符號連結會被擋），所以用硬連結鏡像一份 assets。"""
+    import shutil
+    def link(src, d):
+        try: os.link(src, d)
+        except OSError: shutil.copy2(src, d)
+    shutil.rmtree(dst, ignore_errors=True)
+    shutil.copytree(ROOT / 'assets', dst, copy_function=link)
 
 
 if __name__ == '__main__':

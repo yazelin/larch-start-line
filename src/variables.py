@@ -15,8 +15,13 @@ VARS = {
     'coin_ok': ('boolean', False, '零錢時機'),
     'coin_tries': ('number', 0, '零錢次數'),
     'ending': ('string', '', '結局'),
+    'gaze_seen': ('boolean', False, '看過四目相對'),
 }
+# RPG 系統自己要的變數（id 與名字照官方範例，地圖設定指向它們）
+RPG_VARS = [('hp', 'rpgHp', 'number', 100), ('bag', 'inventory', 'string', '[]'), ('equipment', 'rpgEquipment', 'string', '{}'),
+            ('state', 'rpgState', 'string', ''), ('used', 'inventoryLastUsed', 'string', ''), ('count', 'inventoryCount', 'number', 0)]
 
 
 def project_variables():
-    return [{'id': k, 'name': k, 'label': lab, 'type': t, 'defaultValue': d} for k, (t, d, lab) in VARS.items()]
+    return ([{'id': k, 'name': k, 'label': lab, 'type': t, 'defaultValue': d} for k, (t, d, lab) in VARS.items()]
+            + [{'id': i, 'name': n, 'label': n, 'type': t, 'defaultValue': d} for i, n, t, d in RPG_VARS])
