@@ -53,7 +53,7 @@ larch-start-line/
   src/plugin.py            把 HTML 內嵌 common.js、產生插件節點與 settings.plugins
   src/build.py             組出 dist/project.json
   src/push.py              推到 Larch（快照→推→讀回比對）
-  assets/                  圖（先放暫代圖，Task 11 換正式）
+  assets/                  圖（先放暫代圖，Task 10 換正式）
   tests/check_static.py    靜態檢查：變數閘門、事件格式、原文一致
   tests/cards.mjs          逐張插件卡自動測試
   tests/play_all.mjs       全路徑自動走一遍
