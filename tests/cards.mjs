@@ -120,5 +120,8 @@ const expect = {
   'coin-drop': v => { assert(v.coin_ok === 'true', 'coin-drop：coin_ok=true'); assert(v.coin_tries === '11', 'coin-drop：coin_tries=11（' + v.coin_tries + '）'); },
 };
 
-const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(CARDS);
-for (const id of ids) { const { vals } = await card(id, CARDS[id]); expect[id](vals); }
+export { waitMsg, tap, tapUntil };
+if (process.argv[1].endsWith('cards.mjs')) {
+  const ids = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(CARDS);
+  for (const id of ids) { const { vals } = await card(id, CARDS[id]); expect[id](vals); }
+}

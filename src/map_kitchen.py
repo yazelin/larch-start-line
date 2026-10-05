@@ -26,8 +26,8 @@ def build_kitchen(art):
         ev('k-intro', 10, 7, trigger='auto', once=True,
            actions=[A('hero', value='chengche'), setv('phase', 'kitchen'), setv('bpm', 80)]),
         npc('lin-k', *LIN, walker(art['walk-lin']), direction='up'),
-        ev('hug', *HUG, trigger='touch', once=True,
-           actions=[setv('bpm', 72), card('kitchen'), item('key', '備用鑰匙'), say(new('備用鑰匙說明')), jump('fin')]),
+        ev('hug', *HUG, trigger='touch', conditions=[cond('phase', 'kitchen')],
+           actions=[setv('phase', 'proposal'), setv('bpm', 72), card('kitchen'), item('key', '備用鑰匙'), say(new('備用鑰匙說明')), jump('fin')]),
     ]
     guidance = [{'text': '走到她身後', 'eventId': 'hug', 'conditions': [cond('phase', 'kitchen')]}]
     env = {'weather': 'rain', 'intensity': 0.35, 'darkness': 0.45, 'shake': 0, 'fog': {'density': 0.25, 'color': '#dfe6ee'},
