@@ -1,23 +1,53 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#f3ece2;color:#2b2522}
-#scene{position:absolute;inset:0;background:linear-gradient(#e9dfd2 0 35%,#c8584a 35%);background-size:cover;background-position:center}
-#track{position:absolute;left:0;right:0;top:66%;height:10vh;background:rgba(255,250,242,.35);border-top:2px solid #fffaf2;border-bottom:2px solid #fffaf2}
-#ring{position:absolute;left:18%;top:71%;width:9vh;height:9vh;translate:-50% -50%;border:4px solid #fffaf2;border-radius:50%;transition:scale .1s}
-.dot{position:absolute;top:71%;width:4vh;height:4vh;translate:-50% -50%;border-radius:50%;background:#fffaf2;box-shadow:0 0 8px rgba(255,255,255,.8)}
-#eyes{position:absolute;inset:0;display:grid;place-items:start center;padding-top:6vh;box-sizing:border-box;opacity:0;transition:opacity .6s;pointer-events:none;background:rgba(243,236,226,.55)}
+/* --ground-top：跑道圖第一條白線在圖高 30% 處，放在 58.6% 讓白線正好落在節拍線 --lane（71%）上 */
+:root{--lane:71%;--paper:#fbf6ee;--ink:#3a2f2a;--ground-top:58.6%}
+html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto Sans TC",serif;background:#f3ece2;color:var(--ink)}
+/* 畫面：天空（上）、遠景（中）、跑道（下）；跑道與遠景以不同速度往左捲 */
+#scene{position:absolute;inset:0;transition:filter .8s}
+#sky,#far,#ground{position:absolute;left:0;right:0;background-repeat:repeat-x;background-size:auto 100%}
+#sky{top:0;height:60%;background-color:#cfe0ec;background-image:linear-gradient(#a9c7e0,#e8eef0)}
+#far{top:29%;height:31%;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)}
+#ground{top:var(--ground-top);bottom:0;background-color:#c8584a;background-image:linear-gradient(#d26a58,#b9493d)}
+#ground::before{content:"";position:absolute;inset:0 0 auto;height:4vh;background:linear-gradient(rgba(251,246,238,.55),transparent)}
+#paper{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(120,84,60,.18))}
+/* 節拍線：沿跑道白線的一條淡淡光帶 */
+#track{position:absolute;left:0;right:0;top:calc(var(--lane) - 5vh);height:10vh;background:linear-gradient(90deg,rgba(255,250,242,.3),rgba(255,250,242,.08) 70%,transparent);pointer-events:none;
+  -webkit-mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(transparent,#000 35%,#000 65%,transparent)}
+#ring{position:absolute;left:18%;top:var(--lane);width:9vh;height:9vh;translate:-50% -50%;border-radius:50%;transition:scale .1s;
+  border:3px solid rgba(255,250,242,.95);box-shadow:0 0 0 5px rgba(255,250,242,.28),0 0 18px 4px rgba(255,244,225,.55),inset 0 0 14px rgba(255,250,242,.5)}
+#ring::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1.5px dashed rgba(255,250,242,.7)}
+.dot{position:absolute;top:var(--lane);width:4vh;height:4vh;translate:-50% -50%;border-radius:50%;
+  background:radial-gradient(circle at 42% 40%,#fff 0 28%,rgba(255,250,240,.92) 46%,rgba(255,240,215,.45) 66%,transparent 72%);filter:drop-shadow(0 0 6px rgba(255,244,220,.9))}
+.splash{position:absolute;left:18%;top:var(--lane);width:9vh;height:9vh;translate:-50% -50%;border-radius:50%;border:2px solid rgba(255,250,242,.9);pointer-events:none;animation:splash .45s ease-out forwards}
+@keyframes splash{to{scale:1.9;opacity:0}}
+/* 她的眼神浮上來：畫面柔化 */
+body.soft #scene{filter:blur(2.5px) saturate(.75) brightness(1.06)}
+#eyes{position:absolute;inset:0;opacity:0;transition:opacity .6s;pointer-events:none;background:linear-gradient(rgba(251,246,238,.7),rgba(251,246,238,.35) 60%,rgba(251,246,238,.1))}
 #eyes.on{opacity:1}
-#eyes img{max-width:70vw;max-height:50vh;border-radius:12px}
-#eyes p{font-size:clamp(18px,3vh,30px);margin:0 8vw;text-align:center}
+#eyesBox{position:absolute;left:0;right:0;top:0;height:calc(var(--lane) - 7vh);box-sizing:border-box;padding:6vh 6vw 1vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6vh}
+#eyes img{display:block;max-width:min(70vw,100%);max-height:100%;min-height:0;flex:0 1 auto;object-fit:contain;border-radius:14px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 66% at 50% 48%,#000 52%,transparent 100%);mask-image:radial-gradient(ellipse 70% 66% at 50% 48%,#000 52%,transparent 100%)}
+#eyes p{flex:none;font-size:clamp(17px,2.8vh,28px);margin:0;text-align:center;line-height:1.5;color:var(--ink);text-shadow:0 0 8px var(--paper),0 0 3px var(--paper)}
 #tap{position:absolute;inset:0}
-#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.9);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
-#score{position:absolute;left:4vw;top:4vh;font:600 16px "Noto Sans TC",sans-serif;color:#fffaf2;text-shadow:0 1px 3px #0006}
-#hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+#panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.2vh 3.2vw;background:rgba(251,246,238,.92);border-radius:14px;
+  box-shadow:0 2px 0 rgba(160,120,90,.12),0 6px 22px rgba(90,50,30,.18);font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
+#panel::before{content:"";position:absolute;inset:5px;border:1px solid rgba(178,58,58,.18);border-radius:10px;pointer-events:none}
+#score{position:absolute;left:4vw;top:4vh;min-width:2.6em;padding:.25em .7em;text-align:center;font:600 16px "Noto Sans TC",sans-serif;color:#9a3b30;
+  background:rgba(251,246,238,.85);border-radius:999px;box-shadow:0 2px 10px rgba(90,50,30,.15)}
+#score:empty{display:none}
+#hint{position:absolute;right:6vw;bottom:1.4vh;font-size:13px;color:#fbf6ee;text-shadow:0 1px 3px rgba(80,30,20,.6);pointer-events:none}
+@media (orientation:portrait){
+  #score{top:auto;bottom:calc(100% - var(--lane) + 7vh);left:5vw}
+  #eyesBox{padding-top:max(6vh,84px)}
+  #ring{width:8vh;height:8vh}
+}
 </style></head>
 <body data-phase="intro" data-onbeat="0">
-<div id="scene"></div><div id="track"></div><div id="ring"></div><div id="dots"></div>
-<div id="eyes"><p id="eyesText"></p></div>
+<div id="scene"><div id="sky"></div><div id="far"></div><div id="ground"></div><div id="paper"></div></div>
+<div id="track"></div><div id="ring"></div><div id="dots"></div>
+<div id="eyes"><div id="eyesBox"><p id="eyesText"></p></div></div>
 <div id="score"></div>
 <div id="tap"></div>
 <div id="panel"><span id="msg"></span></div>
@@ -26,7 +56,9 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 <script>
 var S = {}, t0 = 0, beats = [], hits = 0, sprint = 0, raf = 0, phase = 'intro';
 var msg = document.getElementById('msg'), dots = document.getElementById('dots'), eyes = document.getElementById('eyes'), ring = document.getElementById('ring');
+var sky = document.getElementById('sky'), far = document.getElementById('far'), ground = document.getElementById('ground');
 var SPEED = 0.06; /* 每毫秒移動的 vw */
+var scroll = 0, lastT = 0;   /* 跑道捲動的距離（vw），跟節拍點同速，像腳下的地面往後退 */
 function setPhase(p) { phase = p; document.body.dataset.phase = p; }
 function plan() {
   /* 預先排好每一拍的時間：平常 650ms 一拍，她浮上來的那兩段亂掉 */
@@ -37,11 +69,21 @@ function plan() {
     beats.push({ t: t, hit: false });
   }
 }
+function parallax(now) {
+  var dt = Math.min(now - lastT, 100); lastT = now;
+  scroll += dt * SPEED * (phase === 'sprint' ? 1.5 : 1);
+  var vw = innerWidth / 100;
+  ground.style.backgroundPositionX = (-scroll * vw) + 'px';
+  far.style.backgroundPositionX = (-scroll * vw * 0.05) + 'px';   // 遠景放慢：整場只移動約大半個畫面，看台不會一直重複
+  sky.style.backgroundPositionX = (-scroll * vw * 0.04) + 'px';
+}
 function tick() {
   var now = performance.now() - t0, f = now / S.duration;
-  eyes.classList.toggle('on', (f > .33 && f < .45) || (f > .58 && f < .70));
+  var soft = (f > .33 && f < .45) || (f > .58 && f < .70);
+  eyes.classList.toggle('on', soft); document.body.classList.toggle('soft', soft);
   if (f > .85 && phase === 'run') { setPhase('sprint'); msg.textContent = S.sprintText; }
   if (f >= 1) { finish(); return; }
+  parallax(now);
   dots.innerHTML = '';
   var near = Infinity;
   beats.forEach(function (b) {
@@ -55,26 +97,31 @@ function tick() {
   raf = requestAnimationFrame(tick);
 }
 function finish() {
-  cancelAnimationFrame(raf); setPhase('end'); dots.innerHTML = ''; eyes.classList.remove('on');
+  cancelAnimationFrame(raf); setPhase('end'); dots.innerHTML = ''; eyes.classList.remove('on'); document.body.classList.remove('soft');
   document.body.dataset.onbeat = '0';
   msg.textContent = (hits >= beats.length * 0.6) ? S.endGood : S.endMessy;
 }
+function splash() {
+  var s = document.createElement('div'); s.className = 'splash'; document.body.insertBefore(s, dots);
+  setTimeout(function () { s.remove(); }, 500);
+}
 L.press(function () {
-  if (phase === 'intro') { setPhase('run'); msg.textContent = S.intro; t0 = performance.now(); raf = requestAnimationFrame(tick); return; }
+  if (phase === 'intro') { setPhase('run'); msg.textContent = S.intro; t0 = performance.now(); lastT = 0; raf = requestAnimationFrame(tick); return; }
   if (phase === 'run') {
     var now = performance.now() - t0, best = null;
     beats.forEach(function (b) { if (!b.hit && Math.abs(b.t - now) < 130 && (!best || Math.abs(b.t - now) < Math.abs(best.t - now))) best = b; });
-    if (best) { best.hit = true; hits += 1; ring.style.scale = '1.25'; setTimeout(function () { ring.style.scale = '1'; }, 100); }
+    if (best) { best.hit = true; hits += 1; ring.style.scale = '1.25'; splash(); setTimeout(function () { ring.style.scale = '1'; }, 100); }
     return;
   }
   if (phase === 'sprint') { sprint = Math.min(sprint + 1, 15); return; }
   if (phase === 'end') { setPhase('done'); L.set('pace_score', hits + sprint); L.set('bpm', 170); L.done(); }
 });
+function bg(el, url) { if (url) el.style.backgroundImage = 'url("' + url + '")'; }
 L.onInit(function (values) {
   S = L.script(); S.duration = S.duration || 22000;
   document.getElementById('eyesText').textContent = S.eyes || '';
-  if (values.eyesImg) { var im = document.createElement('img'); im.src = values.eyesImg; im.alt = ''; eyes.prepend(im); }
-  if (values.bg) document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")';
+  if (values.eyesImg) { var im = document.createElement('img'); im.src = values.eyesImg; im.alt = ''; document.getElementById('eyesBox').prepend(im); }
+  bg(sky, values.skyImg); bg(far, values.farImg); bg(ground, values.trackImg);
   msg.textContent = S.intro; plan();
 });
 </script>

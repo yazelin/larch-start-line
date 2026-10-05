@@ -403,3 +403,41 @@ Image 1 is the character reference for Lin Xiangwan (林向晚) as an adult woma
 ```
 Image 1 is the character reference for Cheng Che (程徹) as an adult man around 24, at home on a winter day: short slightly messy black hair, a loose charcoal-gray knit crew-neck sweater with a white t-shirt collar showing at the neck, dark gray sweatpants, plain dark gray socks and simple dark gray indoor slippers. Image 2 is the walking sprite sheet of the same Cheng Che as a high school student; use it ONLY as the template for the sheet layout, chibi proportions, size and painting style, and do NOT copy its navy running uniform or race bib. Draw adult Cheng Che in his winter home clothes from image 1 as a walking sprite sheet, keeping his hair, outfit and colors identical in all 12 figures. Layout (very important): a sprite reference sheet arranged as an exact grid of 3 columns and 4 rows, 12 small full-body figures total, all the same character, same size, evenly spaced, each figure centered in its own equal cell with generous green space around it, figures do not overlap or touch each other or the image edges, no grid lines, no borders, no labels. Row 1 (top): character facing toward the viewer (front view, walking down). Row 2: character facing the viewer's LEFT (side profile, nose pointing to the left edge of the image, walking left). Row 3: character facing the viewer's RIGHT (side profile, nose pointing to the right edge, walking right). Row 4 (bottom): character seen from behind (back view, walking away, face not visible). In every row: left cell = walking step with one leg forward, middle cell = neutral standing pose with both feet together, right cell = walking step with the other leg forward; the arms swing opposite to the legs. Character style: cute super-deformed chibi, EXACTLY 2 heads tall (very big round head, short stubby body and short legs), the exact same chibi proportions, head size, outline weight and soft watercolor coloring as the sprites in image 2, with a clear, clean dark outline so it reads at tiny size, simple shapes, full body from head to feet, all feet at the same baseline within each row. Background: one single flat uniform pure chroma green color (#00FF00) everywhere, no shadow under the feet, no floor, no texture, no gradient. No sportswear, no running singlet, no race bib, no numbers. No text, no letters, no logos, no watermark. Portrait orientation. Direction check (very important, previous attempts got this wrong): row 2 is the LEFT-walking row. Row 2 left cell, row 2 middle cell AND row 2 RIGHT cell all show him in left profile: face, nose, toes and the front of his body point toward the LEFT edge of the image, and his right ear is visible; the back of his head points to the right. The row 2 right cell must NOT turn around; it is the same left-facing walk with the other foot forward. Row 3 is the exact horizontal mirror image of row 2: all three figures face the RIGHT edge. Keep the same calm gentle closed-mouth smile in every front-view figure.
 ```
+
+## cards/pace-sky.webp
+
+- 參考圖：image 1 = style-b（只當畫風參考）
+- 生成 1 次，第 1 張採用（服務回 2048x768）。後製：右端 15% 跟左端交叉淡化成水平無縫，縮成 webp q85。
+- 提示詞：
+
+```
+The attached image is ONLY a painting style reference: copy its soft transparent watercolor technique, paper texture, gentle light and palette, but do NOT copy its composition, track, trees, buildings or stand.
+Paint a wide panoramic strip of sky only: a clear soft pale-blue afternoon sky with a few gentle white and cream cumulus clouds drifting across, light watercolor washes with soft blooms and visible paper grain, slightly warmer and paler toward the bottom edge, deeper blue toward the top. Clouds spread evenly across the whole width, none cut in half at the left or right edge, so the strip can be tiled horizontally. Nothing but sky and clouds: no ground, no horizon, no trees, no buildings, no birds, no sun disk, no people. No text, no letters, no numbers, no logos, no signature, no watermark. Wide landscape.
+```
+
+## cards/pace-track.webp（第 1 次，未採用）
+
+- 參考圖：style-b
+- 備註：畫成照片質感的細顆粒 PU，陰影塊狀，不像水彩。提示詞同下方基底，但寫的是 fine granular rubber texture 而不是水彩洗染。
+
+## cards/pace-track.webp
+
+- 參考圖：image 1 = style-b（只當畫風參考）
+- 生成第 2 次採用。後製：整張往紙色 (243,226,212) 混 10% 降一點彩度；右端 15% 交叉淡化成水平無縫。白線在圖高約 30% 與 68%，pace.html 的 --ground-top 依第一條線對齊節拍線。
+- 提示詞：
+
+```
+The attached image is ONLY a painting style reference: copy exactly how its running track is painted (loose transparent watercolor washes in brick red and coral, soft wet-in-wet blooms, visible cold-press paper grain, a few soft speckles, warm afternoon light), but do NOT copy its composition, perspective, trees, stand, buildings or sky.
+Paint a hand-painted watercolor illustration (NOT a photo, NOT photorealistic, no fine rubber granules) of a red running track surface, filling the ENTIRE frame edge to edge with track surface only: no sky, no horizon, no grass, no curb. Exactly two straight white painted lane lines, softly hand-painted with slightly uneven watercolor edges, run perfectly horizontally across the whole width of the image, parallel to each other, one at about 35% of the image height and one at about 72% of the image height, each the same thickness and straight from the left edge to the right edge. The brick-red surface is painted with gentle layered watercolor washes, slightly lighter and warmer near the top, deeper red near the bottom, with a few very soft pale sunlight patches spread evenly. Uniform along the horizontal direction so it can be tiled horizontally and scrolled left; nothing distinctive at the left or right edge. No people, no feet, no shoes, no shadows of people, no hurdles, no numbers painted on the track. No text, no letters, no logos, no signature, no watermark. Wide landscape.
+```
+
+## cards/pace-far.webp
+
+- 參考圖：image 1 = style-b（只當畫風參考）
+- 生成 1 次，第 1 張採用。後製：裁圖高 47%～87.5%（山頂上方留一點紙色給遮罩淡出、底部切在草地線），右端 15% 交叉淡化成水平無縫。上緣在 pace.html 用 mask 淡進天空。
+- 提示詞：
+
+```
+The attached image is ONLY a painting style reference: copy its soft watercolor technique, paper texture, warm afternoon light and palette, but do NOT copy its composition.
+Paint a long low horizontal band of distant scenery of a Taiwanese high school sports field, seen straight from the side: the lower half of the image is a continuous row of soft rounded green trees and, in places, a simple low concrete spectator stand with a pale fabric canopy roof, a low fence along the bottom; behind them, faint hazy blue-gray mountains roll along the horizon. Above the mountains the upper 45% of the image is plain empty very pale cream-white watercolor paper with almost no paint (no clouds), so it can fade into a sky placed above it. The very bottom edge is the base of the trees and fence, a soft pale green line, with nothing below. Even spread of elements along the whole width, so the band can be tiled horizontally. No people, no figures, no running track, no lamp posts in the foreground, no birds. No text, no letters, no numbers, no logos, no signs, no signature, no watermark. Wide landscape.
+```

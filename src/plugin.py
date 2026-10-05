@@ -24,13 +24,15 @@ def _script(card_id):
         return {'intro': new('配速開場'), 'sprintText': new('配速衝刺'), 'endGood': new('配速終點好'),
                 'endMessy': new('配速終點亂'), 'eyes': eyes}
     if card_id == 'notebook':
-        return {'title': new('筆記標題'), 'question': new('筆記題目'), 'answer': new('筆記答案'),
+        return {'title': new('筆記標題'), 'intro': new('筆記說明'), 'begin': '開始推算', 'question': new('筆記題目'), 'answer': new('筆記答案'),
                 'hint1': new('筆記提示一'), 'hint2': new('筆記提示二'), 'right': new('筆記答對'),
                 'submit': '就這個時間', 'next': '繼續',
                 'clues': [{'var': 'clue_order', 'text': new('線索秩序冊')}, {'var': 'clue_mate', 'text': new('線索隊友')},
                           {'var': 'clue_walk', 'text': new('線索步行')}]}
     if card_id == 'drafts':
-        return {'drafts': text.lines('草稿'), 'sendLabel': '送出', 'to': '林向晚'}
+        return {'drafts': text.lines('草稿'), 'sendLabel': '送出', 'to': '林向晚',
+                'history': text.lines('草稿前她傳的訊息'), 'historyTime': '下午6:12', 'sentTime': '下午9:47',
+                'clock': '21:47', 'dateLabel': '今天', 'readLabel': '已讀'}
     if card_id == 'coin-drop':
         return {'intro': new('零錢開場'), 'earlyText': new('零錢太早'), 'lateText': new('零錢太晚'), 'guide': new('零錢操作說明'), 'labels': text.lines('零錢時機標籤')}
     raise KeyError(card_id)
@@ -54,8 +56,14 @@ HUD = {'id': 'heart', 'title': '心跳', 'anchor': 'top-right', 'width': 132, 'h
 
 def card_art(card_id, a):
     """每張卡從美術路徑表取哪些圖（缺圖就不帶）。"""
-    want = {'start-gun': {'bg': 'start-pov'}, 'pace': {'eyesImg': 'pace-eyes'}, 'coin-drop': {'bg': 'coin-bg', 'himImg': 'p-cheng', 'linImg': 'p-lin', 'coinImg': 'coin'}}
-    return {k: a[v] for k, v in want.get(card_id, {}).items() if a.get(v)}
+    want = {'notebook': {'hwTitle': 'hw-title', 'hwQuestion': 'hw-question'}, 'start-gun': {'bg': 'start-pov'}, 'drafts': {'avatar': 'p-lin'}, 'pace': {'eyesImg': 'pace-eyes', 'skyImg': 'pace-sky', 'trackImg': 'pace-track', 'farImg': 'pace-far'}, 'coin-drop': {'bg': 'coin-bg', 'himImg': 'cheng-walk', 'linImg': 'lin-calm', 'linShyImg': 'lin-shy', 'linHappyImg': 'lin-happy', 'coinImg': 'coin'}}
+    out = {k: a[v] for k, v in want.get(card_id, {}).items() if a.get(v)}
+    if card_id == 'notebook':   # 手寫字圖（三條線索順序固定）與塗鴉貼紙，缺圖就退回文字
+        out['hwClues'] = ','.join(a.get(f'hw-clue{i}', '') for i in (1, 2, 3))
+        out['doodles'] = ','.join(sorted('/files/assets/art/cards/' + f.name for f in (ROOT / 'assets/art/cards').glob('doodle-*.webp')))
+    if card_id == 'drafts' and a.get('lin-avatar'):
+        out['avatar'] = a['lin-avatar']
+    return out
 
 
 def html(card_id):

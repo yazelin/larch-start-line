@@ -22,9 +22,9 @@ def say(t, speaker='narrator'):
     return A('dialogue', text=t, presentation='text', speaker=speaker)
 
 
-def card(card_id):
-    """把一張對話卡演在地圖上（卡片有 background 時鋪滿畫面）。"""
-    return A('dialogue', cardId=card_id, presentation='text')
+def card(card_id, presentation='text'):
+    """把一張對話卡演在地圖上（卡片有 background 時鋪滿畫面；portrait 會顯示卡上的立繪）。"""
+    return A('dialogue', cardId=card_id, presentation=presentation)
 
 
 def setv(name, value):
@@ -47,14 +47,14 @@ def jump(card_id, **kw):
     return A('jump', cardId=card_id, **kw)
 
 
-def move(route, who='player', face=None):
-    m = {'who': who, 'route': [{'dir': d, 'steps': n} for d, n in route], 'wait': True}
+def move(route, who='player', face=None, wait=True):
+    m = {'who': who, 'route': [{'dir': d, 'steps': n} for d, n in route], 'wait': wait}
     if face: m['face'] = face
     return A('move', move=m)
 
 
-def camera(x, y, hold=1500, back=True):
-    return A('camera', camera={'x': x, 'y': y, 'moveMs': 900, 'holdMs': hold, 'back': back})
+def camera(x, y, hold=1500, back=True, ms=900):
+    return A('camera', camera={'x': x, 'y': y, 'moveMs': ms, 'holdMs': hold, 'back': back})
 
 
 def balloon(icon, target='player', event_id=None, ms=1600):

@@ -35,6 +35,7 @@ async function waitMsg(f, re, ms = 10000) {
   while (Date.now() < end) { const t = await msg(f).catch(() => ''); if (re.test(t)) return t; await sleep(100); }
   throw new Error('卡片等不到 ' + re + '，現在是：' + await msg(f).catch(() => '?'));
 }
+const until0 = (f, st) => f.waitForFunction(x => document.body.dataset.state === x, st, { timeout: 15000 });
 const tap = f => f.locator('#tap').dispatchEvent('pointerdown');
 async function tapUntil(f, re, max = 30) { for (let i = 0; i < max; i++) { if (re.test(await msg(f))) return; await tap(f); await sleep(250); } throw new Error('點到底也沒看到 ' + re); }
 
@@ -86,6 +87,9 @@ export const CARDS = {
     await tap(f);
   },
   'notebook': async (ui, f) => {
+    assert(await f.locator('#intro').isVisible() && /三條線索/.test(await f.locator('#intro').innerText()), 'notebook：開頭先有說明頁');
+    await f.locator('#begin').click();
+    assert(!(await f.locator('#intro').isVisible()), 'notebook：按開始後才進入作答');
     assert(await f.locator('#clues li').count() === 3, 'notebook：三條線索都列出來');
     for (let i = 0; i < 5; i++) {
       await f.locator('#hh').fill('15'); await f.locator('#mm').fill(String(30 + i));
@@ -112,28 +116,43 @@ export const CARDS = {
     const g = await f.locator('#guide').boundingBox(); const vw = await f.evaluate(() => innerWidth);
     assert(/讓零錢掉下去/.test(await f.locator('#guide').innerText()) && Math.abs(g.x + g.width / 2 - vw / 2) < vw * 0.05, 'coin-drop：操作說明在畫面正中間');
     await tap(f);
+    await until0(f, 'wait'); await sleep(600);
+    const far = await f.evaluate(() => { const r = document.querySelector('#him img').getBoundingClientRect(); return { inView: r.left < innerWidth - r.width * 0.3, h: r.height, x: r.left, b: r.bottom }; });
+    assert(far.inView, 'coin-drop：「他快來了」時就看得到他（遠處）');
+    assert(/lin-calm/.test(await f.locator('#lin').getAttribute('data-face')), 'coin-drop：一開始她是冷靜的表情');
+    assert(await f.evaluate(() => getComputedStyle(document.getElementById('guide')).animationName) === 'breathe', 'coin-drop：太早那段說明框是呼吸燈');
     await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await sleep(800);
+    const near = await f.evaluate(() => { const r = document.querySelector('#him img').getBoundingClientRect(); return { x: r.left, b: r.bottom, h: r.height }; });
+    assert(near.x < far.x - 50 && Math.abs(near.b - far.b) < 30 && near.h > far.h && near.h < far.h * 1.25, 'coin-drop：他貼著地面從右邊走進來、微微變大，不是飄（x ' + Math.round(far.x) + '→' + Math.round(near.x) + '，腳 ' + Math.round(far.b) + '→' + Math.round(near.b) + '）');
     await ui.page.screenshot({ path: 'dist/shots/card-coin-window.png' });
     await f.waitForFunction(() => document.body.dataset.state === 'late', null, { timeout: 15000 }); await tap(f); await waitMsg(f, /走到面前/); await tap(f);
     const until = st => f.waitForFunction(x => document.body.dataset.state === x, st, { timeout: 15000 });
-    for (let i = 0; i < 5; i++) { await until('wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f); }
+    for (let i = 0; i < 5; i++) { await until('wait'); await tap(f); await waitMsg(f, /還在遠處/); await tap(f); }
     for (let i = 0; i < 5; i++) { await until('late'); await tap(f); await waitMsg(f, /走到面前/); await tap(f); }
     assert(true, 'coin-drop：太早、太晚各 5 次都能重來');
     await until('window'); await sleep(300);
     const inZone = await f.evaluate(() => { const m = document.getElementById('needle').getBoundingClientRect(), z = document.querySelector('#meter .ok').getBoundingClientRect(); const x = m.left + m.width / 2; return x >= z.left && x <= z.right; });
     assert(inZone, 'coin-drop：時機窗內指針在「剛好」那一段');
-    assert(/portraits/.test(await f.locator('#him img').getAttribute('src')), 'coin-drop：走進來的是程徹的立繪');
-    assert(/portraits/.test(await f.locator('#lin img').getAttribute('src')), 'coin-drop：販賣機旁站著林向晚的立繪');
+    assert(/cheng-walk/.test(await f.locator('#him img').getAttribute('src')), 'coin-drop：走進來的是程徹的全身走路圖（有腳）');
     await sleep(1200);
-    const vis = await f.evaluate(() => ['lin', 'him'].map(id => { const r = document.querySelector('#' + id + ' img').getBoundingClientRect(); return r.height > innerHeight * 0.45 && r.height < innerHeight && r.left < innerWidth - r.width * 0.4 && r.right > 0; }));   // 他至少四成身體入鏡
+    const vis = await f.evaluate(() => ['lin', 'him'].map(id => { const r = document.querySelector('#' + id + ' img').getBoundingClientRect(); return r.height > innerHeight * 0.3 && r.height < innerHeight && r.left < innerWidth - r.width * 0.4 && r.right > 0; }));   // 他至少四成身體入鏡
     assert(vis[0] && vis[1], 'coin-drop：兩人的立繪都看得見、大小正常（' + vis + '）');
+    const hs = await f.evaluate(() => ['lin', 'him'].map(id => document.querySelector('#' + id + ' img').getBoundingClientRect().height));
+    assert(hs[1] > hs[0] * 1.05 && hs[1] < hs[0] * 1.25, 'coin-drop：剛好那段他比她高一點（她 ' + Math.round(hs[0]) + '、他 ' + Math.round(hs[1]) + '）');
+    assert(/lin-shy/.test(await f.locator('#lin').getAttribute('data-face')), 'coin-drop：他走到剛好那段時她換成害羞的表情');
+    assert(await f.evaluate(() => getComputedStyle(document.getElementById('guide')).animationName) === 'thump', 'coin-drop：剛好那段說明框跟著心跳咚咚跳');
+    const feet = await f.evaluate(() => ['lin', 'him'].map(id => { const r = document.querySelector('#' + id + ' img').getBoundingClientRect(); return r.bottom <= innerHeight && r.height > innerHeight * 0.6; }));
+    const panelHidden = await f.evaluate(() => getComputedStyle(document.getElementById('panel')).opacity === '0');
+    assert(feet[0] && feet[1] && panelHidden, 'coin-drop：抓時機時對話框收起，兩人夠大、腳在畫面內（' + feet + ' 對話框收起=' + panelHidden + '）');
     await tap(f);
     await f.waitForFunction(() => document.body.dataset.state === 'ok', null, { timeout: 5000 });
     assert(await f.locator('.coin.drop').count() === 3, 'coin-drop：三枚零錢掉下去');
+    assert(/lin-happy/.test(await f.locator('#lin').getAttribute('data-face')), 'coin-drop：零錢掉下去後她換成開心的表情');
     assert(/coin\.webp/.test(await f.evaluate(() => getComputedStyle(document.querySelector('.coin')).backgroundImage)), 'coin-drop：零錢用畫好的硬幣圖');
+    const cx = await f.evaluate(() => { const r = document.querySelector('#him img').getBoundingClientRect(); return (r.left + r.right) / 2 / innerWidth; });
     await sleep(1600);
-    const above = await f.evaluate(() => { const p = document.getElementById('panel').getBoundingClientRect(); return [...document.querySelectorAll('.coin')].every(c => c.getBoundingClientRect().bottom <= p.top); });
-    assert(above, 'coin-drop：零錢落在對話框上方，看得到');
+    const above = await f.evaluate(() => [...document.querySelectorAll('.coin')].every(c => c.getBoundingClientRect().bottom <= innerHeight * 0.95));
+    assert(above, 'coin-drop：零錢落在畫面裡看得到');
     const xs = await f.evaluate(() => [...document.querySelectorAll('.coin')].map(c => Math.round(c.getBoundingClientRect().left)));
     assert(Math.max(...xs) - Math.min(...xs) > 40, 'coin-drop：三枚零錢落點分開（' + xs + '）');
     await ui.page.screenshot({ path: `dist/shots/card-coin-ok${process.env.MOBILE ? '-mobile' : ''}.png` });

@@ -2,3 +2,5 @@ dist/
 .superpowers/
 __pycache__/
 snapshots/
+assets/art/cards/walkin-src/
+assets/art/cards/coin-src/

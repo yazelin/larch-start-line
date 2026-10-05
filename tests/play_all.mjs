@@ -93,6 +93,7 @@ try {
   await ui.waitText(/程徹第一次見到林向晚/); await sleep(1500); await shot('01-gaze'); await drainUntil(/到八百公尺起跑線/);
   assert(await hud() === 120, '四目相對後心跳 120');
 
+  await goto(20, 23, GAZE); await sleep(800); await shot('01b-lines');
   await goto(24, 22, GAZE);
   let f = await cardFrame();
   await tapUntil(f, /各就位/); await tap(f); await sleep(300); await shot('02-start');
@@ -134,9 +135,10 @@ try {
   await interact(10, 13, [10, 14], 'ArrowUp'); await ui.waitText(/阿徹喔/);
   f = null;
   for (let i = 0; i < 20 && !(f = await ui.frameWith('#hh')); i++) { await ui.advance(); await sleep(700); }
-  assert(!!f, '三條線索齊了 → 筆記卡'); await shot('07-notebook');
+  assert(!!f, '三條線索齊了 → 筆記卡'); await shot('07-notebook'); await f.locator('#begin').click();
   await f.locator('#hh').fill('15'); await f.locator('#mm').fill('47'); await f.locator('#submit').click(); await waitMsg(f, /馬上去買水/);
   await f.locator('#mm').fill('44'); await f.locator('#submit').click(); await waitMsg(f, /算了你的時間/); await f.locator('#submit').click();
+  for (const t of [4000, 9000, 16000]) { await sleep(t === 4000 ? 4000 : t === 9000 ? 5000 : 7000); await shot('07c-race-' + t); }
   await drainUntil(/去體育館後門的販賣機/);
   assert(await hud() === 140, '看完他比賽，心跳 140');
 
@@ -151,14 +153,16 @@ try {
   await drainUntil(/讓零錢掉下去/); await ui.clickText('讓零錢掉下去');
   f = await cardFrame('#machine'); await sleep(3500); await shot('08-coin');
   await tapUntil(f, /他快來了/); await tap(f);
-  await f.waitForFunction(() => document.body.dataset.state === 'wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f);
+  await f.waitForFunction(() => document.body.dataset.state === 'wait'); await tap(f); await waitMsg(f, /還在遠處/); await tap(f);
   await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await tap(f);
   await ui.waitText(/那天我早就在看台後面/, 20000);
   assert(true, '零錢卡：太早一次，再成功');
-  await drainUntil(/走到她身後/); await sleep(1500); await shot('08b-kitchen-map');
+  await drainUntil(/把備用鑰匙掛到門邊/); await sleep(1500); await shot('08b-kitchen-map');
+  await interact(10, 6, [9, 6], 'ArrowRight');
+  await ui.waitText(/多了一副鑰匙/); await drainUntil(/把自己的門，交給另一個人/); await drainUntil(/走到她身後/);
+  assert(true, '廚房：把備用鑰匙掛到門邊，才能去她身後');
   await goto(6, 4);
   await ui.waitText(/幾年後的一個冬夜/); await sleep(1500); await shot('09-kitchen'); await drainUntil(/我們結婚吧/);
-  await drainUntil(/把自己的門，交給另一個人/);
   assert(await hud() === 72, '廚房：心跳平穩 72');
   await drainUntil(/起跑總在開始前　完|開始遊戲/);
   assert(true, '結局 A 走到底');

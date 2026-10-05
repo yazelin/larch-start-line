@@ -17,9 +17,16 @@ FILES = {
     'cg-vending': ('art/cg/cg-vending.webp', None), 'cg-seawall': ('art/cg/cg-seawall.webp', None),
     'cg-kitchen': ('art/cg/cg-kitchen.webp', None), 'style': ('art/anchors/style-b.webp', None),
     'start-pov': ('art/cards/start-pov.webp', None), 'pace-eyes': ('art/cards/pace-eyes.webp', None),
-    'coin-bg': ('art/cards/coin-bg.webp', None), 'coin': ('art/cards/coin.webp', None), 'cover': ('art/cover/cover.webp', None),
-    'p-cheng': ('art/portraits/cheng-hs-calm.webp', None),
-    'p-cheng-adult': ('art/portraits/cheng-adult-calm.webp', None), 'p-lin': ('art/portraits/lin-hs-calm.webp', None),
+    'pace-sky': ('art/cards/pace-sky.webp', None), 'pace-track': ('art/cards/pace-track.webp', None), 'pace-far': ('art/cards/pace-far.webp', None),
+    'coin-bg': ('art/cards/coin-bg.webp', None), 'coin': ('art/cards/coin.webp', None), 'cheng-walk': ('art/cards/cheng-walk.webp', None), 'lin-calm': ('art/cards/lin-calm.webp', None), 'lin-shy': ('art/cards/lin-shy.webp', None), 'lin-happy': ('art/cards/lin-happy.webp', None), 'cover': ('art/cover/cover.webp', None),
+    'p-cheng': ('art/portraits/cheng-hs-smile.webp', None),
+    'p-cheng-adult': ('art/portraits/cheng-adult-calm.webp', None), 'p-lin': ('art/portraits/lin-hs-smile.webp', None),
+    'p-lin-shy': ('art/portraits/lin-hs-shy.webp', 'art/portraits/lin-hs-smile.webp'),
+    'p-lin-flustered': ('art/portraits/lin-hs-flustered.webp', 'art/portraits/lin-hs-surprised.webp'),
+    'lin-avatar': ('art/cards/lin-avatar.webp', None),
+    'hw-title': ('art/cards/hw-title.webp', None), 'hw-clue1': ('art/cards/hw-clue1.webp', None), 'hw-clue2': ('art/cards/hw-clue2.webp', None),
+    'hw-clue3': ('art/cards/hw-clue3.webp', None), 'hw-question': ('art/cards/hw-question.webp', None),
+    'bgm-01': ('audio/bgm-01-title.mp3', None), 'bgm-02': ('audio/bgm-02-stadium.mp3', None), 'bgm-03': ('audio/bgm-03-race.mp3', None), 'bgm-04': ('audio/bgm-04-seawall.mp3', None), 'bgm-05': ('audio/bgm-05-her-side.mp3', None), 'bgm-06': ('audio/bgm-06-ending-a.mp3', None), 'bgm-07': ('audio/bgm-07-ending-b.mp3', None),
 }
 
 
@@ -27,6 +34,6 @@ def paths():
     out = {}
     for k, (real, ph) in FILES.items():
         if (ROOT / 'assets' / real).exists(): out[k] = '/files/assets/' + real
-        elif ph: out[k] = '/files/assets/' + ph
+        elif ph: out[k] = '/files/assets/' + (ph if ph.startswith('art/') else ph)
         else: out[k] = ''   # 沒有暫代圖的（CG、卡片背景）缺圖就不放
     return out

@@ -46,6 +46,9 @@ def walls():
 R1 = cond('round', 1)
 
 
+
+
+
 def lap(from_y):
     """沿跑道中間跑一圈回到終點（14,22）：左 x=4、上 y=7、右 x=34、下 y=21（對過水彩底圖的跑道中線）。
     回程走 y=21，不會踩到起跑線事件格（24,22）。"""
@@ -58,28 +61,30 @@ def round1_events(art):
         ev('hero', *HERO_START, actor='player', direction='up', sprite=walker(art['walk-cheng']), actorId='chengche'),
         ev('r1-intro', 1, 28, trigger='auto', once=True, conditions=[R1, cond('phase', '')],
            actions=[setv('bpm', 96), setv('phase', 'bib')]),
-        npc('clerk', *CLERK, walker(art['walk-judge']), name='檢錄員', conditions=[R1, cond('phase', 'bib')],
+        npc('clerk', *CLERK, walker(art['walk-judge']), name='檢錄員', marker={'label': '檢錄處', 'kind': 'talk'}, conditions=[R1, cond('phase', 'bib')],
             actions=[say(new('檢錄'), speaker=''), item('bib', '號碼布'), item('pin', '別針'), setv('phase', 'start')],
             pages=[page('clerk-after', [cond('phase', 'bib', 'neq')], [], actor='npc', sprite=walker(art['walk-judge']), solid=True)]),
-        npc('mate-r1', *MATE, walker(art['walk-mate']), name='隊友', conditions=[R1], actions=[say(new('隊友第一輪'), speaker='')]),
+        npc('mate-r1', *MATE, walker(art['walk-mate']), name='隊友', marker={'label': '隊友', 'kind': 'talk'}, conditions=[R1], actions=[say(new('隊友第一輪'), speaker='')]),
         npc('lin-finish', *LIN_FINISH, lin, conditions=[R1, cond('gaze_seen', False)], direction='down'),
-        npc('lin-stand', *STANDS_SEAT, lin, conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')]),
+        npc('lin-stand', *STANDS_SEAT, lin, conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')],
+            pages=[page('lin-watch', [cond('round', 2), cond('phase', 'race2b')], [], actor='npc', sprite=lin, solid=True, direction='down')]),
         npc('lin-vending', *LIN_VENDING, lin, conditions=[R1, cond('phase', 'vending')], direction='right'),
     ]
     for i, (x, y) in enumerate(GAZE):
-        ev_list.append(ev(f'gaze{i}', x, y, trigger='touch', conditions=[R1, cond('phase', 'start'), cond('gaze_seen', False)],
+        ev_list.append(ev(f'gaze{i}', x, y, trigger='touch', **({'marker': {'label': '終點線後方', 'kind': 'quest'}} if i == 1 else {}), conditions=[R1, cond('phase', 'start'), cond('gaze_seen', False)],
                           actions=[setv('gaze_seen', True), setv('bpm', 120), balloon('exclamation'), card('gaze')]))
     ev_list += [
-        ev('startline', *START_LINE, trigger='touch', conditions=[R1, cond('phase', 'bib')],
+        ev('startline', *START_LINE, trigger='touch', conditions=[R1, cond('phase', 'bib')], marker={'label': '八百公尺起跑', 'kind': 'quest'},
            actions=[say(new('先去檢錄')), move([('up', 1)])],
            pages=[page('startline-early', [R1, cond('phase', 'start'), cond('gaze_seen', False)],
                        [say(new('還沒點名')), move([('up', 1)])], trigger='touch'),
                   page('startline-go', [R1, cond('phase', 'start'), cond('gaze_seen', True)],
                        [jump(plugin.NODE['start-gun'])], trigger='touch')]),
+        ev('finish-label', *FINISH, marker={'label': '終點', 'kind': 'exit'}),
         ev('race-done', 2, 28, trigger='condition', conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')],
-           actions=[move(lap(START_LINE[1]), face='up'), camera(*STANDS_SEAT, hold=1800),
+           actions=[move(lap(START_LINE[1]), face='up'), camera(*STANDS_SEAT, hold=1800), balloon('heart', target='event', event_id='lin-stand', ms=2200),
                     card('r1-finish'), setv('bpm', 110), setv('phase', 'vending')]),
-        ev('coins', *COINS, conditions=[R1, cond('phase', 'vending')],
+        ev('coins', *COINS, conditions=[R1, cond('phase', 'vending')], marker={'label': '販賣機', 'kind': 'shop'},
            actions=[item('coin10', '十塊錢'), card('vending'), remove('coin10', '十塊錢'),
                     setv('phase', 'mid'), jump('mid')]),
     ]
@@ -92,6 +97,7 @@ CHE_WARM = (20, 7)
 CHE_RACE = (24, 21)
 LIN_R2_START = (14, 24)
 STAIR_XS = {10, 29}   # 看台樓梯口的 x
+STEADY = 14   # 配速分數到這裡算「跑得穩」（約一半節拍按中＋衝刺）
 ALL_CLUES = [cond('clue_order', True), cond('clue_mate', True), cond('clue_walk', True)]
 
 
@@ -104,28 +110,43 @@ def round2_events(art):
                     jump(MAP_ID, arrive={'x': LIN_R2_START[0], 'y': LIN_R2_START[1], 'direction': 'up'})]),
         # 中章、草稿、防波堤途中讀檔回到地圖：帶回中章，不要直接換人
         ev('replay-mid', 7, 28, trigger='auto', conditions=[R1, cond('phase', 'mid')], actions=[jump('mid')]),
+        # 第二輪換成她的音樂（地圖卡本身的音樂是第一輪的 BGM 2，每次進地圖都換掉）
+        ev('r2-music', 11, 28, trigger='auto', conditions=[R2],
+           actions=[A('music', audio={'url': art['bgm-05'], 'volume': 0.35, 'loop': True})]),
+        # 第二輪的小提示：樓梯口可以繞到看台後方
+        ev('stairs-hint-a', 10, 3, conditions=[R2, cond('phase', 'watch')], marker={'label': '往看台後方', 'kind': 'quest'}),
+        ev('stairs-hint-b', 29, 3, conditions=[R2, cond('phase', 'watch')], marker={'label': '往看台後方', 'kind': 'quest'}),
         npc('che-warm', *CHE_WARM, che, conditions=[R2, cond('calc_ok', False)], direction='right'),
-        ev('peek', *PEEK, trigger='touch', conditions=[R2, cond('phase', 'watch')],
-           actions=[say(new('偷看')), setv('bpm', 110), setv('phase', 'clue')]),
-        ev('board', *BOARD, conditions=[R2], actions=[say(new('線索秩序冊')), setv('clue_order', True)]),
+        ev('peek', *PEEK, trigger='touch', conditions=[R2, cond('phase', 'watch')], marker={'label': '偷看他熱身', 'kind': 'quest'},
+           actions=[balloon('heart', target='player', ms=2000), card('r2-peek', 'portrait'), setv('bpm', 110), setv('phase', 'clue')]),
+        ev('board', *BOARD, conditions=[R2], marker={'label': '秩序冊', 'kind': 'quest'}, actions=[say(new('線索秩序冊')), setv('clue_order', True)]),
         ev('clues-done', 4, 28, trigger='condition',
            conditions=[R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES,
            actions=[jump(plugin.NODE['notebook'])]),   # 跳卡前不改狀態：卡沒玩完就讀檔，販賣機那格還能重進
-        npc('che-race', *CHE_RACE, che, conditions=[R2, cond('phase', 'clue'), cond('calc_ok', True)], direction='left',
-            trigger='auto', once=True,
-            actions=[camera(19, 14, hold=600, back=False), move(lap(CHE_RACE[1]), who='self', face='up'),
-                     balloon('heart', target='player', ms=2200), say(new('看他比賽')), setv('bpm', 140), setv('phase', 'vending2')]),
+        # 看他比賽：鏡頭只跟主角，所以比賽時主角暫時換成程徹，從起跑線跑一圈（鏡頭自然跟拍），跑完換回她、回到看台
+        ev('race2-start', 8, 28, trigger='auto', conditions=[R2, cond('phase', 'clue'), cond('calc_ok', True)],
+           actions=[setv('phase', 'race2b'), A('hero', value='chengche'),   # 先切到 race2b：地圖重新載入時她已經在看台上（NPC 要等事件結束才會更新顯示）
+                    jump(MAP_ID, arrive={'x': CHE_RACE[0], 'y': CHE_RACE[1], 'direction': 'left'})]),
+        ev('race2-run', 9, 28, trigger='auto', conditions=[R2, cond('phase', 'race2b')],
+           actions=[wait(600), move(lap(CHE_RACE[1]), face='up'), wait(500),
+                    setv('phase', 'race2c'), A('hero', value='xiangwan'),   # 先換階段：重新載入地圖時看台上的 NPC 她已經不在，不會有兩個她
+                    jump(MAP_ID, arrive={'x': STANDS_SEAT[0], 'y': STANDS_SEAT[1] + 1, 'direction': 'down'})]),
+        ev('race2-after', 10, 28, trigger='auto', conditions=[R2, cond('phase', 'race2c')],
+           actions=[balloon('heart', target='player', ms=2200), card('r2-watch-distracted', 'portrait'), setv('bpm', 140), setv('phase', 'vending2')],
+           pages=[page('race2-after-steady', [R2, cond('phase', 'race2c'), cond('pace_score', STEADY, 'gte')],
+                       [balloon('heart', target='player', ms=2200), card('r2-watch-steady', 'portrait'), setv('bpm', 140), setv('phase', 'vending2')],
+                       trigger='auto')]),
         ev('ending-b-menu', 5, 28, trigger='condition', conditions=[R2, cond('ending', 'B')],
-           actions=[A('choice', text='', choice={'options': [
-               {'id': 'again', 'label': new('回到販賣機前'), 'actions': [setv('ending', '')]},
+           actions=[A('music', audio={'url': art['bgm-07'], 'volume': 0.35, 'loop': True}), A('choice', text='', choice={'options': [
+               {'id': 'again', 'label': new('回到販賣機前'), 'actions': [A('music', audio={'url': art['bgm-05'], 'volume': 0.35, 'loop': True}), setv('ending', '')]},
                {'id': 'stop', 'label': new('就到這裡'), 'actions': [jump('fin-b')]}]})]),
     ]
     # 走出看台的遮蔽（看台前那一排，樓梯口除外）就會被看到
     for x in range(6, 34):
         if x in STAIR_XS: continue
         out.append(ev(f'seen{x}', x, 5, trigger='touch', conditions=[R2, cond('phase', 'watch')],
-                      actions=[balloon('exclamation', target='event', event_id='che-warm'), setv('bpm', 150),
-                               say(new('差點被看到')), setv('bpm', 110),
+                      actions=[balloon('exclamation', target='event', event_id='che-warm'), balloon('sweat', target='player'), setv('bpm', 150),
+                               card('r2-caught', 'portrait'), setv('bpm', 110),
                                jump(MAP_ID, arrive={'x': LIN_R2_START[0], 'y': LIN_R2_START[1], 'direction': 'up'})]))  # 被看到就退回起點，不是送到目標
     return out
 
@@ -175,4 +196,4 @@ def build_stadium(art):
     env = {'weather': 'clear', 'intensity': 0, 'darkness': 0, 'shake': 0, 'lights': [],
            'ambience': {'particles': 'motes', 'density': 0.3, 'rays': 0.35, 'clouds': 0.3}}
     m = map_dict('市運會田徑場', W, H, art['stadium'], walls(), events, guidance, env)
-    return map_node(MAP_ID, '田徑場', m)
+    return map_node(MAP_ID, '田徑場', m, bgm=art.get('bgm-02', ''))

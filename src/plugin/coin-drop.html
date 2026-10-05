@@ -10,31 +10,45 @@ body.has-bg #machine,body.has-bg #corner{display:none}
 #panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.92);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
 #hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
 /* 立繪：正常比例、站在地面上（畫面下緣），他從右邊轉角走進來 */
-.actor{position:absolute;bottom:0;height:74vh;aspect-ratio:2/3;translate:-50% 0;pointer-events:none}
+.actor{position:absolute;bottom:0;height:74vh;aspect-ratio:2/3;translate:-50% 0;pointer-events:none;transform-origin:50% 100%}
 .actor img{height:100%;width:auto;display:block;margin:0 auto;filter:drop-shadow(0 6px 12px rgb(0 0 0/.18))}
-#lin{left:13vw}   /* 站在販賣機左邊，不擋住背景的販賣機 */
-#him{left:120vw}
-#him.walking img{animation:bob .55s ease-in-out infinite}
-@keyframes bob{50%{translate:0 -0.8vh}}
+#lin{left:15vw;bottom:3vh;height:70vh}   /* 全身站姿，站在販賣機左邊，不擋住背景的販賣機 */
+#him{left:100vw;bottom:3vh;height:70vh}   /* 全身走路圖（有腳），跟她同一個比例尺；scale 決定遠近 */
+#him.walking img{animation:step .6s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes step{0%,100%{translate:0 0;rotate:-1.2deg}25%{translate:0 -1.1vh}50%{translate:0 0;rotate:1.2deg}75%{translate:0 -1.1vh}}
 /* 零錢：從她手的位置掉下去，彈兩下滾向他 */
-.coin{position:absolute;left:21vw;bottom:34vh;width:5vh;height:5vh;background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c0,#d8b64a 55%,#9c7f22);box-shadow:0 1px 2px rgb(0 0 0/.35);opacity:0;pointer-events:none}
+.coin{position:absolute;left:17vw;bottom:42vh;width:5vh;height:5vh;background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c0,#d8b64a 55%,#9c7f22);box-shadow:0 1px 2px rgb(0 0 0/.35);opacity:0;pointer-events:none}
 .coin.drop{opacity:1;animation:fall 1.25s cubic-bezier(.35,0,.6,1) forwards}
-.coin.c2.drop{animation-delay:.08s;left:22vw;--end:30vw}
-.coin.c3.drop{animation-delay:.16s;left:20.5vw;--end:14vw}
-@keyframes fall{0%{translate:0 0;rotate:0deg}45%{translate:2vw 14vh;rotate:240deg}60%{translate:5vw 9vh;rotate:330deg}75%{translate:8vw 14vh;rotate:420deg}85%{translate:10vw 12.5vh;rotate:470deg}100%{translate:var(--end,22vw) 14vh;rotate:720deg}}
+.coin.c2.drop{animation-delay:.08s;left:18vw;--end:30vw}
+.coin.c3.drop{animation-delay:.16s;left:16.5vw;--end:14vw}
+@keyframes fall{0%{translate:0 0;rotate:0deg}45%{translate:2vw 36vh;rotate:240deg}60%{translate:5vw 31vh;rotate:330deg}75%{translate:8vw 36vh;rotate:420deg}85%{translate:10vw 34.5vh;rotate:470deg}100%{translate:var(--end,22vw) 36vh;rotate:720deg}}
 @media (prefers-reduced-motion:reduce){.coin.drop{animation-duration:.01s}#him.walking img{animation:none}}
-#guide{position:absolute;left:50%;top:14vh;translate:-50% 0;max-width:min(82vw,720px);padding:14px 24px;border-radius:12px;background:rgba(43,37,34,.82);color:#fffaf2;font:600 clamp(18px,3.2vh,30px)/1.5 "Noto Sans TC",sans-serif;text-align:center;pointer-events:none;box-shadow:0 8px 24px rgb(0 0 0/.18);animation:breathe 2.4s ease-in-out infinite}
-@keyframes breathe{50%{scale:1.03}}
+#guide{position:absolute;left:50%;top:4vh;translate:-50% 0;max-width:min(82vw,720px);padding:14px 26px 12px;border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,240,244,.95),rgba(255,228,236,.95));border:2px solid #f4a7bd;color:#8a3555;
+  font:600 clamp(18px,3.1vh,29px)/1.5 "Noto Sans TC",sans-serif;text-align:center;pointer-events:none;
+  box-shadow:0 8px 26px rgba(232,120,155,.28),inset 0 0 0 4px rgba(255,255,255,.55);animation:breathe 3.2s ease-in-out infinite}
+#guideText::before{content:"♥";color:#ef6f93;margin-right:.35em;display:inline-block}
+/* 咚咚、咚咚：每一拍兩下縮放，週期＝60/心跳 秒 */
+/* 太早：呼吸燈，還沒亂跳 */
+@keyframes breathe{0%,100%{scale:1;box-shadow:0 8px 26px rgba(232,120,155,.22),inset 0 0 0 4px rgba(255,255,255,.55)}50%{scale:1.015;box-shadow:0 8px 34px rgba(239,111,147,.45),inset 0 0 0 4px rgba(255,255,255,.55)}}
+body[data-state="window"] #guide,body[data-state="late"] #guide{animation:thump var(--beat,.5s) ease-out infinite}
+@keyframes thump{0%{scale:1}12%{scale:1.06}24%{scale:1}36%{scale:1.04}50%,100%{scale:1}}
 body[data-state="ok"] #guide{opacity:0;transition:opacity .3s}
+body[data-state="late"] #guide{opacity:.35;transition:opacity .3s}   /* 他走太近時不擋臉 */
 @media (prefers-reduced-motion:reduce){#guide{animation:none}}
-#meter{position:relative;display:flex;height:16px;margin:12px 0 4px;border-radius:999px;overflow:visible;background:#4b423c}
+#meter{position:relative;display:flex;height:16px;margin:12px 0 4px;border-radius:999px;overflow:visible;background:#f3d3dd;box-shadow:inset 0 1px 2px rgba(138,53,85,.25)}
 #meter span{display:block;height:100%}
-#meter .early{background:#8a7f76;border-radius:999px 0 0 999px}
-#meter .ok{background:#e0b64a;box-shadow:0 0 10px rgba(224,182,74,.7)}
-#meter .late{background:#a8574c;border-radius:0 999px 999px 0}
-#needle{position:absolute;top:-6px;width:4px;height:28px;margin-left:-2px;border-radius:2px;background:#fffaf2;box-shadow:0 0 6px #000a;left:0}
-#labels{display:flex;font-size:clamp(13px,1.9vh,17px);font-weight:600;opacity:.9}
+#meter .early{background:#f6dbe3;border-radius:999px 0 0 999px}
+#meter .ok{background:linear-gradient(90deg,#ff9bb8,#ff7aa2);box-shadow:0 0 12px rgba(255,122,162,.75)}
+#meter .late{background:#c46a8a;border-radius:0 999px 999px 0}
+#needle{position:absolute;top:-7px;width:6px;height:30px;margin-left:-3px;border-radius:3px;background:#fff;border:1px solid #c94f78;box-shadow:0 0 8px rgba(201,79,120,.6);left:0}
+#labels{display:flex;font-size:clamp(13px,1.9vh,17px);font-weight:600;color:#a14a6b}
 #labels span{text-align:center}
+/* 走路與抓時機時收起對話框，讓兩人站回畫面底部、放大 */
+#panel{transition:opacity .25s}
+body[data-state="wait"] #panel,body[data-state="window"] #panel,body[data-state="late"] #panel,body[data-state="ok"] #panel{opacity:0}
+#lin{position:absolute}
+#lin img.top{position:absolute;left:0;right:0;top:0;margin:0 auto;opacity:0}
 </style></head>
 <body data-state="intro">
 <div id="scene"></div><div id="machine"></div><div id="corner"></div>
@@ -48,10 +62,27 @@ body[data-state="ok"] #guide{opacity:0;transition:opacity .3s}
 var S = {}, t0 = 0, raf = 0, tries = 0, bpm = 120;
 var msg = document.getElementById('msg'), him = document.getElementById('him'), coins = document.querySelectorAll('.coin');
 function drop(on) { coins.forEach(function (c) { c.classList.remove('drop'); if (on) { void c.offsetWidth; c.classList.add('drop'); } }); }
-function state(s) { document.body.dataset.state = s; }
+/* 表情淡入：上層新圖 0.8 秒淡入，完成後換到底層 */
+function linFace(u) {
+  var box = document.getElementById('lin');
+  if (!u || box.dataset.face === u) return;
+  box.dataset.face = u;
+  var base = box.querySelector('img.base'), top = box.querySelector('img.top');
+  if (!base) return;
+  top.style.transition = 'none'; top.style.opacity = '0'; top.src = u;
+  requestAnimationFrame(function () { top.style.transition = 'opacity .8s ease'; top.style.opacity = '1'; });
+  clearTimeout(linFace.t); linFace.t = setTimeout(function () { base.src = u; top.style.transition = 'none'; top.style.opacity = '0'; }, 900);
+}
+function state(s) {
+  if (document.body.dataset.state !== s) {
+    if (s === 'wait') linFace(S.linCalm);
+    if (s === 'window' || s === 'late') linFace(S.linShy);   /* 他走到剛好那段：她害羞起來 */
+  }
+  document.body.dataset.state = s;
+}
 function cur() { return document.body.dataset.state; }
 function start() {
-  drop(false); document.getElementById('needle').style.left = '0%'; him.style.left = '120vw'; him.classList.add('walking'); msg.textContent = S.intro; t0 = performance.now(); state('wait');
+  drop(false); document.getElementById('needle').style.left = '0%'; him.style.left = '100vw'; him.style.scale = '0.95'; him.classList.add('walking'); msg.textContent = S.intro; t0 = performance.now(); state('wait');
   raf = requestAnimationFrame(tick);
 }
 function tick() {
@@ -61,10 +92,12 @@ function tick() {
   else if (t < S.arrive) state('late');
   else { fail(S.lateText); return; }
   document.getElementById('needle').style.left = (100 * Math.min(t, S.arrive) / S.arrive) + '%';
-  /* 他在 appear 前 1.2 秒就從畫面外起步，appear 那一刻剛好轉進畫面；時機窗結束時大半身入鏡，最後停在她面前（72vw） */
-  var walk = Math.max(0, Math.min(1, (t - (S.appear - 1200)) / (S.arrive - (S.appear - 1200))));
-  him.style.left = (118 - walk * 46) + 'vw';
-  var b = Math.round(120 + walk * 40); if (b !== bpm) { bpm = b; L.set('bpm', b); }
+  /* 從背景右側體育館旁小徑的遠端走出來（右側中間高度、很小），沿著小徑往左下走到畫面中間前景 */
+  /* 從右側慢慢走進來：腳貼著地面、大小不變，只有水平移動＋走路起伏 */
+  var walk = Math.max(0, Math.min(1, t / S.arrive));
+  him.style.left = (100 - walk * 42) + 'vw';
+  him.style.scale = String(0.95 + walk * 0.33);   /* 由遠而近變大；「剛好」那段約 1.1 倍，比她高一點（他是男生） */
+  var b = Math.round(120 + walk * 40); if (b !== bpm) { bpm = b; L.set('bpm', b); document.getElementById('guide').style.setProperty('--beat', (60 / b) + 's'); }
   raf = requestAnimationFrame(tick);
 }
 function fail(text) { cancelAnimationFrame(raf); him.classList.remove('walking'); tries += 1; L.set('coin_tries', tries); state('retry'); msg.textContent = text; }
@@ -76,6 +109,7 @@ L.press(function () {
   if (s === 'window') {
     cancelAnimationFrame(raf); him.classList.remove('walking'); tries += 1; L.set('coin_tries', tries); state('ok');
     drop(true); L.set('coin_ok', true);
+    linFace(S.linHappy);   /* 他看到了：她鬆一口氣、偷偷開心 */
     setTimeout(function () { L.done(); }, 2200);
   }
 });
@@ -88,7 +122,13 @@ L.onInit(function (values) {
   (S.labels || []).forEach(function (t, i) { lab[i].textContent = t; lab[i].style.flex = String(parts[i]); });
   if (values.bg) { document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")'; document.body.classList.add('has-bg'); }
   function portrait(el, url) { if (!url) return; var im = document.createElement('img'); im.src = url; im.alt = ''; el.appendChild(im); }
-  portrait(document.getElementById('lin'), values.linImg);
+  (function () {   /* 她：底層＋淡入用的上層 */
+    var box = document.getElementById('lin'); if (!values.linImg) return;
+    ['base', 'top'].forEach(function (c) { var im = document.createElement('img'); im.className = c; im.alt = ''; im.src = values.linImg; box.appendChild(im); });
+    box.dataset.face = values.linImg;
+  })();
+  S.linCalm = values.linImg; S.linShy = values.linShyImg; S.linHappy = values.linHappyImg;
+  [S.linShy, S.linHappy].forEach(function (u) { if (u) { var pre = new Image(); pre.src = u; } });
   portrait(him, values.himImg);
   if (values.coinImg) coins.forEach(function (c) { c.style.background = 'url("' + values.coinImg + '") center/contain no-repeat'; c.style.boxShadow = 'none'; c.style.borderRadius = '0'; });
   msg.textContent = S.intro;

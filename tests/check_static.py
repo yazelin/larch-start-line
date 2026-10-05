@@ -166,7 +166,11 @@ def _holds(c, st):
     import variables
     v = st.get(c['variable'], variables.VARS.get(c['variable'], ('', ''))[1])
     v = str(v).lower() if isinstance(v, bool) else str(v)
-    return (v == c['value']) if c.get('op', 'eq') == 'eq' else (v != c['value'])
+    op = c.get('op', 'eq')
+    if op in ('gte', 'lte'):
+        a, b = float(v or 0), float(c['value'])
+        return a >= b if op == 'gte' else a <= b
+    return (v == c['value']) if op == 'eq' else (v != c['value'])
 
 def _active(e, st):
     """回傳此狀態下事件生效的分頁（最後一個條件全成立的），都不成立回 None。"""
@@ -219,7 +223,8 @@ def ending_b_close_has_no_kitchen():
     for n, m in ms:
         for e in m['events']:
             if e['id'] == 'ending-b-menu':
-                stop = [o for o in e['actions'][0]['choice']['options'] if o['id'] == 'stop'][0]
+                ch = next(a for a in e['actions'] if a['kind'] == 'choice')
+                stop = [o for o in ch['choice']['options'] if o['id'] == 'stop'][0]
                 cid = next(_jumps(stop['actions']))
                 bg = nodes[cid]['data'].get('background', '')
                 assert 'kitchen' not in bg, f'結局 B 收尾卡用了廚房圖 {bg}'
@@ -284,7 +289,7 @@ def _route_cells(start, route):
 @test
 def race_runs_a_full_lap():
     import map_stadium as S
-    for eid, start in [('race-done', S.START_LINE), ('che-race', S.CHE_RACE)]:
+    for eid, start in [('race-done', S.START_LINE), ('race2-run', S.CHE_RACE)]:
         m, e = _event('m-stadium', eid)
         mv = next(a for a in e['actions'] if a['kind'] == 'move')
         cells = _route_cells(start, mv['move']['route'])
@@ -304,6 +309,90 @@ def nameplates_are_real_names():
             for a in _all_actions(e):
                 if a['kind'] == 'dialogue' and not a.get('cardId') and a.get('speaker', '') == '':
                     assert re.search(r'[\u4e00-\u9fff]', e.get('name', '')), f"{e['id']} 的台詞名牌會顯示「{e.get('name')}」"
+
+@test
+def spare_key_is_played():
+    """備用鑰匙要玩家自己掛上門邊，掛完才能去求婚。"""
+    m, intro = _event('m-kitchen', 'k-intro')
+    assert any(a['kind'] == 'item' and a['itemId'] == 'key' for a in intro['actions']), '進廚房時背包裡要有備用鑰匙'
+    assert any(a['kind'] == 'variable' and a['variable'] == 'phase' and a['value'] == 'key' for a in intro['actions'])
+    _, hook = _event('m-kitchen', 'key-hook')
+    assert any(a['kind'] == 'removeItem' and a['itemId'] == 'key' for a in hook['actions']), '掛勾要把鑰匙從背包拿走'
+    assert [a['value'] for a in hook['actions'] if a['kind'] == 'variable' and a['variable'] == 'phase'] == ['kitchen']
+    _, hug = _event('m-kitchen', 'hug')
+    assert {'variable': 'phase', 'value': 'kitchen'} in [{'variable': c['variable'], 'value': c['value']} for c in hug['conditions']]
+    assert not any(a['kind'] == 'item' and a['itemId'] == 'key' for a in hug['actions']), '求婚後不要再給一次鑰匙'
+    assert [g['eventId'] for g in m['guidance']] == ['key-hook', 'hug']
+
+@test
+def race2_camera_truly_follows():
+    """第二輪看他比賽：鏡頭只會跟主角，所以比賽時把主角暫時換成程徹去跑，跑完換回林向晚、回到看台。"""
+    import map_stadium as S
+    m, start = _event('m-stadium', 'race2-start')
+    assert [a['value'] for a in start['actions'] if a['kind'] == 'hero'] == ['chengche']
+    assert [a['value'] for a in start['actions'] if a['kind'] == 'variable' and a['variable'] == 'phase'] == ['race2b'], '換成程徹之前就要切到 race2b，重新載入時看台上的她才會出現'
+    _, run = _event('m-stadium', 'race2-run')
+    mv = next(a for a in run['actions'] if a['kind'] == 'move')
+    assert mv['move']['who'] == 'player', '要讓主角（程徹）跑，鏡頭才會跟'
+    assert [a['value'] for a in run['actions'] if a['kind'] == 'hero'] == ['xiangwan'], '跑完要換回林向晚'
+    lin = next(e for e in m['events'] if (e['x'], e['y']) == S.STANDS_SEAT)
+    assert any(any(c['variable'] == 'phase' and c['value'] == 'race2b' for c in pg['conditions']) and pg.get('actor') == 'npc' for pg in lin.get('pages', [])), '他跑的時候看台上要有林向晚'
+
+@test
+def start_and_finish_are_labeled():
+    import map_stadium as S
+    p, ms = _maps()
+    m = next(mm for n, mm in ms if n['id'] == S.MAP_ID)
+    at = {(e['x'], e['y']): e for e in m['events']}
+    for cell, word in [(S.START_LINE, '起跑'), (S.FINISH, '終點')]:
+        e = at.get(cell)
+        assert e and word in (e.get('marker') or {}).get('label', ''), f'{cell} 沒有「{word}」標示'
+
+@test
+def every_goal_is_labeled():
+    """任務提示指過去的地方都要有名牌，玩家才知道要走去哪。"""
+    p, ms = _maps()
+    for n, m in ms:
+        by = {e['id']: e for e in m['events']}
+        for g in m['guidance']:
+            mk = by[g['eventId']].get('marker') or {}
+            assert mk.get('label'), f"{n['id']}：任務「{g['text']}」指向的 {g['eventId']} 沒有名牌"
+
+@test
+def stairs_hint_in_round2():
+    import map_stadium as S
+    p, ms = _maps()
+    m = next(mm for n, mm in ms if n['id'] == S.MAP_ID)
+    hints = [e for e in m['events'] if e['id'].startswith('stairs-hint')]
+    assert len(hints) == 2 and all('看台後方' in e['marker']['label'] for e in hints), '兩個樓梯口要有「往看台後方」提示'
+
+@test
+def round2_has_her_music():
+    m, e = _event('m-stadium', 'r2-music')
+    assert e['trigger'] == 'auto' and {'variable': 'round', 'value': '2'} in [{'variable': c['variable'], 'value': c['value']} for c in e['conditions']]
+    mu = next(a for a in e['actions'] if a['kind'] == 'music')
+    assert 'bgm-05' in mu['audio']['url'] and mu['audio'].get('loop'), mu
+
+@test
+def round2_inner_voice_with_faces():
+    """第二輪三個時刻用她自己的口吻，配表情立繪。"""
+    p, ms = _maps()
+    nodes = {n['id']: n for n in p['boards'][0]['nodes']}
+    for eid, card_id, face in [('peek', 'r2-peek', 'lin-hs-shy'), ('seen6', 'r2-caught', 'lin-hs-flustered'), ('race2-after', 'r2-watch-distracted', 'lin-hs-shy'), ('race2-after', 'r2-watch-steady', 'lin-hs-shy')]:
+        m, e = _event('m-stadium', eid)
+        d = next(a for pg in [e] + e.get('pages', []) for a in pg['actions'] if a['kind'] == 'dialogue' and a.get('cardId') == card_id)
+        assert d.get('presentation') == 'portrait', f'{eid} 要用立繪呈現'
+        data = nodes[card_id]['data']
+        assert any(l['speaker'] == '林向晚' for l in data['dialogueLines']), f'{card_id} 要有她自己說的話'
+        assert any(face in a['url'] and a['name'] == '林向晚' for a in data['stage']['actors']), f'{card_id} 立繪要是 {face}'
+
+@test
+def race_watch_echoes_round1():
+    """第二輪看他比賽的那句，跟著第一輪配速分數變：高分＝跑得好穩，低分＝一直在分心。"""
+    m, e = _event('m-stadium', 'race2-after')
+    base = {'round': '2', 'phase': 'race2c'}
+    pick = lambda score: next(a['cardId'] for a in _active(e, dict(base, pace_score=str(score)))['actions'] if a['kind'] == 'dialogue')
+    assert pick(30) == 'r2-watch-steady' and pick(3) == 'r2-watch-distracted', (pick(30), pick(3))
 
 if __name__ == '__main__':
     only = sys.argv[1:]
