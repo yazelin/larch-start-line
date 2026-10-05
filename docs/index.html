@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<script>(function(){var s;try{s=localStorage.getItem("sl-skin")}catch(e){}document.documentElement.setAttribute("data-skin",s==="lin"?"lin":"cheng")})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>起跑總在開始前</title>
 <meta name="description" content="程徹與林向晚的田徑愛情短篇，做成 Larch 上的互動作品：同一個下午玩兩次，先當他跑一次，再當她走一次。販賣機前，零錢要不要掉下去，由你決定。">
@@ -17,49 +18,50 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@400;500;700;900&family=Huninn&display=swap">
 <link rel="stylesheet" href="assets-site/site.css">
 <style>
 /* ── 首屏 ─────────────────────────────── */
 .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:var(--paper)}
-.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 50%;
   -webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 99%);mask-image:linear-gradient(to bottom,#000 70%,transparent 99%);
   opacity:0;transform:scale(1.04);transition:opacity 1.6s ease,transform 6s cubic-bezier(.2,.7,.2,1)}
 .hero-img.on{opacity:1;transform:none}
+/* 紙色薄紗：只蓋封面左半（天空與跑道）和最上面一條導覽列，右半的兩人不蓋 */
+.hero-veil{position:absolute;inset:0;pointer-events:none;--L:max(16px,calc(50% - 560px));
+  background:linear-gradient(to bottom,rgb(var(--paper-rgb)/.8),rgb(var(--paper-rgb)/0) 110px),
+             linear-gradient(90deg,rgb(var(--paper-rgb)/.95) 0,rgb(var(--paper-rgb)/.92) calc(var(--L) + 480px),rgb(var(--paper-rgb)/.55) calc(var(--L) + 580px),rgb(var(--paper-rgb)/0) calc(var(--L) + 700px))}
+/* 導覽列還沒變實心前，連結放在一塊紙色底上，壓在樹和天空上也看得清 */
+.top:not(.solid) nav{background:rgb(var(--paper-rgb)/.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:99px;padding:4px}
 .hero-in{position:relative;padding:110px 0 120px}
-.hero-copy{max-width:470px;color:#2f2925}
+.hero-copy{position:relative;max-width:470px;color:var(--ink)}
+.hero-copy>*{text-shadow:0 0 14px rgb(var(--paper-rgb)/.9),0 0 3px rgb(var(--paper-rgb)/.8)}
 .hero h1{white-space:nowrap}
-.hero-copy::before{content:"";position:absolute;z-index:-1;left:-12%;top:-4%;width:min(760px,90vw);height:110%;
-  background:radial-gradient(ellipse at 30% 52%,rgba(251,247,238,.88),rgba(251,247,238,.62) 48%,transparent 74%);pointer-events:none}
-/* 首屏永遠是亮的圖：導覽列還沒變實心前，字一律用深色 */
-.top:not(.solid) .brand,.top:not(.solid) nav a.sec{color:#3a312c}
-.top:not(.solid) nav a.sec:hover{background:rgba(255,251,243,.6)}
-.kicker{font-size:13.5px;letter-spacing:.16em;color:#6c5f55;margin:0 0 22px}
-.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,7.4vw,92px);line-height:1.12;margin:0 0 26px;letter-spacing:.04em}
+.kicker{font-size:13.5px;letter-spacing:.16em;color:var(--ink-2);margin:0 0 22px;font-weight:500}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,6.4vw,80px);line-height:1.12;margin:0 0 26px;letter-spacing:.04em}
 .hero h1 span{display:block}
 .hero h1 span:last-child{padding-left:.9em}
-.tag{font-family:var(--f-serif);font-size:clamp(17px,1.9vw,20px);line-height:1.9;margin:0 0 6px;color:#3d342e}
+.tag{font-family:var(--f-serif);font-size:clamp(17px,1.9vw,20px);line-height:1.9;margin:0 0 6px;color:var(--ink)}
+.sticker{position:absolute;width:96px;height:96px;object-fit:contain;right:-6px;top:58px;rotate:8deg;pointer-events:none;filter:drop-shadow(0 4px 8px rgb(var(--shadow)/.18));display:none}
+:root[data-skin="cheng"] .sticker.cheng,:root[data-skin="lin"] .sticker.lin{display:block}
 .ecg{display:block;width:240px;height:40px;margin:8px 0 26px;overflow:visible}
-.ecg path{fill:none;stroke:#c4553e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;animation:ecg 2.6s cubic-bezier(.6,.1,.3,1) infinite}
+.ecg path{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;animation:ecg 2.6s cubic-bezier(.6,.1,.3,1) infinite}
+:root[data-skin="lin"] .ecg path{animation-duration:1.7s}
 @keyframes ecg{0%{stroke-dashoffset:420;opacity:1}55%{stroke-dashoffset:0;opacity:1}85%,100%{stroke-dashoffset:0;opacity:0}}
 .cta{display:flex;flex-wrap:wrap;gap:12px}
-.hero .btn.ghost{background:rgba(255,251,243,.75);color:#3a312c;box-shadow:inset 0 0 0 1px rgba(90,70,50,.18)}
-.hero .btn[aria-disabled="true"]{background:rgba(255,251,243,.7);color:#8a7d72;box-shadow:inset 0 0 0 1px rgba(90,70,50,.2)}
-.meta{margin:22px 0 0;font-size:14px;color:#5a4e45;letter-spacing:.08em}
-.scroll-cue{position:absolute;left:50%;bottom:26px;translate:-50% 0;width:2px;height:46px;background:linear-gradient(var(--track),transparent);animation:cue 2.2s ease-in-out infinite}
+.hero .btn.ghost{background:rgb(var(--paper-rgb)/.85);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.hero .btn[aria-disabled="true"]{background:rgb(var(--paper-rgb)/.85);color:var(--ink-2);box-shadow:inset 0 0 0 1px var(--line)}
+.meta{margin:22px 0 0;font-size:14px;color:var(--ink-2);letter-spacing:.08em}
+.scroll-cue{position:absolute;left:50%;bottom:26px;translate:-50% 0;width:2px;height:46px;background:linear-gradient(var(--accent),transparent);animation:cue 2.2s ease-in-out infinite}
 @keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @media (max-width:760px){
   .hero{display:block;min-height:0}
-  .hero-img{position:relative;height:66svh;min-height:380px;object-position:74% 50%;-webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent);mask-image:linear-gradient(to bottom,#000 62%,transparent)}
-  .hero-in{margin-top:-64px;padding:0 0 64px}
-  .hero-copy{color:var(--ink)}
-  .hero-copy::before{display:none}
-  .kicker,.meta{color:var(--ink-2)}
-  .tag{color:var(--ink)}
-  .hero h1{text-shadow:0 0 18px var(--paper),0 0 2px var(--paper)}
-  .hero .btn.ghost{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-  .hero .btn[aria-disabled="true"]{background:var(--paper-2);color:var(--ink-3);box-shadow:inset 0 0 0 1px var(--line)}
-  .ecg path{stroke:var(--track)}
+  .hero-img{position:relative;height:62svh;min-height:360px;object-position:74% 50%;-webkit-mask-image:linear-gradient(to bottom,#000 55%,transparent 96%);mask-image:linear-gradient(to bottom,#000 55%,transparent 96%)}
+  .hero-veil{background:linear-gradient(to bottom,rgb(var(--paper-rgb)/.8),rgb(var(--paper-rgb)/0) 96px)}
+  .kicker{color:var(--ink)}
+  .top:not(.solid) nav{background:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:0}
+  .hero-in{margin-top:-40px;padding:0 0 64px}
+  .sticker{width:68px;height:68px;top:30px;right:4px}
   .scroll-cue{display:none}
 }
 @media (prefers-reduced-motion:reduce){.ecg path{animation:none;stroke-dashoffset:0}.scroll-cue{animation:none}}
@@ -67,21 +69,21 @@
 /* 起跑線：首屏與下一段之間的一條白線 */
 .startline{position:relative;height:18px;background:var(--track);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='18'><filter id='w'><feTurbulence baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .16 0'/></filter><rect width='160' height='18' filter='url(%23w)'/></svg>")}
 .startline::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;translate:0 -50%;background:rgba(255,255,255,.92)}
-.startline span{position:absolute;left:max(16px,calc(50% - 560px));top:50%;translate:0 -50%;padding:0 10px;background:var(--track);color:#fff;font-size:12px;letter-spacing:.3em;line-height:18px}
+.startline span{position:absolute;left:max(16px,calc(50% - 560px));top:50%;translate:0 -50%;padding:0 10px;background:var(--track);color:var(--track-ink);font-size:12px;letter-spacing:.3em;line-height:18px}
 
 /* ── 故事 ─────────────────────────────── */
 .story{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(36px,6vw,88px);align-items:start}
 .story .intro p{font-family:var(--f-serif);font-size:clamp(18px,2vw,21px);line-height:2.05;margin:0 0 1.2em}
-.story .intro p:last-child{color:var(--track)}
+.story .intro p:last-child{color:var(--accent)}
 .excerpt{position:relative;margin:0;padding:38px 34px 30px;background:var(--card);border-radius:4px;
   box-shadow:0 1px 0 var(--line),0 18px 40px -22px rgb(var(--shadow)/.45);rotate:.6deg;
   background-image:repeating-linear-gradient(to bottom,transparent 0 35px,color-mix(in srgb,var(--sky) 22%,transparent) 35px 36px);background-position:0 30px}
-.excerpt::before{content:"";position:absolute;top:-12px;left:50%;width:110px;height:26px;translate:-50% 0;rotate:-2deg;background:color-mix(in srgb,var(--sky) 45%,transparent);opacity:.75;
+.excerpt::before{content:"";position:absolute;top:-12px;left:50%;width:110px;height:26px;translate:-50% 0;rotate:-2deg;background:var(--tape);opacity:.8;
   -webkit-mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0);mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0)}
 .excerpt .label{font-size:12.5px;letter-spacing:.24em;color:var(--ink-3);margin:0 0 10px}
 .excerpt p{font-family:var(--f-serif);font-size:17px;line-height:36px;margin:0}
 .excerpt p+p{margin-top:18px}
-.excerpt .beat{color:var(--track)}
+.excerpt .beat{color:var(--accent)}
 .excerpt a{display:inline-block;margin-top:22px;font-size:14px}
 @media (max-width:860px){.story{grid-template-columns:1fr}.excerpt{rotate:0deg;padding:34px 22px 26px}}
 
@@ -90,7 +92,7 @@
 .who{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);align-items:end;min-height:460px;border-radius:24px;overflow:hidden;background:var(--card);box-shadow:0 1px 0 var(--line),0 24px 48px -30px rgb(var(--shadow)/.5)}
 .who::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 80% at 25% 70%,var(--wash) 0,transparent 70%);opacity:.9}
 .who.cheng{--wash:color-mix(in srgb,var(--sky) 30%,transparent)}
-.who.lin{--wash:color-mix(in srgb,var(--track) 24%,transparent)}
+.who.lin{--wash:color-mix(in srgb,#ff9bb8 30%,transparent)}
 .fig{position:relative;height:100%;min-height:460px}
 .fig img{position:absolute;bottom:0;left:50%;height:96%;width:auto;max-width:none;translate:-50% 0;transition:opacity .7s ease,transform .7s ease}
 .fig img.adult{opacity:0;transform:translateY(10px)}
@@ -99,7 +101,7 @@
 .who .txt{position:relative;padding:32px 28px 30px 4px;align-self:stretch;display:flex;flex-direction:column}
 .who h3{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,3.6vw,42px);margin:0;letter-spacing:.08em;line-height:1.2}
 .who .role{color:var(--ink-2);font-size:15px;margin:10px 0 0}
-.who blockquote{margin:auto 0 18px;font-family:var(--f-serif);font-size:clamp(17px,1.7vw,19px);line-height:1.9;padding-left:16px;border-left:3px solid var(--track)}
+.who blockquote{margin:auto 0 18px;font-family:var(--f-serif);font-size:clamp(17px,1.7vw,19px);line-height:1.9;padding-left:16px;border-left:3px solid var(--accent)}
 .seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:99px;background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line)}
 .seg button{border:0;background:none;padding:5px 14px;border-radius:99px;font-size:13.5px;color:var(--ink-2);cursor:pointer;transition:background .25s,color .25s}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgb(var(--shadow)/.2)}
@@ -144,26 +146,28 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
 /* ── 玩法與主題 ───────────────────────── */
 #play-sec{background:var(--paper-2);position:relative}
 .thesis{font-family:var(--f-display);font-weight:400;font-size:clamp(27px,4.4vw,48px);line-height:1.45;margin:0 0 22px;letter-spacing:.03em}
-.thesis em{font-style:normal;color:var(--track)}
+.thesis em{font-style:normal;color:var(--accent)}
 .locks{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-radius:18px;overflow:hidden;margin:44px 0 0;box-shadow:inset 0 0 0 1px var(--line)}
 .lock{background:var(--card);padding:26px 24px 24px}
 .lock b{display:block;font-family:var(--f-display);font-weight:400;font-size:21px;margin-bottom:4px}
-.lock .where{font-size:13px;letter-spacing:.12em;color:var(--track);margin:0 0 10px}
+.lock .where{font-size:13px;letter-spacing:.12em;color:var(--accent);margin:0 0 10px}
 .lock p{margin:0;font-size:15px;color:var(--ink-2)}
 @media (max-width:760px){.locks{grid-template-columns:1fr}}
 
 /* 路線：一條跑道，沿路是站 */
 .route{margin:72px 0 0}
 .route h3,.mech-h,.end-h{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0 0 22px}
-.lanes{position:relative;padding-left:46px}
-.lanes::before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:22px;border-radius:11px;background:var(--track);
-  background-image:linear-gradient(90deg,transparent 9px,rgba(255,255,255,.85) 9px 12px,transparent 12px)}
-.stop{position:relative;padding:0 0 26px}
-.stop::before{content:"";position:absolute;left:-41px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--card);box-shadow:0 0 0 3px #fff,0 0 0 4px rgb(0 0 0/.08)}
-.stop b{font-family:var(--f-display);font-weight:400;font-size:19px}
-.stop .who-tag{display:inline-block;margin-left:8px;font-size:12px;padding:1px 9px;border-radius:99px;vertical-align:2px}
+.lanes{position:relative;padding-left:48px}
+/* 跑道正中心 x=12px；站點圓點、標題列都對齊這條線 */
+.lanes::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:24px;border-radius:12px;background:var(--track);
+  background-image:linear-gradient(90deg,transparent 10.5px,rgba(255,255,255,.9) 10.5px 13.5px,transparent 13.5px)}
+.stop{position:relative;padding:0 0 28px}
+.stop::before{content:"";position:absolute;left:-43px;top:9px;width:14px;height:14px;border-radius:50%;background:var(--card);box-shadow:0 0 0 3px var(--track),0 0 0 5px rgba(255,255,255,.9)}
+.stop .sh{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;min-height:32px}
+.stop .sh b{font-family:var(--f-display);font-weight:400;font-size:19px;line-height:1.4}
+.stop .who-tag{display:inline-block;font-size:12px;line-height:20px;padding:0 9px;border-radius:99px}
 .who-tag.c{background:color-mix(in srgb,var(--sky) 22%,transparent);color:var(--navy)}
-.who-tag.l{background:color-mix(in srgb,var(--track) 18%,transparent);color:var(--track)}
+.who-tag.l{background:color-mix(in srgb,var(--track) 22%,transparent);color:var(--accent)}
 .stop p{margin:2px 0 0;color:var(--ink-2);font-size:15px}
 .stop .cards{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{font-size:12.5px;padding:2px 10px;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
@@ -180,7 +184,7 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
 .m .mi img{width:100%;height:100%;object-fit:cover}
 .m .mi.doodle{display:grid;place-items:center}
 .m .mi.doodle img{width:auto;height:72%;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(var(--shadow)/.18))}
-.m .mi .tag2{position:absolute;left:14px;top:14px;font-size:12px;letter-spacing:.12em;padding:3px 10px;border-radius:99px;background:rgba(255,251,243,.88);color:#5b4f46}
+.m .mi .tag2{position:absolute;left:14px;top:14px;font-size:12px;letter-spacing:.12em;padding:3px 10px;border-radius:99px;background:rgb(var(--paper-rgb)/.9);color:var(--ink)}
 .m .mb{padding:22px 24px 24px}
 .m h4{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 8px}
 .m p{margin:0;font-size:15px;color:var(--ink-2)}
@@ -197,7 +201,7 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
 .end{position:relative;border-radius:22px;overflow:hidden;min-height:340px;display:flex;align-items:flex-end;color:#fff;isolation:isolate}
 .end img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
 .end:hover img{transform:scale(1.04)}
-.end::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(20,18,26,.86),rgba(20,18,26,.35) 55%,rgba(20,18,26,0))}
+.end::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgb(var(--end-rgb)/.88),rgb(var(--end-rgb)/.38) 55%,rgb(var(--end-rgb)/0))}
 .end .eb{padding:26px 26px 24px}
 .end .k{font-size:12.5px;letter-spacing:.24em;opacity:.85}
 .end h4{font-family:var(--f-display);font-weight:400;font-size:26px;margin:4px 0 8px}
@@ -227,18 +231,21 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
 .lic b{color:var(--ink);font-weight:600}
 .lic p{margin:0}.lic p+p{margin-top:8px}
 @media (max-width:760px){.credits{grid-template-columns:1fr}}
+
 </style>
+<link rel="stylesheet" href="assets-site/skins.css">
 </head>
 <body>
 
 <header class="top">
   <div class="wrap in">
-    <a class="brand" href="#"><i aria-hidden="true"></i>起跑總在開始前</a>
+    <a class="brand" href="#"><i aria-hidden="true"></i><span>起跑總在開始前</span></a>
     <nav aria-label="頁面導覽">
       <a class="sec" href="#story">故事</a>
       <a class="sec" href="#people">主角</a>
       <a class="sec" href="#gallery">圖庫</a>
       <a class="sec" href="#play-sec">玩法</a>
+      <div class="skin" role="group" aria-label="切換主題"><button data-skin-set="cheng" aria-pressed="true" title="程徹版"><i data-bg="art/portraits/cheng-hs-smile.webp"></i><span>程徹</span></button><button data-skin-set="lin" aria-pressed="false" title="林向晚版"><i data-bg="art/cards/lin-avatar.webp"></i><span>向晚</span></button></div>
       <a class="ost" href="music/">原聲帶</a>
     </nav>
   </div>
@@ -247,8 +254,11 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
 <main>
 <section class="hero" aria-label="起跑總在開始前">
   <img class="hero-img" data-a="art/cover/cover.webp" alt="紅色跑道的起跑線上，程徹蹲在起跑架前，林向晚站在他身旁">
+  <div class="hero-veil" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <div class="hero-copy">
+      <img class="sticker cheng" data-a="art/cards/doodle-cheng-run.webp" alt="" aria-hidden="true">
+      <img class="sticker lin" data-a="art/cards/doodle-hearts.webp" alt="" aria-hidden="true">
       <p class="kicker">Larch 第三屆創作者挑戰《自由與限制》投稿作品</p>
       <h1><span>起跑</span><span>總在開始前</span></h1>
       <p class="tag">在槍響之前，在所有裁判與觀眾以為一切正要開始之前，有些事早就已經塵埃落定。</p>
@@ -341,12 +351,12 @@ dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s
     <div class="route rise">
       <h3>一個下午的路線</h3>
       <div class="lanes">
-        <div class="stop"><b>序章</b><p>原文的頭兩段。右上角的心跳第一次出現。</p></div>
-        <div class="stop"><b>第一輪：市運會選拔賽</b><span class="who-tag c">程徹</span><p>去檢錄處拿號碼布，經過終點線後方時和她四目相對，然後站上八百公尺的起跑線。</p><div class="cards"><span class="chip">起跑卡</span><span class="chip">配速卡</span></div></div>
-        <div class="stop"><b>販賣機前</b><span class="who-tag c">程徹</span><p>她的零錢掉在地上，他撿起來：「妳的十塊錢。」</p></div>
-        <div class="stop"><b>中章：後來他們真的在一起了</b><p>傳訊息時刪改三次的草稿，然後是花蓮的防波堤。她問：「你以為那是巧合？」</p><div class="cards"><span class="chip">草稿卡</span></div></div>
-        <div class="stop"><b>第二輪：同一天，更早的時間</b><span class="who-tag l">林向晚</span><p>同一張田徑場，換她走。躲在看台後面看他熱身，蒐集三條線索，算出自己該幾點出發。</p><div class="cards"><span class="chip">筆記卡</span></div></div>
-        <div class="stop" style="padding-bottom:0"><b>販賣機前，分岔</b><span class="who-tag l">林向晚</span>
+        <div class="stop"><div class="sh"><b>序章</b></div><p>原文的頭兩段。右上角的心跳第一次出現。</p></div>
+        <div class="stop"><div class="sh"><b>第一輪：市運會選拔賽</b><span class="who-tag c">程徹</span></div><p>去檢錄處拿號碼布，經過終點線後方時和她四目相對，然後站上八百公尺的起跑線。</p><div class="cards"><span class="chip">起跑卡</span><span class="chip">配速卡</span></div></div>
+        <div class="stop"><div class="sh"><b>販賣機前</b><span class="who-tag c">程徹</span></div><p>她的零錢掉在地上，他撿起來：「妳的十塊錢。」</p></div>
+        <div class="stop"><div class="sh"><b>中章：後來他們真的在一起了</b></div><p>傳訊息時刪改三次的草稿，然後是花蓮的防波堤。她問：「你以為那是巧合？」</p><div class="cards"><span class="chip">草稿卡</span></div></div>
+        <div class="stop"><div class="sh"><b>第二輪：同一天，更早的時間</b><span class="who-tag l">林向晚</span></div><p>同一張田徑場，換她走。躲在看台後面看他熱身，蒐集三條線索，算出自己該幾點出發。</p><div class="cards"><span class="chip">筆記卡</span></div></div>
+        <div class="stop" style="padding-bottom:0"><div class="sh"><b>販賣機前，分岔</b><span class="who-tag l">林向晚</span></div>
           <div class="fork">
             <div><b>讓零錢掉下去</b>零錢卡 → 防波堤後半 → 台北的冬夜廚房（結局 A）</div>
             <div><b>轉身離開</b>結局 B。結尾可以回到販賣機前重選。</div>

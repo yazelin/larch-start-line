@@ -44,8 +44,36 @@
     return S;
   });
 
+  /* 主題：程徹版（預設）／林向晚版，記在 localStorage */
+  function skin(name, animate) {
+    var root = document.documentElement;
+    if (animate) { root.classList.add("skinning"); clearTimeout(skin.t); skin.t = setTimeout(function () { root.classList.remove("skinning"); }, 700); }
+    root.setAttribute("data-skin", name);
+    try { localStorage.setItem("sl-skin", name); } catch (e) {}
+    document.querySelectorAll("[data-skin-set]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-skin-set") === name)); });
+  }
+  S.skin = skin;
+
+  /* 林向晚版的花瓣：一次放好，顯示與否交給 CSS */
+  function petals() {
+    if (document.querySelector(".petals")) return;
+    var box = document.createElement("div"); box.className = "petals"; box.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 11; i++) {
+      var p = document.createElement("i"), r = Math.random;
+      p.style.cssText = "--x:" + (r() * 100).toFixed(1) + "vw;--s:" + (9 + r() * 9).toFixed(1) + "px;--d:" + (14 + r() * 12).toFixed(1) + "s;--dl:" + (-r() * 26).toFixed(1) + "s;--dx:" + (r() * 30 - 10).toFixed(1) + "vw";
+      box.appendChild(p);
+    }
+    document.body.appendChild(box);
+  }
+
   function boot() {
     apply(); playButtons();
+    petals();
+    var cur = document.documentElement.getAttribute("data-skin") === "lin" ? "lin" : "cheng";
+    document.querySelectorAll("[data-skin-set]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-skin-set") === cur));
+      b.addEventListener("click", function (e) { e.stopPropagation(); skin(b.getAttribute("data-skin-set"), true); });
+    });
     var top = document.querySelector(".top");
     if (top && !top.hasAttribute("data-solid")) {
       var onScroll = function () { top.classList.toggle("solid", scrollY > 40); };

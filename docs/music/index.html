@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<script>(function(){var s;try{s=localStorage.getItem("sl-skin")}catch(e){}document.documentElement.setAttribute("data-skin",s==="lin"?"lin":"cheng")})()</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>起跑總在開始前 · 原聲帶</title>
 <meta name="description" content="《起跑總在開始前》原聲帶七首。播放時背景換成那首曲子用到的畫面，可以把介面整個收起來，只留圖和音樂。">
@@ -17,12 +18,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@400;500;700;900&family=Huninn&display=swap">
 <link rel="stylesheet" href="../assets-site/site.css">
 <style>
-:root{--veil:247 241 230;--glass:color-mix(in srgb,var(--card) 80%,transparent)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--veil:27 31 45}}
-:root[data-theme="dark"]{--veil:27 31 45}
+  :root{--veil:var(--paper-rgb);--glass:color-mix(in srgb,var(--card) 80%,transparent)}
 html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none}
 body{display:flex;flex-direction:column;height:100dvh}
 body::before{z-index:3}
@@ -41,31 +40,33 @@ body::before{z-index:3}
 .top{position:relative;z-index:4;flex:none}
 .top .in{height:58px}
 .top .ttl2{font-family:var(--f-display);color:var(--ink-2);font-size:15px;letter-spacing:.2em;white-space:nowrap}
-.top .footer-icons{margin-left:auto;gap:8px}
+.top .skin{margin-left:auto}
+.top .footer-icons{margin-left:10px;gap:8px}
 .top .footer-icon{width:36px;height:36px;background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-@media (max-width:520px){.top .ttl2{display:none}.brand{font-size:17px}}
+@media (max-width:520px){.top .ttl2{display:none}.brand{font-size:17px}.brand span{display:none}.top .footer-icon{width:34px;height:34px}.top .footer-icons{gap:6px;margin-left:8px}}
 
 main{position:relative;z-index:2;flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:28px;padding:12px max(24px,calc(50% - 620px)) 0}
 #now{align-self:end;max-width:640px;padding-bottom:30px}
 .cv{position:relative;width:min(220px,30vw);aspect-ratio:1;margin:0 0 22px;padding:8px;background:var(--card);border-radius:4px;rotate:-1.5deg;
   box-shadow:0 1px 0 var(--line),0 18px 40px -16px rgb(var(--shadow)/.55)}
-.cv::before{content:"";position:absolute;z-index:1;top:-10px;left:50%;width:84px;height:22px;translate:-50% 0;rotate:3deg;background:color-mix(in srgb,var(--sky) 50%,transparent);opacity:.8}
+.cv::before{content:"";position:absolute;z-index:1;top:-10px;left:50%;width:84px;height:22px;translate:-50% 0;rotate:3deg;background:var(--tape);opacity:.85}
+
 .cv img{width:100%;height:100%;object-fit:cover;border-radius:2px;transition:opacity .5s}
-#no{font-size:13px;letter-spacing:.22em;color:var(--track);margin:0}
+#no{font-size:13px;letter-spacing:.22em;color:var(--accent);font-weight:500;margin:0}
 #title{font-family:var(--f-display);font-weight:400;font-size:clamp(26px,3.6vw,40px);line-height:1.25;margin:4px 0 2px;letter-spacing:.01em}
 #scene{margin:0;color:var(--ink-2);font-size:15px}
-#line{font-family:var(--f-serif);font-size:clamp(16px,1.6vw,18px);margin:14px 0 20px;padding-left:14px;border-left:3px solid var(--track);color:var(--ink)}
+#line{font-family:var(--f-serif);font-size:clamp(16px,1.6vw,18px);margin:14px 0 20px;padding-left:14px;border-left:3px solid var(--accent);color:var(--ink)}
 .bar{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
 #seek{flex:1;-webkit-appearance:none;appearance:none;height:22px;background:transparent;cursor:pointer}
 #seek::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--track) var(--p,0%),color-mix(in srgb,var(--ink) 18%,transparent) var(--p,0%))}
 #seek::-moz-range-track{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--track) var(--p,0%),color-mix(in srgb,var(--ink) 18%,transparent) var(--p,0%))}
-#seek::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--track);box-shadow:0 0 0 3px #fff}
-#seek::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--track);box-shadow:0 0 0 3px #fff}
+#seek::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--track);box-shadow:0 0 0 3px var(--card)}
+#seek::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--track);box-shadow:0 0 0 3px var(--card)}
 .ctl{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 .ctl button{border:0;cursor:pointer;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--glass);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:transform .2s}
 .ctl button:hover{transform:translateY(-1px)}
 .ctl svg{width:22px;height:22px;fill:currentColor}
-#play{width:60px;height:60px;background:var(--track);color:#fff;box-shadow:0 10px 24px -10px rgb(196 85 62/.8)}
+#play{width:60px;height:60px;background:var(--track);color:var(--track-ink);box-shadow:0 10px 24px -10px color-mix(in srgb,var(--track) 85%,transparent)}
 #play svg{width:26px;height:26px}
 .ctl .txt{width:auto;border-radius:23px;padding:0 15px 0 12px;font-size:14px;height:40px;display:inline-flex;gap:6px;align-items:center}
 .ctl .txt svg{width:17px;height:17px}
@@ -85,7 +86,7 @@ main{position:relative;z-index:2;flex:1;min-height:0;display:grid;grid-template-
 #list li.on{background:color-mix(in srgb,var(--track) 14%,transparent)}
 #list .k,#list .eq{grid-area:1/1}
 #list .k{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right}
-#list li.on .k{color:var(--track)}
+#list li.on .k{color:var(--accent)}
 #list img{width:48px;height:48px;border-radius:7px;object-fit:cover}
 #list b{display:block;font-weight:500;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #list .t span{display:block;font-size:12.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -108,7 +109,7 @@ body.bare .top,body.bare main,body.bare #ecg{opacity:0;pointer-events:none}
 body.bare #stage::after{opacity:.15}
 #baretip{position:fixed;z-index:5;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:7px 16px;border-radius:99px;background:rgb(var(--veil)/.8);color:var(--ink-2);font-size:13px;opacity:0;transition:opacity .6s;pointer-events:none;white-space:nowrap}
 body.bare #baretip.show{opacity:1}
-#hint{position:fixed;z-index:6;left:50%;top:42%;transform:translate(-50%,-50%);border:0;padding:14px 28px;border-radius:99px;background:var(--track);color:#fff;font-size:16px;letter-spacing:.12em;cursor:pointer;box-shadow:0 14px 30px -12px rgb(196 85 62/.8)}
+#hint{position:fixed;z-index:6;left:50%;top:42%;transform:translate(-50%,-50%);border:0;padding:14px 28px;border-radius:99px;background:var(--track);color:var(--track-ink);font-size:16px;letter-spacing:.12em;cursor:pointer;box-shadow:0 14px 30px -12px color-mix(in srgb,var(--track) 85%,transparent)}
 #hint[hidden]{display:none}
 
 @media (max-width:900px){
@@ -135,6 +136,7 @@ body.bare #baretip.show{opacity:1}
 @media (max-width:380px){.ctl button,.ctl .txt{width:38px;height:38px}#play{width:52px;height:52px}}
 @media (prefers-reduced-motion:reduce){#stage img.on{animation:none}.eq i{animation:none;height:10px}}
 </style>
+<link rel="stylesheet" href="../assets-site/skins.css">
 </head>
 <body class="nolist">
 <div id="stage"><img id="s0" alt=""><img id="s1" alt=""></div>
@@ -142,8 +144,9 @@ body.bare #baretip.show{opacity:1}
 
 <header class="top" data-solid>
   <div class="wrap in" style="width:auto;padding:0 max(16px,calc(50% - 620px))">
-    <a class="brand" href="../"><i aria-hidden="true"></i>起跑總在開始前</a>
+    <a class="brand" href="../"><i aria-hidden="true"></i><span>起跑總在開始前</span></a>
     <span class="ttl2">原聲帶</span>
+    <div class="skin" role="group" aria-label="切換主題"><button data-skin-set="cheng" aria-pressed="true" title="程徹版"><i data-bg="art/portraits/cheng-hs-smile.webp"></i><span>程徹</span></button><button data-skin-set="lin" aria-pressed="false" title="林向晚版"><i data-bg="art/cards/lin-avatar.webp"></i><span>向晚</span></button></div>
     <nav class="footer-icons" aria-label="作者連結">
       <a class="footer-icon" href="https://github.com/yazelin/larch-start-line" target="_blank" rel="noopener" aria-label="GitHub 原始碼" title="GitHub 原始碼"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
       <a class="footer-icon" href="https://www.facebook.com/yaze.lin.gm" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
@@ -319,7 +322,7 @@ body.bare #baretip.show{opacity:1}
     var y = A.paused ? 0 : shape(ts - beatAt);
     pts.push(y); while (pts.length > n) pts.shift();
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
-    var base = h * .62, amp = h * .42, cs = getComputedStyle(document.documentElement).getPropertyValue("--track").trim() || "#c4553e";
+    var base = h * .62, amp = h * .42, cs = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#c4553e";
     var grad = g.createLinearGradient(0, 0, w, 0);
     grad.addColorStop(0, "transparent"); grad.addColorStop(.35, cs); grad.addColorStop(1, cs);
     g.strokeStyle = grad; g.lineWidth = 2; g.lineJoin = "round"; g.globalAlpha = .75; g.beginPath();
