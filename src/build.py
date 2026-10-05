@@ -22,8 +22,8 @@ def build():
     a = art.paths()
     p['settings']['plugins']['larch-rpg-system']['settings']['database'] = json.dumps(rpg_database(a), ensure_ascii=False)
     story_cards(board, a)
-    p['settings']['titleCoverImage'] = a['cg-gaze']
-    p['settings']['projectThumbnail'] = a['cg-gaze']
+    p['settings']['titleCoverImage'] = a['cover']        # 專用封面：左半留給標題與選單
+    p['settings']['projectThumbnail'] = a['cover']
     N = board['nodes'].append
     for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid], plugin.card_art(cid, a)))
