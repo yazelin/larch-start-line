@@ -35,6 +35,14 @@ def retries_5xx_and_network():
     et, j = push.req('GET')
     assert j == {'ok': 1} and len(calls) == 3, (j, len(calls))
 
+def cache_key_is_content():
+    import tempfile, pathlib
+    d = pathlib.Path(tempfile.mkdtemp()); f = d / 'a.png'; f.write_bytes(b'x')
+    k1 = push.cache_key('a.png', f); os.utime(f, (1, 1)); k2 = push.cache_key('a.png', f)
+    assert k1 == k2, 'mtime 改了快取鍵就變，clone 後會全部重傳'
+    f.write_bytes(b'y'); assert push.cache_key('a.png', f) != k1, '內容改了快取鍵要變'
+
+t('快取鍵看內容不看時間', cache_key_is_content)
 t('只覆寫產生器負責的設定，其他保留線上', keeps_online_settings)
 t('GET 遇到 502、網路錯誤會重試', retries_5xx_and_network)
 sys.exit(1 if bad else 0)

@@ -10,6 +10,7 @@ ROOT = build.ROOT
 KEY = open(os.path.expanduser(os.environ.get('LARCH_KEY_FILE', '~/.config/larch/key'))).read().strip()
 BASE = f'https://larch.ink/api/agent/projects/{build.PROJECT_ID}'
 UPLOADED = ROOT / 'assets/uploaded.json'
+import hashlib
 MIME = {'.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg'}
 
 
@@ -54,13 +55,18 @@ def merge_settings(online, built):
     return m
 
 
+def cache_key(rel, f):
+    """上傳快取鍵：路徑＋內容雜湊（不看 mtime，clone 或 checkout 後不會全部重傳）。"""
+    return f'{rel}@{hashlib.sha1(f.read_bytes()).hexdigest()[:12]}'
+
+
 def upload_all(text):
     done = json.loads(UPLOADED.read_text()) if UPLOADED.exists() else {}
     for rel in sorted(set(re.findall(r'/files/assets/([\w./-]+\.(?:png|webp|jpg|mp3))', text))):
         f = ROOT / 'assets' / rel
-        key = f'{rel}@{int(f.stat().st_mtime)}'
+        key = cache_key(rel, f)
         if key in done: continue
-        body = {'name': 'start-line_' + rel.replace('/', '_'), 'mimeType': MIME[f.suffix], 'category': 'image',
+        body = {'name': 'start-line_' + rel.replace('/', '_'), 'mimeType': MIME[f.suffix], 'category': 'audio' if f.suffix == '.mp3' else 'image',
                 'base64': base64.b64encode(f.read_bytes()).decode()}
         _, j = req('POST', '/media', body)
         done[key] = j['asset']['url']

@@ -62,7 +62,7 @@ function go(s) {
   }
   if (s === 'gun') {
     clearTimeout(gunT); setBpm(150); flashColor('#ffffff'); show(S.bang);
-    setTimeout(function () { lines(S.after, function () { st = 'done'; L.set('bpm', 150); L.done(); }); }, 900);
+    setTimeout(function () { lines(S.after, function () { st = 'done'; clearTimeout(beatT); bpm = 0; L.set('bpm', 150); L.done(); }); }, 900);
   }
 }
 function pick(i) {

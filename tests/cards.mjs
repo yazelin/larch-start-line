@@ -60,6 +60,10 @@ export const CARDS = {
   'pace': async (ui, f) => {
     await tapUntil(f, /節拍/);
     await tap(f);
+    await f.waitForFunction(() => document.getElementById('eyes').classList.contains('on'), null, { timeout: 30000 });
+    await sleep(900); await ui.page.screenshot({ path: `dist/shots/card-pace-eyes${process.env.MOBILE ? '-mobile' : ''}.png` });
+    const overlap = await f.evaluate(() => { const a = document.querySelector('#eyes img, #eyes p').getBoundingClientRect(), b = document.getElementById('track').getBoundingClientRect(); return a.bottom > b.top; });
+    assert(!overlap, 'pace：眼神圖不蓋到節拍線');
     await waitMsg(f, /終點/, 60000);
     await tap(f);
   },

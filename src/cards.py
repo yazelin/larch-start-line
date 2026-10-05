@@ -22,3 +22,10 @@ def dialogue(id, title, lines, bg='', start=False, speaker=''):
 
 def link(board, a, b):
     board['edges'].append({'id': f'{a}--{b}', 'source': a, 'target': b, 'sourceHandle': 'right', 'targetHandle': 'left'})
+
+
+def setvar(id, title, ops):
+    """設定變數卡：ops = [(變數, 值), ...]"""
+    return {'id': id, 'type': 'story', 'position': _pos(), 'data': {
+        'type': 'setVariable', 'title': title, 'text': '',
+        'variableOps': [{'id': f'{id}-{i}', 'variable': k, 'kind': 'set', 'value': str(v).lower() if isinstance(v, bool) else str(v)} for i, (k, v) in enumerate(ops)]}}

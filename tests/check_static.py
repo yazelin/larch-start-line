@@ -224,6 +224,42 @@ def ending_b_close_has_no_kitchen():
                 bg = nodes[cid]['data'].get('background', '')
                 assert 'kitchen' not in bg, f'結局 B 收尾卡用了廚房圖 {bg}'
 
+def _event(map_id, eid):
+    p, ms = _maps()
+    m = next(mm for n, mm in ms if n['id'] == map_id)
+    return m, next(e for e in m['events'] if e['id'] == eid)
+
+@test
+def pocari_given_once():
+    m, coins = _event('m-stadium', 'coins')
+    v2 = next(pg for pg in coins['pages'] if pg['id'] == 'vending2')
+    top = [a for a in v2['actions'] if a['kind'] == 'item' and a['itemId'] == 'pocari']
+    assert not top, '每次進販賣機分頁就給一瓶寶礦力，B→A 會拿兩瓶'
+
+@test
+def flags_set_before_performance():
+    for eid, var in [('gaze0', 'gaze_seen')]:   # race-done 不列：地圖演出中無法存檔，且先寫 phase 會讓看台上的她提早消失
+        m, e = _event('m-stadium', eid)
+        first = next(i for i, a in enumerate(e['actions']) if a['kind'] in ('dialogue', 'camera', 'move'))
+        flag = next(i for i, a in enumerate(e['actions']) if a['kind'] == 'variable' and a['variable'] == var)
+        assert flag < first, f'{eid}：{var} 在演出之後才寫，演出中讀檔會重演'
+
+@test
+def midstory_reload_returns_to_mid():
+    """在中章／草稿／防波堤讀檔回到田徑場時（phase=mid），要回到中章，不能直接換人。"""
+    m, sw = _event('m-stadium', 'switch')
+    assert {'variable': 'phase', 'value': 'mid'} not in [{'variable': c['variable'], 'value': c['value']} for c in sw['conditions']], 'switch 在 phase=mid 就換人'
+    st = {'round': '1', 'phase': 'mid'}
+    assert any(_active(e, st) and 'mid' in set(_jumps(_active(e, st).get('actions', []))) for e in m['events']), 'phase=mid 回到地圖沒有事件帶回中章'
+
+@test
+def nobody_tags_along():
+    """兩輪都只有一個人在走：資料庫角色不能自動入隊跟隨（role=party 又沒有 joinVariable 會自動跟著走）。"""
+    import build
+    db = json.loads(build.build()['settings']['plugins']['larch-rpg-system']['settings']['database'])
+    for a in db['actors']:
+        assert a.get('join') == 'later' or a.get('role') != 'party' or a.get('joinVariable'), f"{a['id']} 會自動跟在主角身邊"
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

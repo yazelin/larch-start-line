@@ -62,7 +62,7 @@ def round1_events(art):
     ]
     for i, (x, y) in enumerate(GAZE):
         ev_list.append(ev(f'gaze{i}', x, y, trigger='touch', conditions=[R1, cond('phase', 'start'), cond('gaze_seen', False)],
-                          actions=[setv('bpm', 120), balloon('exclamation'), card('gaze'), setv('gaze_seen', True)]))
+                          actions=[setv('gaze_seen', True), setv('bpm', 120), balloon('exclamation'), card('gaze')]))
     ev_list += [
         ev('startline', *START_LINE, trigger='touch', conditions=[R1, cond('phase', 'bib')],
            actions=[say(new('先去檢錄'), speaker=''), move([('up', 1)])],
@@ -85,7 +85,7 @@ PEEK = (20, 1)
 CHE_WARM = (20, 7)
 CHE_RACE = (24, 21)
 LIN_R2_START = (14, 24)
-STAIRS = (10, 29)
+STAIR_XS = {10, 29}   # 看台樓梯口的 x
 ALL_CLUES = [cond('clue_order', True), cond('clue_mate', True), cond('clue_walk', True)]
 
 
@@ -93,9 +93,11 @@ def round2_events(art):
     che = walker(art['walk-cheng'])
     out = [
         # 第一輪結束（販賣機那一下之後回到地圖時）：換成林向晚，回到同一天更早的時間
-        ev('switch', 3, 28, trigger='auto', conditions=[cond('phase', 'mid')],
+        ev('switch', 3, 28, trigger='auto', conditions=[cond('phase', 'r2')],
            actions=[setv('round', 2), setv('phase', 'watch'), setv('bpm', 100), A('hero', value='xiangwan'),
                     jump(MAP_ID, arrive={'x': LIN_R2_START[0], 'y': LIN_R2_START[1], 'direction': 'up'})]),
+        # 中章、草稿、防波堤途中讀檔回到地圖：帶回中章，不要直接換人
+        ev('replay-mid', 7, 28, trigger='auto', conditions=[R1, cond('phase', 'mid')], actions=[jump('mid')]),
         npc('che-warm', *CHE_WARM, che, conditions=[R2, cond('calc_ok', False)], direction='right'),
         ev('peek', *PEEK, trigger='touch', conditions=[R2, cond('phase', 'watch')],
            actions=[say(new('偷看')), setv('bpm', 110), setv('phase', 'clue')]),
@@ -114,7 +116,7 @@ def round2_events(art):
     ]
     # 走出看台的遮蔽（看台前那一排，樓梯口除外）就會被看到
     for x in range(6, 34):
-        if x in STAIRS: continue
+        if x in STAIR_XS: continue
         out.append(ev(f'seen{x}', x, 5, trigger='touch', conditions=[R2, cond('phase', 'watch')],
                       actions=[balloon('exclamation', target='event', event_id='che-warm'), setv('bpm', 150),
                                say(new('差點被看到')), setv('bpm', 110),
@@ -135,8 +137,8 @@ def round2_pages(events, art):
         page('too-early', [R2, cond('phase', 'clue'), cond('clue_walk', True)], [say(new('線索不夠'))]),
         page('calc-again', [R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES, [jump(plugin.NODE['notebook'])]),
         page('vending2', [R2, cond('phase', 'vending2'), cond('ending', 'B', 'neq')],
-             [item('pocari', '寶礦力'), A('choice', text='', choice={'options': [
-                 {'id': 'drop', 'label': '讓零錢掉下去', 'actions': [setv('ending', 'A'), jump(plugin.NODE['coin-drop'])]},
+             [A('choice', text='', choice={'options': [
+                 {'id': 'drop', 'label': '讓零錢掉下去', 'actions': [item('pocari', '寶礦力'), setv('ending', 'A'), jump(plugin.NODE['coin-drop'])]},
                  {'id': 'leave', 'label': '轉身離開', 'actions': [setv('ending', 'B'), jump('ending-b')]}]})]),
     ]
 

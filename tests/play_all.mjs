@@ -12,8 +12,9 @@ const maps = Object.fromEntries(proj.boards[0].nodes.filter(n => n.data.pluginCa
   return [m.name, { m, walls }];
 }));
 const T0 = Date.now();
-const s = await serve('dist/project.json');
+const s = process.env.ONLINE ? { base: process.env.ONLINE, kill() {} } : await serve('dist/project.json');
 const ui = await open(s.base);
+console.log(process.env.ONLINE ? '對線上預覽跑' : '對本機跑');
 const page = ui.page;
 const shot = n => page.screenshot({ path: `dist/shots/${n}.png` });
 const log = (...a) => console.log(`[${((Date.now() - T0) / 1000).toFixed(0)}s]`, ...a);

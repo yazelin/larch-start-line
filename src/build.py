@@ -27,12 +27,13 @@ def build():
     N = board['nodes'].append
     for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid], plugin.card_art(cid, a)))
+    N(cards.setvar('go-r2', '換到她那邊', [('phase', 'r2')]))
     N(map_stadium.build_stadium(a))
     N(map_kitchen.build_kitchen(a))
     L = lambda x, y: cards.link(board, x, y)
     L(PROLOGUE, map_stadium.MAP_ID)
     L(plugin.NODE['start-gun'], plugin.NODE['pace']); L(plugin.NODE['pace'], map_stadium.MAP_ID)
-    L(MID, plugin.NODE['drafts']); L(plugin.NODE['drafts'], SEAWALL); L(SEAWALL, map_stadium.MAP_ID)
+    L(MID, plugin.NODE['drafts']); L(plugin.NODE['drafts'], SEAWALL); L(SEAWALL, 'go-r2'); L('go-r2', map_stadium.MAP_ID)
     L(plugin.NODE['notebook'], map_stadium.MAP_ID)
     L(plugin.NODE['coin-drop'], SEAWALL2); L(SEAWALL2, map_kitchen.MAP_ID)
     L(ENDING_B, map_stadium.MAP_ID)
@@ -42,7 +43,7 @@ def build():
 def rpg_database(a):
     def actor(id, name, walk, portrait):
         return {'id': id, 'name': name, 'title': '', 'profile': '', 'role': 'party', 'walk': mapkit.walker(a[walk]),
-                'portrait': a[portrait], 'kit': 'none', 'rig': '', 'joinVariable': ''}
+                'portrait': a[portrait], 'join': 'later', 'kit': 'none', 'rig': '', 'joinVariable': ''}
     return {'version': 1, 'heroId': 'chengche', 'leadSwitch': False,
             'actors': [actor('chengche', '程徹', 'walk-cheng', 'p-cheng'), actor('xiangwan', '林向晚', 'walk-lin', 'p-lin')]}
 

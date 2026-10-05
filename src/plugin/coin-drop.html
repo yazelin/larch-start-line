@@ -50,7 +50,7 @@ L.press(function () {
   if (s === 'window') {
     cancelAnimationFrame(raf); tries += 1; L.set('coin_tries', tries); state('ok');
     coin.className = 'drop'; L.set('coin_ok', true);
-    setTimeout(function () { L.done(); }, 1500);
+    setTimeout(function () { clearInterval(window.walkT); L.done(); }, 1500);
   }
 });
 L.onInit(function (values) {
@@ -59,7 +59,7 @@ L.onInit(function (values) {
   if (values.bg) { document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")'; document.body.classList.add('has-bg'); }
   if (values.him) {   /* 3 欄 × 4 列走路圖，取第 2 列（面向左）輪播 */
     him.classList.add('sprite'); him.style.backgroundImage = 'url("' + values.him + '")'; him.style.backgroundSize = '300% 400%';
-    var fr = 0; setInterval(function () { if (cur() === 'window' || cur() === 'late' || cur() === 'wait') { fr = (fr + 1) % 3; him.style.backgroundPosition = (fr * 50) + '% 33.333%'; } }, 180);
+    var fr = 0; window.walkT = setInterval(function () { if (cur() === 'window' || cur() === 'late' || cur() === 'wait') { fr = (fr + 1) % 3; him.style.backgroundPosition = (fr * 50) + '% 33.333%'; } }, 180);
   }
   msg.textContent = S.intro;
 });
