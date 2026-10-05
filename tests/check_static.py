@@ -140,6 +140,28 @@ def map_variable_gate():
         assert used <= reads and used <= writes, f"{n['id']} 讀寫名單漏了 {sorted(used - (reads & writes))}"
         assert used <= set(variables.VARS), f"{n['id']} 變數表沒有 {sorted(used - set(variables.VARS))}"
 
+@test
+def flow_reachable():
+    p, ms = _maps()
+    b = p['boards'][0]
+    nodes = {n['id'] for n in b['nodes']}
+    out = {i: set() for i in nodes}
+    for e in b['edges']: out[e['source']].add(e['target'])
+    for n, m in ms:
+        for e in m['events']:
+            for a in _all_actions(e):
+                if a.get('cardId') and not a['cardId'].startswith('monsters:'): out[n['id']].add(a['cardId'])
+    for t in sum(map(list, out.values()), []): assert t in nodes, f'指向不存在的卡 {t}'
+    start = [n['id'] for n in b['nodes'] if n['data'].get('start')]
+    assert start == ['prologue'], start
+    seen, q = set(start), list(start)
+    while q:
+        for t in out[q.pop()]:
+            if t not in seen: seen.add(t); q.append(t)
+    assert nodes <= seen, f'走不到的卡：{sorted(nodes - seen)}'
+    for must in ('ending-b', 'fin', 'm-kitchen', 'c-coin', 'c-notebook'):
+        assert must in nodes, f'少了 {must}'
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

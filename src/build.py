@@ -1,7 +1,7 @@
 """組出 dist/project.json：骨架＋劇情卡＋地圖＋插件。"""
 import json, pathlib
 import os, cards, text, variables, plugin, art, mapkit
-import map_stadium
+import map_stadium, map_kitchen
 from text import para, new
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PROJECT_ID = 'project-c0f31c1f-2b06-44d8-a62e-374bff81fd60'
@@ -22,13 +22,17 @@ def build():
     p['settings']['plugins']['larch-rpg-system']['settings']['database'] = json.dumps(rpg_database(a), ensure_ascii=False)
     story_cards(board)
     N = board['nodes'].append
-    for cid in ('start-gun', 'pace', 'drafts'):
+    for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid]))
     N(map_stadium.build_stadium(a))
+    N(map_kitchen.build_kitchen(a))
     L = lambda x, y: cards.link(board, x, y)
     L(PROLOGUE, map_stadium.MAP_ID)
     L(plugin.NODE['start-gun'], plugin.NODE['pace']); L(plugin.NODE['pace'], map_stadium.MAP_ID)
-    L(MID, plugin.NODE['drafts']); L(plugin.NODE['drafts'], SEAWALL)
+    L(MID, plugin.NODE['drafts']); L(plugin.NODE['drafts'], SEAWALL); L(SEAWALL, map_stadium.MAP_ID)
+    L(plugin.NODE['notebook'], map_stadium.MAP_ID)
+    L(plugin.NODE['coin-drop'], SEAWALL2); L(SEAWALL2, map_kitchen.MAP_ID)
+    L(ENDING_B, map_stadium.MAP_ID)
     return p
 
 
@@ -41,7 +45,7 @@ def rpg_database(a):
 
 
 # 卡片 id：地圖事件與插件共用，只在這裡定義
-PROLOGUE, MID, SEAWALL, SEAWALL2, ENDING_B, GAZE, R1_FINISH = 'prologue', 'mid', 'seawall', 'seawall2', 'ending-b', 'gaze', 'r1-finish'
+PROLOGUE, MID, SEAWALL, SEAWALL2, ENDING_B, GAZE, R1_FINISH, KITCHEN, FIN = 'prologue', 'mid', 'seawall', 'seawall2', 'ending-b', 'gaze', 'r1-finish', 'kitchen', 'fin'
 
 
 def story_cards(board):
@@ -53,6 +57,8 @@ def story_cards(board):
     N(cards.dialogue(SEAWALL, '花蓮防波堤', para('大三那年夏天', '程徹愣住了') + [new('換人提示')]))
     N(cards.dialogue(SEAWALL2, '她的起跑線', para('那天我早就在看台後面', '起跑總在開始前，如同')))
     N(cards.dialogue(ENDING_B, '沒有起跑', text.blocks('結局B')))
+    N(cards.dialogue(KITCHEN, '冬夜', para('幾年後的一個冬夜', '世人總在等那聲槍響')))
+    N(cards.dialogue(FIN, '完', [new('完')]))
 
 
 def main():

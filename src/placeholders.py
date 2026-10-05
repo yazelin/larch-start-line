@@ -2,19 +2,20 @@
 import pathlib
 from PIL import Image, ImageDraw
 import map_stadium as S
+import map_kitchen as K
 
 OUT = pathlib.Path(__file__).resolve().parent.parent / 'assets/placeholder'
 COL = {'wall': '#8a8a80', 'stand': '#b8b0a2', 'tent': '#f0e6c8', 'gym': '#9fb3c2', 'vending': '#4f7fa8', 'track': '#c8584a',
-       'line': '#fffaf2', 'grass': '#9cc38a', 'corridor': '#d9cfbf'}
+       'line': '#fffaf2', 'grass': '#9cc38a', 'corridor': '#d9cfbf', 'counter': '#a98f72', 'table': '#c9a77c', 'floor': '#e8dcc6'}
 
 
-def stadium(tile=48):
-    im = Image.new('RGB', (S.W * tile, S.H * tile))
+def grid(mod, name, tile=48):
+    im = Image.new('RGB', (mod.W * tile, mod.H * tile))
     d = ImageDraw.Draw(im)
-    for y in range(S.H):
-        for x in range(S.W):
-            d.rectangle([x * tile, y * tile, (x + 1) * tile - 1, (y + 1) * tile - 1], fill=COL[S.cell(x, y)])
-    im.save(OUT / 'stadium.png')
+    for y in range(mod.H):
+        for x in range(mod.W):
+            d.rectangle([x * tile, y * tile, (x + 1) * tile - 1, (y + 1) * tile - 1], fill=COL[mod.cell(x, y)])
+    im.save(OUT / f'{name}.png')
 
 
 def walker(name, color):
@@ -37,7 +38,8 @@ def walker(name, color):
 
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
-    stadium()
+    grid(S, 'stadium')
+    grid(K, 'kitchen')
     for n, c in [('walk-cheng', '#2f3e7a'), ('walk-lin', '#7a2f4e'), ('walk-judge', '#e8e8e8'), ('walk-mate', '#2f6a7a'), ('walk-runner', '#b02a2a')]:
         walker(n, c)
     print('ok', sorted(p.name for p in OUT.iterdir()))
