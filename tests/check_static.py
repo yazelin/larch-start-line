@@ -316,6 +316,7 @@ def spare_key_is_played():
     m, intro = _event('m-kitchen', 'k-intro')
     assert any(a['kind'] == 'item' and a['itemId'] == 'key' for a in intro['actions']), '進廚房時背包裡要有備用鑰匙'
     assert any(a['kind'] == 'variable' and a['variable'] == 'phase' and a['value'] == 'key' for a in intro['actions'])
+    assert any(a['kind'] == 'dialogue' and '鑰匙' in a.get('text', '') for a in intro['actions']), '進廚房要先說明這副鑰匙是什麼、為什麼要掛'
     _, hook = _event('m-kitchen', 'key-hook')
     assert any(a['kind'] == 'removeItem' and a['itemId'] == 'key' for a in hook['actions']), '掛勾要把鑰匙從背包拿走'
     assert [a['value'] for a in hook['actions'] if a['kind'] == 'variable' and a['variable'] == 'phase'] == ['kitchen']

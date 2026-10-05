@@ -25,7 +25,7 @@ def build_kitchen(art):
     events = [
         ev('hero', *HERO_START, actor='player', direction='up', sprite=walker(art['walk-cheng-adult']), actorId='chengche-adult'),
         ev('k-intro', 10, 7, trigger='auto', once=True,
-           actions=[A('hero', value='chengche-adult'), item('key', '備用鑰匙'), setv('bpm', 80), setv('phase', 'key')]),
+           actions=[A('hero', value='chengche-adult'), item('key', '備用鑰匙'), say(new('鑰匙由來')), setv('bpm', 80), setv('phase', 'key')]),
         # 他把備用鑰匙掛上門邊：自己選來交給她的限制
         ev('key-hook', *HOOK, name='門邊掛勾', conditions=[cond('phase', 'key')], marker={'label': '門邊掛勾', 'kind': 'quest'},
            actions=[remove('key', '備用鑰匙'), say(new('掛鑰匙')), say(new('備用鑰匙說明')), setv('phase', 'kitchen')]),

@@ -61,10 +61,17 @@ export const CARDS = {
   // 配速：完全不按也能結束
   'pace': async (ui, f) => {
     const gaps = await f.evaluate(() => (window.paceBeats || []).filter(b => b.mess).map(b => b.gap));
-    assert(gaps.some(g => g < 350) && gaps.some(g => g > 1000) && !gaps.some(g => g >= 350 && g <= 1000), 'pace：她的臉浮出來時節拍忽近忽遠（' + gaps.slice(0, 8).join(',') + '）');
+    assert(gaps.length >= 8 && gaps.every(g => g <= 340), 'pace：她的臉浮出來時連續很密的拍點（' + gaps.length + ' 拍：' + gaps.slice(0, 8).join(',') + '）');
+    const ys = await f.evaluate(() => (window.paceBeats || []).filter(b => b.mess).map(b => b.y || 0));
+    assert(ys.some(y => y !== 0) && ys.every(y => Math.abs(y) <= 1.6), 'pace：她的臉浮出來時拍點上下錯開（' + ys.slice(0, 6).join(',') + '）');
+    const sp = await f.evaluate(() => (window.paceBeats || []).filter(b => b.sprint).map(b => b.gap));
+    assert(sp.length >= 12 && sp.every(g => g <= 200), 'pace：最後衝刺是一整排連續拍點（' + sp.length + ' 顆）');
     await tapUntil(f, /節拍/);
     await tap(f);
     await f.waitForFunction(() => document.getElementById('eyes').classList.contains('on'), null, { timeout: 30000 });
+    await f.waitForSelector('.dot.mess', { timeout: 8000 });
+    const anim = await f.evaluate(() => getComputedStyle(document.querySelector('.dot.mess')).animationName);
+    assert(anim === 'bob', 'pace：她那幾拍會上下跳動（' + anim + '）');
     await sleep(900); await ui.page.screenshot({ path: `dist/shots/card-pace-eyes${process.env.MOBILE ? '-mobile' : ''}.png` });
     const overlap = await f.evaluate(() => { const a = document.querySelector('#eyes img, #eyes p').getBoundingClientRect(), b = document.getElementById('track').getBoundingClientRect(); return a.bottom > b.top; });
     assert(!overlap, 'pace：眼神圖不蓋到節拍線');

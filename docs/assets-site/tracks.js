@@ -8,7 +8,7 @@ window.TRACKS = [
   { n: 2, bpm: 96, file: "audio/bgm-02-stadium.mp3", title: "Waiting for the Whistle", scene: "第一輪：程徹在田徑場", dur: 172,
     line: "風把她額前的碎髮吹亂，她忽然抬頭，兩人的視線撞在了一起。",
     cover: "art/cg/cg-gaze.webp", pos: "40% 50%", slides: ["art/maps/stadium.webp", "art/cg/cg-gaze.webp", "art/cg/cg-vending.webp"] },
-  { n: 3, bpm: 92, file: "audio/bgm-03-race.mp3", title: "Apex of the Turn", scene: "配速卡：八百公尺", dur: 67,
+  { n: 3, bpm: 92, file: "audio/bgm-03-race.mp3", title: "Final Straightaway", scene: "配速卡：八百公尺", dur: 167,
     line: "那場比賽他拿了小組第一，衝過終點線時他沒有看計時板。",
     cover: "art/cg/cg-finish.webp", pos: "30% 40%", slides: ["art/cards/start-pov.webp", "art/cards/pace-eyes.webp", "art/cg/cg-finish.webp"] },
   { n: 4, bpm: 80, file: "audio/bgm-04-seawall.mp3", title: "Unsent at the Seawall", scene: "中章、訊息草稿、花蓮防波堤", dur: 123,

@@ -8,7 +8,7 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 #scene{position:absolute;inset:0;transition:filter .8s}
 #sky,#far,#ground{position:absolute;left:0;right:0;background-repeat:repeat-x;background-size:auto 100%}
 #sky{top:0;height:60%;background-color:#cfe0ec;background-image:linear-gradient(#a9c7e0,#e8eef0)}
-#far{top:29%;height:31%;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)}
+#far{top:29%;height:31%;background-repeat:no-repeat!important;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)}
 #ground{top:var(--ground-top);bottom:0;background-color:#c8584a;background-image:linear-gradient(#d26a58,#b9493d)}
 #ground::before{content:"";position:absolute;inset:0 0 auto;height:4vh;background:linear-gradient(rgba(251,246,238,.55),transparent)}
 #paper{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 55%,rgba(120,84,60,.18))}
@@ -20,6 +20,15 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 #ring::after{content:"";position:absolute;inset:18%;border-radius:50%;border:1.5px dashed rgba(255,250,242,.7)}
 .dot{position:absolute;top:var(--lane);width:4vh;height:4vh;translate:-50% -50%;border-radius:50%;
   background:radial-gradient(circle at 42% 40%,#fff 0 28%,rgba(255,250,240,.92) 46%,rgba(255,240,215,.45) 66%,transparent 72%);filter:drop-shadow(0 0 6px rgba(255,244,220,.9))}
+.dot.mess{animation:bob .34s ease-in-out infinite alternate}   /* 她的臉浮上來時：拍點上下跳，像踩不準 */
+@keyframes bob{from{transform:translateY(-1.3vh)}to{transform:translateY(1.3vh)}}
+.dot.sprint{width:2.8vh;height:2.8vh;background:radial-gradient(circle at 42% 40%,#fff 0 22%,#ffcf9a 45%,#ff7b54 68%,transparent 72%);filter:drop-shadow(0 0 7px rgba(255,123,84,.85))}
+.pop{position:absolute;left:50%;top:42%;translate:-50% -50%;font:900 clamp(56px,13vh,128px)/1 "Noto Sans TC",sans-serif;color:#fffaf2;
+  text-shadow:0 2px 10px rgba(120,40,25,.45);pointer-events:none;animation:pop .38s cubic-bezier(.15,.9,.25,1) forwards}
+/* 打擊感：從很小一下子放到很大，前段亮、後段很快淡掉 */
+@keyframes pop{0%{scale:.2;opacity:1}35%{opacity:.9}100%{scale:2.6;opacity:0}}
+#score{display:none}
+@media (prefers-reduced-motion:reduce){.pop{animation-duration:.01s}}
 .splash{position:absolute;left:18%;top:var(--lane);width:9vh;height:9vh;translate:-50% -50%;border-radius:50%;border:2px solid rgba(255,250,242,.9);pointer-events:none;animation:splash .45s ease-out forwards}
 @keyframes splash{to{scale:1.9;opacity:0}}
 /* 她的眼神浮上來：畫面柔化 */
@@ -61,15 +70,20 @@ var SPEED = 0.06; /* 每毫秒移動的 vw */
 var scroll = 0, lastT = 0;   /* 跑道捲動的距離（vw），跟節拍點同速，像腳下的地面往後退 */
 function setPhase(p) { phase = p; document.body.dataset.phase = p; }
 function plan() {
+  var mk = 0;
   /* 預先排好每一拍的時間：平常 650ms 一拍，她浮上來的那兩段亂掉 */
   var t = 1200, end = S.duration * 0.85;
   while (t < end) {
     var f = t / S.duration, mess = (f > .33 && f < .45) || (f > .58 && f < .70);
     /* 她的臉浮上來時：故意忽近忽遠（很近 250–330ms 或很遠 1100–1400ms），不規則 */
-    var gap = mess ? (Math.random() < 0.5 ? 250 + Math.random() * 80 : 1100 + Math.random() * 300) : 650;
+    var gap = mess ? (mk % 2 === 0 ? 260 : 330) : 650;   /* 她的臉浮上來時：連續好幾個很近的拍點，慌亂 */
+    if (mess) mk += 1;
     t += gap;
-    beats.push({ t: t, hit: false, mess: mess, gap: Math.round(gap) });
+    var JIT = [-1.4, 1.1, -0.6, 1.6, -1.2, 0.8];   /* vh：她的臉浮上來時拍點高低錯開，像踩不準 */
+    beats.push({ t: t, hit: false, mess: mess, gap: Math.round(gap), y: mess ? JIT[(mk - 1 + JIT.length) % JIT.length] : 0 });
   }
+  /* 最後衝刺：一整排連續拍點（約 0.17 秒一顆），跟著連打 */
+  for (var st = S.duration * 0.86; st < S.duration * 0.985; st += 170) beats.push({ t: st, hit: false, sprint: true, gap: 170 });
   window.paceBeats = beats;   /* 給測試讀 */
 }
 function parallax(now) {
@@ -93,16 +107,21 @@ function tick() {
     var dx = (b.t - now) * SPEED;
     if (Math.abs(b.t - now) < Math.abs(near)) near = b.t - now;
     if (dx < -5 || dx > 90 || b.hit) return;
-    var d = document.createElement('div'); d.className = 'dot'; d.style.left = (18 + dx) + 'vw'; dots.appendChild(d);
+    var d = document.createElement('div'); d.className = b.sprint ? 'dot sprint' : b.mess ? 'dot mess' : 'dot'; if (b.mess) d.style.animationDelay = (-((now + b.t) % 680)) + 'ms';   /* 每格重畫，延遲跟著時間走才連續 */ d.style.left = (18 + dx) + 'vw';
+    if (b.y) d.style.top = 'calc(var(--lane) + ' + b.y + 'vh)';
+    dots.appendChild(d);
   });
   document.body.dataset.onbeat = (phase === 'run' && Math.abs(near) < 90) ? '1' : '0';
-  document.getElementById('score').textContent = hits + sprint;
   raf = requestAnimationFrame(tick);
 }
 function finish() {
   cancelAnimationFrame(raf); setPhase('end'); dots.innerHTML = ''; eyes.classList.remove('on'); document.body.classList.remove('soft');
   document.body.dataset.onbeat = '0';
-  msg.textContent = (hits >= beats.length * 0.6) ? S.endGood : S.endMessy;
+  msg.textContent = (hits >= beats.filter(function (b) { return !b.sprint; }).length * 0.6) ? S.endGood : S.endMessy;
+}
+function pop() {   /* 每打中一下：畫面正中冒出目前次數，從小放大再淡出 */
+  var p = document.createElement('div'); p.className = 'pop'; p.textContent = hits + sprint; document.body.appendChild(p);
+  setTimeout(function () { p.remove(); }, 420);
 }
 function splash() {
   var s = document.createElement('div'); s.className = 'splash'; document.body.insertBefore(s, dots);
@@ -113,10 +132,15 @@ L.press(function () {
   if (phase === 'run') {
     var now = performance.now() - t0, best = null;
     beats.forEach(function (b) { if (!b.hit && Math.abs(b.t - now) < 130 && (!best || Math.abs(b.t - now) < Math.abs(best.t - now))) best = b; });
-    if (best) { best.hit = true; hits += 1; ring.style.scale = '1.25'; splash(); setTimeout(function () { ring.style.scale = '1'; }, 100); }
+    if (best) { best.hit = true; hits += 1; ring.style.scale = '1.25'; splash(); pop(); setTimeout(function () { ring.style.scale = '1'; }, 100); }
     return;
   }
-  if (phase === 'sprint') { sprint = Math.min(sprint + 1, 15); return; }
+  if (phase === 'sprint') {   /* 衝刺：打掉最近的一顆連續拍點 */
+    var n2 = performance.now() - t0, hit = null;
+    beats.forEach(function (b) { if (b.sprint && !b.hit && Math.abs(b.t - n2) < 160 && (!hit || Math.abs(b.t - n2) < Math.abs(hit.t - n2))) hit = b; });
+    if (hit) { hit.hit = true; sprint += 1; splash(); pop(); }
+    return;
+  }
   if (phase === 'end') { setPhase('done'); L.set('pace_score', hits + sprint); L.set('bpm', 170); L.done(); }
 });
 function bg(el, url) { if (url) el.style.backgroundImage = 'url("' + url + '")'; }

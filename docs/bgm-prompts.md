@@ -23,6 +23,12 @@ Light acoustic guitar and soft piano, mid tempo 96 BPM, bright sunny school spor
 Driving rhythmic track at exactly 92 BPM, steady kick drum on every beat, pulsing synth bass and staccato strings, building tension and breath, running and heartbeat feeling, cinematic sports anime, clear strong downbeat, instrumental, loopable
 ```
 
+青春感版本（2026-10-05 採用，成品〈Final Straightaway〉，167 秒，實測重拍 184 BPM＝92 的兩倍）：
+
+```
+Bright youthful J-rock anime opening style at exactly 92 BPM, crisp drum kit with kick on every beat and open hi-hat, driving electric guitar riff with clean jangly chords, punchy bass, sparkling glockenspiel and soaring string line, summer school track meet, running toward someone, hopeful heart-racing excitement, clear strong downbeat, instrumental, no vocals, loopable
+```
+
 ## 4. bgm-04-seawall.mp3：中章、訊息草稿、花蓮防波堤（約 2 分鐘，循環）
 
 ```

@@ -29,6 +29,7 @@ async function drainUntil(re, max = 60) {
   for (let i = 0; i < max; i++) {
     const t = await ui.text();
     if (re && re.test(t)) return t;
+    await sleep(300); if (await ui.text() !== t) continue;   // 畫面還在變（選項可能正要出現）就先別按 Enter，免得把選項選掉
     await ui.advance(); await sleep(700);
   }
   throw new Error('翻不到 ' + re + '：' + (await ui.text()).slice(-300));
@@ -167,7 +168,7 @@ try {
   await drainUntil(/起跑總在開始前　完|林亞澤（Yaze Lin）/);   // 「完」只有一句，可能被翻頁帶過，直接進到第二章也算
   assert(true, '結局 A 走到底');
   let siteFrame = null;
-  for (let i = 0; i < 40 && !siteFrame; i++) { siteFrame = ui.page.frames().find(f => f.url().includes('yazelin.github.io/larch-start-line')); if (!siteFrame) { if (i < 10) await ui.advance(); await sleep(1000); } }   // 進第二章後就別再按 Enter，等 iframe 載入
+  for (let i = 0; i < 90 && !siteFrame; i++) { siteFrame = ui.page.frames().find(f => f.url().includes('yazelin.github.io/larch-start-line')); if (!siteFrame) { if (i < 10) await ui.advance(); await sleep(1000); } }   // 進第二章後就別再按 Enter，等 iframe 載入
   assert(!!siteFrame, '結局 A 之後自動進第二章，內嵌公開站');
   await sleep(3000); await shot('10-chapter2');
   assert(ui.errors.length === 0, '全程沒有頁面例外 ' + ui.errors.join(';'));
