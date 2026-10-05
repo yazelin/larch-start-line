@@ -99,7 +99,7 @@ export const CARDS = {
       await waitMsg(f, i === 0 ? /馬上去買水/ : /三分鐘/);
     }
     assert(await f.locator('#crossed li').count() === 5, 'notebook：答錯的時間都被畫掉');
-    await f.locator('#hh').fill('15'); await f.locator('#mm').fill('44');
+    await f.locator('#hh').fill('15'); await f.locator('#mm').fill('43');   // 15:43（早一分鐘到）也算對
     await f.locator('#submit').click();
     await waitMsg(f, /算了你的時間/);
     await tap(f);

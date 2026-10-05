@@ -31,7 +31,7 @@ def build_kitchen(art):
            actions=[remove('key', '備用鑰匙'), say(new('掛鑰匙')), say(new('備用鑰匙說明')), setv('phase', 'kitchen')]),
         npc('lin-k', *LIN, walker(art['walk-lin-adult']), direction='up'),
         ev('hug', *HUG, trigger='touch', conditions=[cond('phase', 'kitchen')], marker={'label': '她身後', 'kind': 'quest'},
-           actions=[setv('phase', 'proposal'), setv('bpm', 72), card('kitchen'), jump('fin')]),
+           actions=[setv('phase', 'proposal'), setv('bpm', 72), card('kitchen'), card('kitchen-2'), jump('fin')]),
     ]
     guidance = [{'text': '把備用鑰匙掛到門邊', 'eventId': 'key-hook', 'conditions': [cond('phase', 'key')]},
                 {'text': '走到她身後', 'eventId': 'hug', 'conditions': [cond('phase', 'kitchen')]}]

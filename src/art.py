@@ -15,7 +15,7 @@ FILES = {
     'walk-runner': ('art/walk/walk-runner.png', 'placeholder/walk-runner.png'),
     'cg-gaze': ('art/cg/cg-gaze.webp', None), 'cg-finish': ('art/cg/cg-finish.webp', None),
     'cg-vending': ('art/cg/cg-vending.webp', None), 'cg-seawall': ('art/cg/cg-seawall.webp', None),
-    'cg-kitchen': ('art/cg/cg-kitchen.webp', None), 'style': ('art/anchors/style-b.webp', None),
+    'cg-kitchen': ('art/cg/cg-kitchen.webp', None), 'cg-kitchen-backhug': ('art/cg/cg-kitchen-backhug.webp', None), 'style': ('art/anchors/style-b.webp', None),
     'start-pov': ('art/cards/start-pov.webp', None), 'pace-eyes': ('art/cards/pace-eyes.webp', None),
     'pace-sky': ('art/cards/pace-sky.webp', None), 'pace-track': ('art/cards/pace-track.webp', None), 'pace-far': ('art/cards/pace-far.webp', None),
     'coin-bg': ('art/cards/coin-bg.webp', None), 'coin': ('art/cards/coin.webp', None), 'cheng-walk': ('art/cards/cheng-walk.webp', None), 'lin-calm': ('art/cards/lin-calm.webp', None), 'lin-shy': ('art/cards/lin-shy.webp', None), 'lin-happy': ('art/cards/lin-happy.webp', None), 'cover': ('art/cover/cover.webp', None),

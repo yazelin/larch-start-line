@@ -84,7 +84,7 @@ document.getElementById('submit').onclick = function () {
   if (solved) return;
   var ans = pad(Number(document.getElementById('hh').value) || 0) + ':' + pad(Number(document.getElementById('mm').value) || 0);
   tries += 1; L.set('calc_tries', tries);
-  if (ans === S.answer) {
+  if (String(S.answer).split('|').indexOf(ans) >= 0) {   /* 15:43（早一分鐘）或 15:44（剛好同時）都算對 */
     solved = true; L.set('calc_ok', true); msg.textContent = S.right;
     document.getElementById('submit').textContent = S.next;
     document.getElementById('submit').onclick = function () { L.done(); };

@@ -29,7 +29,7 @@ def build():
     p['settings']['cgGallerySource'] = 'picked'
     p['settings']['cgGalleryItems'] = [{'url': a[k], 'title': t} for k, t in [
         ('cover', '起跑線上'), ('cg-gaze', '四目相對'), ('cg-finish', '衝線望向看台'), ('cg-vending', '妳的十塊錢'),
-        ('cg-seawall', '花蓮的防波堤'), ('cg-kitchen', '台北的冬夜')] if a.get(k)]
+        ('cg-seawall', '花蓮的防波堤'), ('cg-kitchen-backhug', '我們結婚吧'), ('cg-kitchen', '好啊')] if a.get(k)]
     N = board['nodes'].append
     for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid], plugin.card_art(cid, a)))
@@ -98,7 +98,9 @@ def story_cards(board, a):
     if a['bgm-06']: board['nodes'][-1]['data'].update(bgm=a['bgm-06'], bgmVolume=0.5, bgmLoop=True)   # 防波堤後半到廚房
     N(cards.dialogue(ENDING_B, '沒有起跑', text.blocks('結局B'), bg=a['coin-bg']))
     if a['bgm-07']: board['nodes'][-1]['data'].update(bgm=a['bgm-07'], bgmVolume=0.5, bgmLoop=True)   # 結局 B
-    N(cards.dialogue(KITCHEN, '冬夜', para('幾年後的一個冬夜', '世人總在等那聲槍響'), bg=a['cg-kitchen']))
+    # 冬夜廚房拆兩張：前半他從背後抱住她（下巴抵在肩窩），她轉過身來之後換成回抱、吻髮旋那張
+    N(cards.dialogue(KITCHEN, '冬夜', para('幾年後的一個冬夜', '「我們結婚吧。」'), bg=a['cg-kitchen-backhug']))
+    N(cards.dialogue('kitchen-2', '好啊', para('林向晚停下手中的湯勺', '世人總在等那聲槍響'), bg=a['cg-kitchen']))
     N(cards.dialogue(VENDING, '販賣機前', [('程徹', '妳的十塊錢。')], bg=a['cg-vending']))
     # 第二輪她的內心話（立繪表情：害羞、被嚇到）
     N(cards.dialogue('r2-peek', '偷看', [new('偷看'), ('林向晚', new('偷看心聲'))], actors=[cards.actor('林向晚', a['p-lin-shy'])]))

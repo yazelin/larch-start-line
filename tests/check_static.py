@@ -430,7 +430,7 @@ def cg_gallery_only_real_cgs():
     st = build.build()['settings']
     assert st.get('cgGallerySource') == 'picked', 'CG 收藏要用挑選模式'
     urls = [i['url'] for i in st['cgGalleryItems']]
-    assert len(urls) == 6 and all(('/cg/cg-' in u) or ('/cover/' in u) for u in urls), urls
+    assert len(urls) == 7 and all(('/cg/cg-' in u) or ('/cover/' in u) for u in urls), urls
     assert all(i.get('title') for i in st['cgGalleryItems'])
 
 @test
