@@ -25,6 +25,11 @@ def build():
     if a['bgm-01']: p['settings'].setdefault('titleScreen', {})['bgm'] = a['bgm-01']   # 標題音樂
     p['settings']['titleCoverImage'] = a['cover']        # 專用封面：左半留給標題與選單
     p['settings']['projectThumbnail'] = a['cover']
+    # CG 收藏：只放遊戲裡實際演出的劇情 CG 與封面
+    p['settings']['cgGallerySource'] = 'picked'
+    p['settings']['cgGalleryItems'] = [{'url': a[k], 'title': t} for k, t in [
+        ('cover', '起跑線上'), ('cg-gaze', '四目相對'), ('cg-finish', '衝線望向看台'), ('cg-vending', '妳的十塊錢'),
+        ('cg-seawall', '花蓮的防波堤'), ('cg-kitchen', '台北的冬夜')] if a.get(k)]
     N = board['nodes'].append
     for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid], plugin.card_art(cid, a)))

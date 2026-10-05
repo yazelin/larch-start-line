@@ -38,7 +38,7 @@ def req(method, path='', body=None, etag=None, tries=6):
 
 
 GENERATED_PLUGINS = ('start-line',)
-GENERATED_KEYS = ('titleCoverImage', 'projectThumbnail')
+GENERATED_KEYS = ('titleCoverImage', 'projectThumbnail', 'cgGallerySource', 'cgGalleryItems')
 
 
 def merge_settings(online, built):
@@ -52,6 +52,8 @@ def merge_settings(online, built):
     rpg.setdefault('settings', {})['database'] = built['plugins']['larch-rpg-system']['settings']['database']
     for k in GENERATED_KEYS:
         if k in built: m[k] = built[k]
+    if (built.get('titleScreen') or {}).get('bgm'):   # 標題音樂：只寫 bgm，線上的標題圖層保留
+        m.setdefault('titleScreen', {})['bgm'] = built['titleScreen']['bgm']
     return m
 
 

@@ -423,6 +423,16 @@ def ending_a_goes_to_site_chapter():
     ops = [o for nid in path for o in (next(n for n in b0['nodes'] if n['id'] == nid)['data'].get('variableOps') or [])]
     assert {'variable': 'bpm', 'value': '0'} in [{'variable': o['variable'], 'value': o['value']} for o in ops], '進第二章前要把心跳歸零，HUD 才不會擋住公開站'
 
+@test
+def cg_gallery_only_real_cgs():
+    """CG 收藏只放遊戲裡實際演出的 CG（＋封面），不能混進走路圖、立繪、卡片背景。"""
+    import build
+    st = build.build()['settings']
+    assert st.get('cgGallerySource') == 'picked', 'CG 收藏要用挑選模式'
+    urls = [i['url'] for i in st['cgGalleryItems']]
+    assert len(urls) == 6 and all(('/cg/cg-' in u) or ('/cover/' in u) for u in urls), urls
+    assert all(i.get('title') for i in st['cgGalleryItems'])
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

@@ -42,6 +42,13 @@ def cache_key_is_content():
     assert k1 == k2, 'mtime 改了快取鍵就變，clone 後會全部重傳'
     f.write_bytes(b'y'); assert push.cache_key('a.png', f) != k1, '內容改了快取鍵要變'
 
+def title_music_pushed():
+    online = {'titleScreen': {'layers': ['作者的圖層'], 'frame': 'gold'}, 'plugins': {}}
+    built = {'titleScreen': {'bgm': 'URL'}, 'plugins': {'start-line': {}, 'larch-rpg-system': {'settings': {'database': 'd'}}}}
+    m = push.merge_settings(online, built)
+    assert m['titleScreen'] == {'layers': ['作者的圖層'], 'frame': 'gold', 'bgm': 'URL'}, m['titleScreen']
+
+t('標題音樂會推上去，線上的標題圖層保留', title_music_pushed)
 t('快取鍵看內容不看時間', cache_key_is_content)
 t('只覆寫產生器負責的設定，其他保留線上', keeps_online_settings)
 t('GET 遇到 502、網路錯誤會重試', retries_5xx_and_network)
