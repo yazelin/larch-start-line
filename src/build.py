@@ -17,10 +17,13 @@ def build():
     board['nodes'], board['edges'] = [], []
     p['nodes'], p['edges'] = board['nodes'], board['edges']  # 頂層是目前白板的複本
     p['variables'] = variables.project_variables()
+    p['description'] = text.new('簡介')
     p['settings']['plugins'][plugin.PLUGIN_ID] = plugin.settings_entry()
     a = art.paths()
     p['settings']['plugins']['larch-rpg-system']['settings']['database'] = json.dumps(rpg_database(a), ensure_ascii=False)
     story_cards(board, a)
+    p['settings']['titleCoverImage'] = a['cg-gaze']
+    p['settings']['projectThumbnail'] = a['cg-gaze']
     N = board['nodes'].append
     for cid in plugin.NODE:
         N(plugin.card_node(cid, plugin.NODE[cid], plugin.card_art(cid, a)))

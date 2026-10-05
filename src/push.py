@@ -67,7 +67,7 @@ def main(summary):
     etag, cur = req('GET')  # 上傳會改 media，重抓
     online = cur.get('project', cur)
     project = dict(online)
-    for k in ('boards', 'nodes', 'edges', 'variables', 'settings', 'activeBoardId', 'name'):
+    for k in ('boards', 'nodes', 'edges', 'variables', 'settings', 'activeBoardId', 'name', 'description'):
         project[k] = built[k]
     req('PUT', '', {'project': project, 'summary': summary}, etag)
 
