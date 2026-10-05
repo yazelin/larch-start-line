@@ -82,11 +82,11 @@ try {
 
   // 沒拿號碼布先去起跑線
   await goto(24, 22, GAZE);
-  await ui.waitText(/號碼布還沒拿/); await drainUntil(/去檢錄處拿號碼布/);
+  await ui.waitText(/號碼布還沒拿/); await sleep(1500); await shot('00a-narrator'); await drainUntil(/去檢錄處拿號碼布/);
   assert(true, '沒拿號碼布去起跑線 → 被引導回檢錄');
 
   await interact(6, 25, [6, 26], 'ArrowUp');
-  await ui.waitText(/號碼布跟別針/); await drainUntil(/到終點線那邊/);
+  await ui.waitText(/號碼布跟別針/); await sleep(1500); await shot('00b-clerk'); await drainUntil(/到終點線那邊/);
   assert(true, '檢錄拿到號碼布');
 
   await goto(14, 25);

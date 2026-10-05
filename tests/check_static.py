@@ -295,6 +295,16 @@ def race_runs_a_full_lap():
         assert not bad, f'{eid} 跑出跑道：{bad[:3]}'
         assert S.START_LINE not in cells, f'{eid} 經過起跑線事件格，會再觸發起跑卡'
 
+@test
+def nameplates_are_real_names():
+    """地圖對話說話者留空＝事件自己講話，名牌顯示事件名稱，所以事件名稱不能是程式代號。"""
+    p, ms = _maps()
+    for n, m in ms:
+        for e in m['events']:
+            for a in _all_actions(e):
+                if a['kind'] == 'dialogue' and not a.get('cardId') and a.get('speaker', '') == '':
+                    assert re.search(r'[\u4e00-\u9fff]', e.get('name', '')), f"{e['id']} 的台詞名牌會顯示「{e.get('name')}」"
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

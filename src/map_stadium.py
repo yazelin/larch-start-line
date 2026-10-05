@@ -47,8 +47,9 @@ R1 = cond('round', 1)
 
 
 def lap(from_y):
-    """沿跑道跑一圈回到終點（14,22）。去程走內側、回程走最外側那條（y=23），不會踩到起跑線事件格。"""
-    return [('left', 20), ('up', from_y - 7), ('right', 20), ('right', 9), ('down', 16), ('left', 19), ('up', 1)]   # 右側走 x=33，避開壓到跑道角的體育館
+    """沿跑道中間跑一圈回到終點（14,22）：左 x=4、上 y=7、右 x=34、下 y=21（對過水彩底圖的跑道中線）。
+    回程走 y=21，不會踩到起跑線事件格（24,22）。"""
+    return [('left', 20), ('up', from_y - 7), ('right', 20), ('right', 10), ('down', 14), ('left', 20), ('down', 1)]
 
 
 def round1_events(art):
@@ -57,10 +58,10 @@ def round1_events(art):
         ev('hero', *HERO_START, actor='player', direction='up', sprite=walker(art['walk-cheng']), actorId='chengche'),
         ev('r1-intro', 1, 28, trigger='auto', once=True, conditions=[R1, cond('phase', '')],
            actions=[setv('bpm', 96), setv('phase', 'bib')]),
-        npc('clerk', *CLERK, walker(art['walk-judge']), conditions=[R1, cond('phase', 'bib')],
+        npc('clerk', *CLERK, walker(art['walk-judge']), name='檢錄員', conditions=[R1, cond('phase', 'bib')],
             actions=[say(new('檢錄'), speaker=''), item('bib', '號碼布'), item('pin', '別針'), setv('phase', 'start')],
             pages=[page('clerk-after', [cond('phase', 'bib', 'neq')], [], actor='npc', sprite=walker(art['walk-judge']), solid=True)]),
-        npc('mate-r1', *MATE, walker(art['walk-mate']), conditions=[R1], actions=[say(new('隊友第一輪'), speaker='')]),
+        npc('mate-r1', *MATE, walker(art['walk-mate']), name='隊友', conditions=[R1], actions=[say(new('隊友第一輪'), speaker='')]),
         npc('lin-finish', *LIN_FINISH, lin, conditions=[R1, cond('gaze_seen', False)], direction='down'),
         npc('lin-stand', *STANDS_SEAT, lin, conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')]),
         npc('lin-vending', *LIN_VENDING, lin, conditions=[R1, cond('phase', 'vending')], direction='right'),
@@ -70,9 +71,9 @@ def round1_events(art):
                           actions=[setv('gaze_seen', True), setv('bpm', 120), balloon('exclamation'), card('gaze')]))
     ev_list += [
         ev('startline', *START_LINE, trigger='touch', conditions=[R1, cond('phase', 'bib')],
-           actions=[say(new('先去檢錄'), speaker=''), move([('up', 1)])],
+           actions=[say(new('先去檢錄')), move([('up', 1)])],
            pages=[page('startline-early', [R1, cond('phase', 'start'), cond('gaze_seen', False)],
-                       [say(new('還沒點名'), speaker=''), move([('up', 1)])], trigger='touch'),
+                       [say(new('還沒點名')), move([('up', 1)])], trigger='touch'),
                   page('startline-go', [R1, cond('phase', 'start'), cond('gaze_seen', True)],
                        [jump(plugin.NODE['start-gun'])], trigger='touch')]),
         ev('race-done', 2, 28, trigger='condition', conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')],
