@@ -43,6 +43,9 @@ body::before{z-index:3}
 .top .skin{margin-left:auto}
 .top .footer-icons{margin-left:10px;gap:8px}
 .top .footer-icon{width:36px;height:36px;background:var(--glass);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+/* 回首頁：桌機手機都看得到 */
+.top .home{margin-left:10px;padding:6px 12px;border-radius:99px;font:600 14px "Noto Sans TC",sans-serif;text-decoration:none;color:var(--ink);background:rgb(var(--paper-rgb)/.82);box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
+.top .home:hover{background:rgb(var(--paper-rgb))}
 @media (max-width:520px){.top .ttl2{display:none}.brand{font-size:17px}.brand span{display:none}.top .footer-icon{width:34px;height:34px}.top .footer-icons{gap:6px;margin-left:8px}}
 
 main{position:relative;z-index:2;flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:28px;padding:12px max(24px,calc(50% - 620px)) 0}
@@ -145,6 +148,7 @@ body.bare #baretip.show{opacity:1}
 <header class="top" data-solid>
   <div class="wrap in" style="width:auto;padding:0 max(16px,calc(50% - 620px))">
     <a class="brand" href="../"><i aria-hidden="true"></i><span>起跑總在開始前</span></a>
+    <a class="home" href="../">← 回首頁</a>
     <span class="ttl2">原聲帶</span>
     <div class="skin" role="group" aria-label="切換主題"><button data-skin-set="cheng" aria-pressed="true" title="程徹版"><i data-bg="art/portraits/cheng-hs-smile.webp"></i><span>程徹</span></button><button data-skin-set="lin" aria-pressed="false" title="林向晚版"><i data-bg="art/cards/lin-avatar.webp"></i><span>向晚</span></button></div>
     <nav class="footer-icons" aria-label="作者連結">
@@ -234,6 +238,14 @@ body.bare #baretip.show{opacity:1}
   A.onpause = function () { $("playicon").setAttribute("d", "M8 5v14l11-7z"); $("play").setAttribute("aria-label", "播放"); document.body.classList.remove("playing"); };
   $("prev").onclick = function () { if (A.currentTime > 3) A.currentTime = 0; else load(idx - 1, true); };
   $("next").onclick = function () { load(idx + 1, true); };
+  /* 某一首載不到（例如 CDN 還沒更新）：顯示提示並自動換下一首，不讓整個播放器卡住 */
+  var fails = 0;
+  A.onerror = function () {
+    if (!A.src) return; fails += 1;
+    $("scene").textContent = "這首暫時載不到，換下一首。";
+    if (fails < T.length) setTimeout(function () { load(idx + 1, true); }, 1200);
+  };
+  A.onplaying = function () { fails = 0; };
   A.onended = function () { if (one) { A.currentTime = 0; play(); } else if (idx === T.length - 1) load(0, false); else load(idx + 1, true); };
   function setOne(v) { one = v; store.set("sl-one", v ? "1" : "0"); $("mode").setAttribute("aria-pressed", String(v)); }
   $("mode").onclick = function () { setOne(!one); };
