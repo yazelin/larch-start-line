@@ -164,7 +164,7 @@ def round2_pages(events, art):
         page('too-early', [R2, cond('phase', 'clue'), cond('clue_walk', True)], [say(new('線索不夠'))]),
         page('calc-again', [R2, cond('phase', 'clue'), cond('calc_ok', False)] + ALL_CLUES, [jump(plugin.NODE['notebook'])]),
         page('vending2', [R2, cond('phase', 'vending2'), cond('ending', 'B', 'neq')],
-             [A('choice', text='', choice={'options': [
+             [say(new('販賣機前心聲')), A('choice', text='', choice={'options': [   # 先一句對話：按 Enter 互動的那一下不會直接選掉選項
                  {'id': 'drop', 'label': '讓零錢掉下去', 'actions': [item('pocari', '寶礦力'), setv('ending', 'A'), jump(plugin.NODE['coin-drop'])]},
                  {'id': 'leave', 'label': '轉身離開', 'actions': [setv('ending', 'B'), jump('ending-b')]}]})]),
     ]

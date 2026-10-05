@@ -60,6 +60,8 @@ export const CARDS = {
   },
   // 配速：完全不按也能結束
   'pace': async (ui, f) => {
+    const gaps = await f.evaluate(() => (window.paceBeats || []).filter(b => b.mess).map(b => b.gap));
+    assert(gaps.some(g => g < 350) && gaps.some(g => g > 1000) && !gaps.some(g => g >= 350 && g <= 1000), 'pace：她的臉浮出來時節拍忽近忽遠（' + gaps.slice(0, 8).join(',') + '）');
     await tapUntil(f, /節拍/);
     await tap(f);
     await f.waitForFunction(() => document.getElementById('eyes').classList.contains('on'), null, { timeout: 30000 });

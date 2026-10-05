@@ -441,3 +441,105 @@ Paint a hand-painted watercolor illustration (NOT a photo, NOT photorealistic, n
 The attached image is ONLY a painting style reference: copy its soft watercolor technique, paper texture, warm afternoon light and palette, but do NOT copy its composition.
 Paint a long low horizontal band of distant scenery of a Taiwanese high school sports field, seen straight from the side: the lower half of the image is a continuous row of soft rounded green trees and, in places, a simple low concrete spectator stand with a pale fabric canopy roof, a low fence along the bottom; behind them, faint hazy blue-gray mountains roll along the horizon. Above the mountains the upper 45% of the image is plain empty very pale cream-white watercolor paper with almost no paint (no clouds), so it can fade into a sky placed above it. The very bottom edge is the base of the trees and fence, a soft pale green line, with nothing below. Even spread of elements along the whole width, so the band can be tiled horizontally. No people, no figures, no running track, no lamp posts in the foreground, no birds. No text, no letters, no numbers, no logos, no signs, no signature, no watermark. Wide landscape.
 ```
+
+## cards/lin-avatar.webp（LINE 大頭貼）
+
+- 參考圖：image 1 = lin-b（林向晚定錨）、image 2 = lin-hs-smile 疊綠底轉 PNG（林向晚笑臉，臉與笑容參考）、image 3 = style-b（只當畫風參考）
+- 生成 1 次，第 1 張採用。原圖 1254×1254，LANCZOS 縮到 512×512，webp 品質 90，不去背。
+- 提示詞：
+
+```
+Image 1 is the character reference for Lin Xiangwan (林向晚): a Taiwanese 17-year-old high school girl, 400m sprinter, long straight black hair in a low ponytail with fine wispy bangs, slim athletic build, navy blue sleeveless running singlet with white trim. Image 2 is the same girl (Lin Xiangwan) smiling, use it for her face and smile. Image 3 is the painting style anchor only (a soft watercolor running track); do not copy its scenery or composition.
+Paint a casual, lifestyle social-media profile picture of Lin Xiangwan that she would choose herself: square composition, framed from the chest up, her face large and centered slightly off-center. She holds a cold blue-and-white sports drink can (plain, completely blank, no text, no logo, no label print) up against her cheek with one hand, the can lightly touching her cheek, a few beads of condensation on it. Expression: a natural, happy, relaxed smile, eyes bright and slightly narrowed with joy, a soft pink blush on her cheeks, a few strands of bangs stuck to her forehead from training. Cute but not posed or exaggerated; no peace sign, no pout. Same face as images 1 and 2, same person. Background: the edge of a school sports field in late afternoon, out of focus, warm golden light with soft round watercolor bokeh light spots, hints of green trees and red track blurred.
+Painting style: soft transparent watercolor illustration, visible cold-press paper grain, gentle wet-in-wet blooms, pale luminous warm palette, delicate linework on the face. Not a photo, not 3D. Correct anatomy, the hand holding the can has five fingers, natural grip. No text, no letters, no numbers, no logos, no signature, no watermark, no frame, no circle crop.
+```
+
+## portraits/lin-hs-shy.webp
+
+- 參考圖：image 1 = lin-hs-smile 疊在 #00FF00 上、置中貼進 1024×1536 畫布（編輯目標，偏移 45,68）、image 2 = lin-b（林向晚定錨，只認臉）、image 3 = style-b（只當畫風參考）
+- 生成 1 次，第 1 張採用。輪廓與 smile 的遮罩 IoU 0.994。去綠：spill = g - max(r,b)，alpha = clip(1-(spill-30)/90)，g 壓到 max(r,b)；裁 (45,68)-(978,1468) 得 933×1400，無縮放，webp 無損。
+- 提示詞：
+
+```
+Image 1 is the edit target: the approved smiling portrait of Lin Xiangwan (林向晚), a 17-year-old Taiwanese high school girl sprinter in a navy singlet with white trim, long black hair in a low ponytail with wispy bangs, on a flat pure chroma green (#00FF00) background. Image 2 is the original character reference of the same girl (Lin Xiangwan), for her face identity only. Image 3 is the painting style anchor only (soft transparent watercolor); do not copy its scenery.
+Edit image 1 and change ONLY her facial expression. Keep everything else exactly the same as image 1: same framing and scale, same position in the frame, same pose, same arms and hands, same body, same clothes, same hairstyle and every hair strand, same watercolor technique, same flat pure chroma green (#00FF00) background. The face must stay the same person as image 1.
+New expression: shy and blushing: a clear rosy blush across both cheeks and the bridge of the nose, her eyes glancing slightly away to the side (not looking at the viewer), eyelids a little lowered, lips pressed together in a small suppressed smile, as if trying not to grin. Sweet and charming, subtle, not exaggerated, no anime sweat drops, no symbols.
+Background: one single flat uniform pure chroma green color (#00FF00) filling the entire background, perfectly even, no gradient, no texture, no shadow, no floor, no vignette. The figure must not touch the left, right or top edge. Correct anatomy, five fingers on each hand. Single figure, no text, no letters, no logos, no watermark. Portrait orientation.
+```
+
+## portraits/lin-hs-flustered.webp
+
+- 參考圖與後製同 lin-hs-shy。生成 1 次，第 1 張採用。遮罩 IoU 0.995。
+- 提示詞：
+
+```
+Image 1 is the edit target: the approved smiling portrait of Lin Xiangwan (林向晚), a 17-year-old Taiwanese high school girl sprinter in a navy singlet with white trim, long black hair in a low ponytail with wispy bangs, on a flat pure chroma green (#00FF00) background. Image 2 is the original character reference of the same girl (Lin Xiangwan), for her face identity only. Image 3 is the painting style anchor only (soft transparent watercolor); do not copy its scenery.
+Edit image 1 and change ONLY her facial expression. Keep everything else exactly the same as image 1: same framing and scale, same position in the frame, same pose, same arms and hands, same body, same clothes, same hairstyle and every hair strand, same watercolor technique, same flat pure chroma green (#00FF00) background. The face must stay the same person as image 1.
+New expression: startled and flustered at the same time: eyes opened wide in surprise, eyebrows raised, a strong deep blush across both cheeks, ears and nose, lips slightly parted in a small flustered open mouth, as if someone just said something embarrassing to her. Cute, not exaggerated, no anime sweat drops, no symbols, no lines around the head. Her hands and arms stay exactly where they are in image 1.
+Background: one single flat uniform pure chroma green color (#00FF00) filling the entire background, perfectly even, no gradient, no texture, no shadow, no floor, no vignette. The figure must not touch the left, right or top edge. Correct anatomy, five fingers on each hand. Single figure, no text, no letters, no logos, no watermark. Portrait orientation.
+```
+
+## cards/doodle-hearts.webp、doodle-stopwatch.webp、doodle-drink.webp
+
+- 參考圖：image 1 = cheng-a（程徹定錨）、image 2 = style-b（只當畫風參考）
+- 一張 2×2 綠幕塗鴉表，生成 1 次。愛心串、碼錶、飲料罐從這張切出；同張的 Q 版程徹鞋子畫出勾勾商標，不採用，另外重產（見下）。去綠同上，各自裁到內容外框，premultiplied 縮到長邊 240、置中放進 256×256 透明畫布，縮完再 despill。
+- 提示詞：
+
+```
+Image 1 is the character reference for Cheng Che (程徹), a Taiwanese high school boy sprinter: short black hair, navy blue sleeveless running singlet. Image 2 is the painting style anchor only (soft watercolor); do not copy its scenery.
+Paint a sheet of four separate small doodles, like the cute hand-drawn doodles a high school girl draws with colored felt-tip pens and a little watercolor in the margins of her notebook. Simple, charming, slightly wobbly hand-drawn lines with soft watercolor fill, a bit of white paper-like texture inside the fills. Arrange them in a 2x2 grid with wide empty space between them; each doodle is self-contained and does not touch any other doodle or the image edge:
+1 (top left): a little chain of five small hearts in pink and coral, connected by a tiny wavy string, drifting diagonally.
+2 (top right): a chibi version of Cheng Che (image 1) running energetically, big head small body, short black hair, navy blue sleeveless running singlet with white trim, navy shorts, a plain BLANK white race bib with no number on his chest, a couple of tiny speed lines behind him.
+3 (bottom left): a small round stopwatch in silver and pale blue with a button on top, the face shows only two simple clock hands and tick marks, no numbers.
+4 (bottom right): a small aluminum drink can of sports drink, white and blue, completely plain with no text, no logo, no letters, just a soft blue wave stripe around it and a few condensation droplets.
+Each doodle has a clean dark-blue or brown hand-drawn outline so its silhouette is clear. Background: one single flat uniform pure chroma green color (#00FF00) filling the entire image, perfectly even, no paper, no texture, no gradient, no shadows. Do not use any green color in the doodles themselves. No text, no letters, no numbers, no logos, no signature, no watermark. Square.
+```
+
+## cards/doodle-cheng-run.webp
+
+- 參考圖：image 1 = cheng-a（程徹定錨）、image 2 = 上面那張塗鴉表綠幕原圖（只當塗鴉畫風參考）
+- 單獨重產 1 次（塗鴉表那版鞋上有商標），採用。後製同上。
+- 提示詞：
+
+```
+Image 1 is the character reference for Cheng Che (程徹), a Taiwanese high school boy sprinter: short black hair, navy blue sleeveless running singlet. Image 2 is the doodle style reference: copy exactly its cute hand-drawn felt-tip pen and light watercolor doodle style, the dark-blue hand-drawn outline and the thin white edge around each doodle; do not copy its other doodles.
+Draw ONE single doodle in that same style: a chibi version of Cheng Che (image 1) running energetically, big head small body, short messy black hair, a determined happy face, navy blue sleeveless running singlet with white trim, navy shorts, a plain BLANK white race bib with no number on his chest, white socks, and completely plain white running shoes with plain light-blue soles: absolutely no swoosh, no stripes, no brand marks, no logos on the shoes. Two tiny speed lines behind him. Centered with wide empty margin, not touching any edge.
+Background: one single flat uniform pure chroma green color (#00FF00) filling the entire image, perfectly even, no paper, no texture, no gradient, no shadows. Do not use any green color in the doodle itself. No text, no letters, no numbers, no logos, no brand marks, no signature, no watermark. Square.
+```
+
+## cards/hw-*.webp（「她的筆記」卡手寫字）
+
+- 字體風格：ai-font-styles #22「成長筆記字」的 desc，加上「女高中生用彩色中性筆寫」的書寫描述；套 fonts.json `templates.pure` 骨架，背景改純綠 #00FF00。
+- 不帶參考圖（字是重點，style-b 未傳入，避免帶進場景與紙紋）。size 1536x1024，count 1。
+- 後製：spill=g-max(r,b)；alpha=clip(1-(spill-30)/90)；g 壓到 max(r,b)；裁到 alpha>0.1 的邊界外留 24px，寬限縮到 900～1400px，存 webp q92。
+- 五張都是第 1 次生成即採用，逐字核對無誤。
+
+### hw-title
+
+```
+橫式構圖,畫面中只有這段手寫文字,無其他裝飾文字。背景是整片均勻的純綠色(#00FF00),完全平塗、沒有漸層、沒有紙張紋理、沒有陰影、沒有筆記本格線,不畫筆記本、紙張、筆或任何道具、貼紙、愛心、星星、花朵、塗鴉或其他圖案。文字的筆畫本身,必須是「溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化」所描述的實際形態或技法構成(書寫筆觸、線條走向),不能只是在制式字體外觀上貼一層手寫貼皮。所有中文字必須是筆畫正確的繁體中文字形,不能出現錯字、多字、漏字或簡體字,標點符號用全形。文字:「他的時間」(共4個字,一字不多一字不少)。四個字橫寫成一行,字大而清楚。字色:深莓紅色(深酒紅帶紫)的中性筆墨水,整段同一個顏色,墨色飽和清楚,不能用綠色。「時間」兩個字底下有一條淡粉紅色螢光筆畫的粗底線(半透明粉紅,只在這兩個字下方,不蓋住字)。字體風格:溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化。文字四周留一點綠色空白,不要碰到畫面邊緣。
+```
+
+### hw-clue1
+
+```
+橫式構圖,畫面中只有這段手寫文字,無其他裝飾文字。背景是整片均勻的純綠色(#00FF00),完全平塗、沒有漸層、沒有紙張紋理、沒有陰影、沒有筆記本格線,不畫筆記本、紙張、筆或任何道具、貼紙、愛心、星星、花朵、塗鴉或其他圖案。文字的筆畫本身,必須是「溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化」所描述的實際形態或技法構成(書寫筆觸、線條走向),不能只是在制式字體外觀上貼一層手寫貼皮。所有中文字必須是筆畫正確的繁體中文字形,不能出現錯字、多字、漏字或簡體字,標點符號用全形。文字:「男子八百公尺預賽，第三組，十五點四十分開跑。」(共19個字,一字不多一字不少)。中文字共19個,另有三個全形標點(兩個逗號「，」和一個句號「。」),由左到右橫寫,分成兩行:第一行「男子八百公尺預賽，第三組，」,第二行「十五點四十分開跑。」。字色:深莓紅色(深酒紅帶紫)的中性筆墨水,整段同一個顏色,墨色飽和清楚,不能用綠色。「十五點四十分」底下有一條淡粉紅色螢光筆畫的粗底線(半透明粉紅,不蓋住字)。字體風格:溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化。文字四周留一點綠色空白,不要碰到畫面邊緣。
+```
+
+### hw-clue2
+
+```
+橫式構圖,畫面中只有這段手寫文字,無其他裝飾文字。背景是整片均勻的純綠色(#00FF00),完全平塗、沒有漸層、沒有紙張紋理、沒有陰影、沒有筆記本格線,不畫筆記本、紙張、筆或任何道具、貼紙、愛心、星星、花朵、塗鴉或其他圖案。文字的筆畫本身,必須是「溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化」所描述的實際形態或技法構成(書寫筆觸、線條走向),不能只是在制式字體外觀上貼一層手寫貼皮。所有中文字必須是筆畫正確的繁體中文字形,不能出現錯字、多字、漏字或簡體字,標點符號用全形。文字:「阿徹喔？八百他大概跑兩分鐘。跑完一定先慢跑收操，差不多五分鐘，然後去體育館後門那台販賣機買寶礦力，每次都這樣。」(共49個字,一字不多一字不少)。中文字共49個,另有全形標點:一個問號「？」、三個逗號「，」、兩個句號「。」。由左到右橫寫,分成四行:第一行「阿徹喔？八百他大概跑兩分鐘。」,第二行「跑完一定先慢跑收操，差不多五分鐘，」,第三行「然後去體育館後門那台販賣機買寶礦力，」,第四行「每次都這樣。」。字色:深莓紅色(深酒紅帶紫)的中性筆墨水,整段同一個顏色,墨色飽和清楚,不能用綠色。「兩分鐘」和「五分鐘」底下各有一條淡粉紅色螢光筆畫的粗底線(半透明粉紅,不蓋住字),其他字沒有底線。字體風格:溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化。文字四周留一點綠色空白,不要碰到畫面邊緣。
+```
+
+### hw-clue3
+
+```
+橫式構圖,畫面中只有這段手寫文字,無其他裝飾文字。背景是整片均勻的純綠色(#00FF00),完全平塗、沒有漸層、沒有紙張紋理、沒有陰影、沒有筆記本格線,不畫筆記本、紙張、筆或任何道具、貼紙、愛心、星星、花朵、塗鴉或其他圖案。文字的筆畫本身,必須是「溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化」所描述的實際形態或技法構成(書寫筆觸、線條走向),不能只是在制式字體外觀上貼一層手寫貼皮。所有中文字必須是筆畫正確的繁體中文字形,不能出現錯字、多字、漏字或簡體字,標點符號用全形。文字:「從看台走到體育館後門，三分鐘。」(共13個字,一字不多一字不少)。中文字共13個,另有一個全形逗號「，」和一個全形句號「。」,由左到右橫寫成一行。字色:深莓紅色(深酒紅帶紫)的中性筆墨水,整段同一個顏色,墨色飽和清楚,不能用綠色。「三分鐘」底下有一條淡粉紅色螢光筆畫的粗底線(半透明粉紅,不蓋住字)。字體風格:溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化。文字四周留一點綠色空白,不要碰到畫面邊緣。
+```
+
+### hw-question
+
+```
+橫式構圖,畫面中只有這段手寫文字,無其他裝飾文字。背景是整片均勻的純綠色(#00FF00),完全平塗、沒有漸層、沒有紙張紋理、沒有陰影、沒有筆記本格線,不畫筆記本、紙張、筆或任何道具、貼紙、愛心、星星、花朵、塗鴉或其他圖案。文字的筆畫本身,必須是「溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化」所描述的實際形態或技法構成(書寫筆觸、線條走向),不能只是在制式字體外觀上貼一層手寫貼皮。所有中文字必須是筆畫正確的繁體中文字形,不能出現錯字、多字、漏字或簡體字,標點符號用全形。文字:「幾點從看台出發，才會比他早一步站在販賣機前？」(共20個字,一字不多一字不少)。中文字共20個,另有一個全形逗號「，」和一個全形問號「？」,由左到右橫寫,分成兩行:第一行「幾點從看台出發，」,第二行「才會比他早一步站在販賣機前？」。字色:深莓紅色(深酒紅帶紫)的中性筆墨水,整段同一個顏色,墨色飽和清楚,不能用綠色。「幾點」兩個字底下有一條淡粉紅色螢光筆畫的粗底線(半透明粉紅,不蓋住字)。字體風格:溫暖圓潤的筆記手寫體,筆畫略帶弧度、字距緊湊,像認真做筆記時寫下的字;是台灣女高中生用細的彩色中性筆在筆記本上親手寫的可愛手寫字,字形圓圓的、略帶少女感,筆畫是一筆一筆真實書寫出來的墨水線條,有自然的起筆收筆與輕微粗細變化。文字四周留一點綠色空白,不要碰到畫面邊緣。
+```

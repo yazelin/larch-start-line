@@ -120,7 +120,7 @@ try {
   // 第二輪：被看到兩次
   for (let i = 0; i < 2; i++) {
     await goto(15 + i * 3, 5).catch(() => {});
-    await ui.waitText(/差點被看到/); await drainUntil(/去看台後面/);
+    await ui.waitText(/差點被看到/); if (i === 0) { await sleep(1500); await shot('06b-caught'); } await drainUntil(/去看台後面/);
   }
   assert(true, '走出看台遮蔽被發現兩次，都被拉回');
   const SEEN = Array.from({ length: 28 }, (_, k) => [k + 6, 5]).filter(([x]) => x !== 10 && x !== 29);
@@ -144,13 +144,13 @@ try {
 
   // 結局 B，再回來選 A
   await interact(32, 26, [32, 27], 'ArrowUp');
-  await drainUntil(/轉身離開/); await ui.clickText('轉身離開');
+  await ui.waitText(/零錢握在手心/); await drainUntil(/轉身離開/); await sleep(500); await ui.clickText('轉身離開');
   await ui.waitText(/她沒有繞過去/); await drainUntil(/回到販賣機前/);
   assert(true, '結局 B 走完，出現「回到販賣機前」');
   await ui.clickText('回到販賣機前'); await sleep(800);
   await drainUntil(/去體育館後門的販賣機/);
   await interact(32, 26, [32, 27], 'ArrowUp');
-  await drainUntil(/讓零錢掉下去/); await ui.clickText('讓零錢掉下去');
+  await ui.waitText(/零錢握在手心/); await drainUntil(/讓零錢掉下去/); await sleep(500); await ui.clickText('讓零錢掉下去');
   f = await cardFrame('#machine'); await sleep(3500); await shot('08-coin');
   await tapUntil(f, /他快來了/); await tap(f);
   await f.waitForFunction(() => document.body.dataset.state === 'wait'); await tap(f); await waitMsg(f, /還在遠處/); await tap(f);

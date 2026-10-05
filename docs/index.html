@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>起跑總在開始前</title>
+<meta name="description" content="程徹與林向晚的田徑愛情短篇，做成 Larch 上的互動作品：同一個下午玩兩次，先當他跑一次，再當她走一次。販賣機前，零錢要不要掉下去，由你決定。">
+<meta name="theme-color" content="#f7f1e6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1f2d" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://yazelin.github.io/larch-start-line/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="起跑總在開始前">
+<meta property="og:description" content="同一個下午玩兩次：先當他跑一次，再當她走一次。槍響之前，有些事早就決定了。">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/yazelin/larch-start-line@master/assets/art/cover/cover.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='7' width='28' height='18' rx='4' fill='%23c4553e'/%3E%3Crect x='9' y='7' width='4' height='18' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Serif+TC:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets-site/site.css">
+<style>
+/* ── 首屏 ─────────────────────────────── */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:var(--paper)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;
+  -webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 99%);mask-image:linear-gradient(to bottom,#000 70%,transparent 99%);
+  opacity:0;transform:scale(1.04);transition:opacity 1.6s ease,transform 6s cubic-bezier(.2,.7,.2,1)}
+.hero-img.on{opacity:1;transform:none}
+.hero-in{position:relative;padding:110px 0 120px}
+.hero-copy{max-width:470px;color:#2f2925}
+.hero h1{white-space:nowrap}
+.hero-copy::before{content:"";position:absolute;z-index:-1;left:-12%;top:-4%;width:min(760px,90vw);height:110%;
+  background:radial-gradient(ellipse at 30% 52%,rgba(251,247,238,.88),rgba(251,247,238,.62) 48%,transparent 74%);pointer-events:none}
+/* 首屏永遠是亮的圖：導覽列還沒變實心前，字一律用深色 */
+.top:not(.solid) .brand,.top:not(.solid) nav a.sec{color:#3a312c}
+.top:not(.solid) nav a.sec:hover{background:rgba(255,251,243,.6)}
+.kicker{font-size:13.5px;letter-spacing:.16em;color:#6c5f55;margin:0 0 22px}
+.hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(46px,7.4vw,92px);line-height:1.12;margin:0 0 26px;letter-spacing:.04em}
+.hero h1 span{display:block}
+.hero h1 span:last-child{padding-left:.9em}
+.tag{font-family:var(--f-serif);font-size:clamp(17px,1.9vw,20px);line-height:1.9;margin:0 0 6px;color:#3d342e}
+.ecg{display:block;width:240px;height:40px;margin:8px 0 26px;overflow:visible}
+.ecg path{fill:none;stroke:#c4553e;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420;stroke-dashoffset:420;animation:ecg 2.6s cubic-bezier(.6,.1,.3,1) infinite}
+@keyframes ecg{0%{stroke-dashoffset:420;opacity:1}55%{stroke-dashoffset:0;opacity:1}85%,100%{stroke-dashoffset:0;opacity:0}}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.hero .btn.ghost{background:rgba(255,251,243,.75);color:#3a312c;box-shadow:inset 0 0 0 1px rgba(90,70,50,.18)}
+.hero .btn[aria-disabled="true"]{background:rgba(255,251,243,.7);color:#8a7d72;box-shadow:inset 0 0 0 1px rgba(90,70,50,.2)}
+.meta{margin:22px 0 0;font-size:14px;color:#5a4e45;letter-spacing:.08em}
+.scroll-cue{position:absolute;left:50%;bottom:26px;translate:-50% 0;width:2px;height:46px;background:linear-gradient(var(--track),transparent);animation:cue 2.2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:760px){
+  .hero{display:block;min-height:0}
+  .hero-img{position:relative;height:66svh;min-height:380px;object-position:74% 50%;-webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent);mask-image:linear-gradient(to bottom,#000 62%,transparent)}
+  .hero-in{margin-top:-64px;padding:0 0 64px}
+  .hero-copy{color:var(--ink)}
+  .hero-copy::before{display:none}
+  .kicker,.meta{color:var(--ink-2)}
+  .tag{color:var(--ink)}
+  .hero h1{text-shadow:0 0 18px var(--paper),0 0 2px var(--paper)}
+  .hero .btn.ghost{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+  .hero .btn[aria-disabled="true"]{background:var(--paper-2);color:var(--ink-3);box-shadow:inset 0 0 0 1px var(--line)}
+  .ecg path{stroke:var(--track)}
+  .scroll-cue{display:none}
+}
+@media (prefers-reduced-motion:reduce){.ecg path{animation:none;stroke-dashoffset:0}.scroll-cue{animation:none}}
+
+/* 起跑線：首屏與下一段之間的一條白線 */
+.startline{position:relative;height:18px;background:var(--track);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='18'><filter id='w'><feTurbulence baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .16 0'/></filter><rect width='160' height='18' filter='url(%23w)'/></svg>")}
+.startline::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;translate:0 -50%;background:rgba(255,255,255,.92)}
+.startline span{position:absolute;left:max(16px,calc(50% - 560px));top:50%;translate:0 -50%;padding:0 10px;background:var(--track);color:#fff;font-size:12px;letter-spacing:.3em;line-height:18px}
+
+/* ── 故事 ─────────────────────────────── */
+.story{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(36px,6vw,88px);align-items:start}
+.story .intro p{font-family:var(--f-serif);font-size:clamp(18px,2vw,21px);line-height:2.05;margin:0 0 1.2em}
+.story .intro p:last-child{color:var(--track)}
+.excerpt{position:relative;margin:0;padding:38px 34px 30px;background:var(--card);border-radius:4px;
+  box-shadow:0 1px 0 var(--line),0 18px 40px -22px rgb(var(--shadow)/.45);rotate:.6deg;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 35px,color-mix(in srgb,var(--sky) 22%,transparent) 35px 36px);background-position:0 30px}
+.excerpt::before{content:"";position:absolute;top:-12px;left:50%;width:110px;height:26px;translate:-50% 0;rotate:-2deg;background:color-mix(in srgb,var(--sky) 45%,transparent);opacity:.75;
+  -webkit-mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0);mask:linear-gradient(90deg,transparent 0 3px,#000 3px calc(100% - 3px),transparent 0)}
+.excerpt .label{font-size:12.5px;letter-spacing:.24em;color:var(--ink-3);margin:0 0 10px}
+.excerpt p{font-family:var(--f-serif);font-size:17px;line-height:36px;margin:0}
+.excerpt p+p{margin-top:18px}
+.excerpt .beat{color:var(--track)}
+.excerpt a{display:inline-block;margin-top:22px;font-size:14px}
+@media (max-width:860px){.story{grid-template-columns:1fr}.excerpt{rotate:0deg;padding:34px 22px 26px}}
+
+/* ── 兩位主角 ─────────────────────────── */
+.people{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,36px)}
+.who{position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);align-items:end;min-height:460px;border-radius:24px;overflow:hidden;background:var(--card);box-shadow:0 1px 0 var(--line),0 24px 48px -30px rgb(var(--shadow)/.5)}
+.who::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 80% at 25% 70%,var(--wash) 0,transparent 70%);opacity:.9}
+.who.cheng{--wash:color-mix(in srgb,var(--sky) 30%,transparent)}
+.who.lin{--wash:color-mix(in srgb,var(--track) 24%,transparent)}
+.fig{position:relative;height:100%;min-height:460px}
+.fig img{position:absolute;bottom:0;left:50%;height:96%;width:auto;max-width:none;translate:-50% 0;transition:opacity .7s ease,transform .7s ease}
+.fig img.adult{opacity:0;transform:translateY(10px)}
+.who.grown .fig img.adult{opacity:1;transform:none}
+.who.grown .fig img.teen{opacity:0;transform:translateY(10px)}
+.who .txt{position:relative;padding:32px 28px 30px 4px;align-self:stretch;display:flex;flex-direction:column}
+.who h3{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,3.6vw,42px);margin:0;letter-spacing:.08em;line-height:1.2}
+.who .role{color:var(--ink-2);font-size:15px;margin:10px 0 0}
+.who blockquote{margin:auto 0 18px;font-family:var(--f-serif);font-size:clamp(17px,1.7vw,19px);line-height:1.9;padding-left:16px;border-left:3px solid var(--track)}
+.seg{display:inline-flex;align-self:flex-start;padding:3px;border-radius:99px;background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{border:0;background:none;padding:5px 14px;border-radius:99px;font-size:13.5px;color:var(--ink-2);cursor:pointer;transition:background .25s,color .25s}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgb(var(--shadow)/.2)}
+@media (max-width:860px){.people{grid-template-columns:1fr}}
+@media (max-width:520px){.who{grid-template-columns:minmax(0,.85fr) minmax(0,1fr);min-height:400px}.fig{min-height:400px}.who .txt{padding:24px 18px 22px 0}.who blockquote{font-size:16px;padding-left:12px}}
+
+/* ── 圖庫 ─────────────────────────────── */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vw,22px);margin-top:12px}
+.shot{position:relative;margin:0;padding:0;border:0;background:var(--card);border-radius:6px;padding:8px 8px 0;cursor:zoom-in;text-align:left;
+  box-shadow:0 1px 0 var(--line),0 14px 30px -20px rgb(var(--shadow)/.55);transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s}
+.shot:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 1px 0 var(--line),0 24px 40px -22px rgb(var(--shadow)/.6)}
+.shot .ph{aspect-ratio:16/9;overflow:hidden;border-radius:3px;background:var(--paper-2)}
+.shot img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),opacity .6s;opacity:0}
+.shot img.ok{opacity:1}
+.shot:hover img{transform:scale(1.04)}
+.shot figcaption{display:flex;gap:10px;align-items:baseline;padding:10px 4px 12px;font-size:14px;color:var(--ink)}
+.shot figcaption small{margin-left:auto;color:var(--ink-3);font-size:12px;white-space:nowrap}
+.shot.big{grid-column:span 2;grid-row:span 2}
+.shot.big .ph{aspect-ratio:auto;height:calc(100% - 46px)}
+@media (max-width:760px){.gallery{grid-template-columns:1fr 1fr}.shot:last-child{grid-column:span 2}.shot:last-child .ph{aspect-ratio:16/9}.shot.big{grid-column:span 2;grid-row:auto}.shot.big .ph{aspect-ratio:16/9;height:auto}.shot figcaption{font-size:13px;padding:8px 2px 10px}.shot figcaption small{display:none}}
+
+dialog.lb{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(18,16,20,.94);color:#f3ede2}
+dialog.lb::backdrop{background:transparent}
+dialog.lb[open]{display:grid;grid-template-rows:auto 1fr auto;animation:fade .3s ease}
+@keyframes fade{from{opacity:0}}
+.lb-top,.lb-bot{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.lb-top{justify-content:space-between;font-size:14px;color:#c9c0b4}
+.lb-stage{position:relative;min-height:0;display:grid;place-items:center;padding:0 64px}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:opacity .35s}
+.lb-bot{justify-content:center;flex-direction:column;gap:12px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+.lb-cap{font-family:var(--f-display);font-size:18px;text-align:center}
+.lb-cap small{display:block;font-family:var(--f-body);font-size:13px;color:#a99f93;margin-top:2px}
+.lb .ib{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);display:grid;place-items:center;cursor:pointer;color:#f3ede2}
+.lb .ib:hover{background:rgba(255,255,255,.14)}
+.lb .ib svg{width:20px;height:20px;fill:currentColor}
+.lb-nav{position:absolute;top:50%;translate:0 -50%}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-dl{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:99px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#f3ede2;font-size:14px;cursor:pointer;text-decoration:none}
+.lb-dl svg{width:16px;height:16px;fill:currentColor}
+@media (max-width:760px){.lb-stage{padding:0 8px}.lb-nav{display:none}}
+
+/* ── 玩法與主題 ───────────────────────── */
+#play-sec{background:var(--paper-2);position:relative}
+.thesis{font-family:var(--f-display);font-weight:400;font-size:clamp(27px,4.4vw,48px);line-height:1.45;margin:0 0 22px;letter-spacing:.03em}
+.thesis em{font-style:normal;color:var(--track)}
+.locks{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-radius:18px;overflow:hidden;margin:44px 0 0;box-shadow:inset 0 0 0 1px var(--line)}
+.lock{background:var(--card);padding:26px 24px 24px}
+.lock b{display:block;font-family:var(--f-display);font-weight:400;font-size:21px;margin-bottom:4px}
+.lock .where{font-size:13px;letter-spacing:.12em;color:var(--track);margin:0 0 10px}
+.lock p{margin:0;font-size:15px;color:var(--ink-2)}
+@media (max-width:760px){.locks{grid-template-columns:1fr}}
+
+/* 路線：一條跑道，沿路是站 */
+.route{margin:72px 0 0}
+.route h3,.mech-h,.end-h{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0 0 22px}
+.lanes{position:relative;padding-left:46px}
+.lanes::before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:22px;border-radius:11px;background:var(--track);
+  background-image:linear-gradient(90deg,transparent 9px,rgba(255,255,255,.85) 9px 12px,transparent 12px)}
+.stop{position:relative;padding:0 0 26px}
+.stop::before{content:"";position:absolute;left:-41px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--card);box-shadow:0 0 0 3px #fff,0 0 0 4px rgb(0 0 0/.08)}
+.stop b{font-family:var(--f-display);font-weight:400;font-size:19px}
+.stop .who-tag{display:inline-block;margin-left:8px;font-size:12px;padding:1px 9px;border-radius:99px;vertical-align:2px}
+.who-tag.c{background:color-mix(in srgb,var(--sky) 22%,transparent);color:var(--navy)}
+.who-tag.l{background:color-mix(in srgb,var(--track) 18%,transparent);color:var(--track)}
+.stop p{margin:2px 0 0;color:var(--ink-2);font-size:15px}
+.stop .cards{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:12.5px;padding:2px 10px;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink-2)}
+.fork{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+.fork div{padding:14px 16px;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-size:14.5px;color:var(--ink-2)}
+.fork b{display:block;color:var(--ink);font-size:16px}
+@media (max-width:520px){.fork{grid-template-columns:1fr}}
+
+/* 機制卡 */
+.mech{margin:72px 0 0}
+.mechs{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(16px,2.2vw,26px)}
+.m{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line),0 18px 36px -28px rgb(var(--shadow)/.55);display:flex;flex-direction:column}
+.m .mi{aspect-ratio:16/8;overflow:hidden;position:relative;background:linear-gradient(160deg,var(--sky-2),var(--paper))}
+.m .mi img{width:100%;height:100%;object-fit:cover}
+.m .mi.doodle{display:grid;place-items:center}
+.m .mi.doodle img{width:auto;height:72%;object-fit:contain;filter:drop-shadow(0 6px 10px rgb(var(--shadow)/.18))}
+.m .mi .tag2{position:absolute;left:14px;top:14px;font-size:12px;letter-spacing:.12em;padding:3px 10px;border-radius:99px;background:rgba(255,251,243,.88);color:#5b4f46}
+.m .mb{padding:22px 24px 24px}
+.m h4{font-family:var(--f-display);font-weight:400;font-size:22px;margin:0 0 8px}
+.m p{margin:0;font-size:15px;color:var(--ink-2)}
+.m p+p{margin-top:10px}
+.m q{font-family:var(--f-serif);color:var(--ink);quotes:"「" "」"}
+.m.wide{grid-column:1/-1;flex-direction:row}
+.m.wide .mi{flex:0 0 46%;aspect-ratio:auto;min-height:260px}
+.m.wide .mb{align-self:center}
+.m.wide.flip{flex-direction:row-reverse}
+@media (max-width:760px){.mechs{grid-template-columns:1fr}.m.wide,.m.wide.flip{flex-direction:column}.m.wide .mi{flex:none;aspect-ratio:16/8;min-height:0}}
+
+/* 雙結局 */
+.ends{margin:72px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.2vw,26px)}
+.end{position:relative;border-radius:22px;overflow:hidden;min-height:340px;display:flex;align-items:flex-end;color:#fff;isolation:isolate}
+.end img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
+.end:hover img{transform:scale(1.04)}
+.end::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to top,rgba(20,18,26,.86),rgba(20,18,26,.35) 55%,rgba(20,18,26,0))}
+.end .eb{padding:26px 26px 24px}
+.end .k{font-size:12.5px;letter-spacing:.24em;opacity:.85}
+.end h4{font-family:var(--f-display);font-weight:400;font-size:26px;margin:4px 0 8px}
+.end p{margin:0;font-size:15px;opacity:.92}
+.end blockquote{margin:12px 0 0;font-family:var(--f-serif);font-size:18px}
+@media (max-width:760px){.ends{grid-template-columns:1fr}}
+
+/* ── 原聲帶入口 ───────────────────────── */
+.ost-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(30px,5vw,70px);align-items:start}
+.ost-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ost-list a{display:grid;grid-template-columns:28px 56px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 6px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);transition:background .25s}
+.ost-list a:hover{background:var(--paper-2)}
+.ost-list .no{font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:14px;text-align:right}
+.ost-list img{width:56px;height:56px;border-radius:8px;object-fit:cover}
+.ost-list b{display:block;font-weight:500;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ost-list span{display:block;font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ost-list .d{font-size:13px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.ost-note{font-size:15px;color:var(--ink-2)}
+@media (max-width:860px){.ost-grid{grid-template-columns:1fr}}
+
+/* ── 製作與授權 ───────────────────────── */
+.credits{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;margin:8px 0 0}
+.credits div{padding:18px 0;border-top:1px solid var(--line)}
+.credits dt{font-size:13px;letter-spacing:.18em;color:var(--ink-3);margin-bottom:4px}
+.credits dd{margin:0;font-size:15.5px}
+.lic{margin-top:44px;padding:24px 26px;border-radius:16px;background:var(--paper-2);font-size:15px;color:var(--ink-2)}
+.lic b{color:var(--ink);font-weight:600}
+.lic p{margin:0}.lic p+p{margin-top:8px}
+@media (max-width:760px){.credits{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap in">
+    <a class="brand" href="#"><i aria-hidden="true"></i>起跑總在開始前</a>
+    <nav aria-label="頁面導覽">
+      <a class="sec" href="#story">故事</a>
+      <a class="sec" href="#people">主角</a>
+      <a class="sec" href="#gallery">圖庫</a>
+      <a class="sec" href="#play-sec">玩法</a>
+      <a class="ost" href="music/">原聲帶</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero" aria-label="起跑總在開始前">
+  <img class="hero-img" data-a="art/cover/cover.webp" alt="紅色跑道的起跑線上，程徹蹲在起跑架前，林向晚站在他身旁">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="kicker">Larch 第三屆創作者挑戰《自由與限制》投稿作品</p>
+      <h1><span>起跑</span><span>總在開始前</span></h1>
+      <p class="tag">在槍響之前，在所有裁判與觀眾以為一切正要開始之前，有些事早就已經塵埃落定。</p>
+      <svg class="ecg" viewBox="0 0 240 40" aria-hidden="true"><path d="M0 24 H70 l7 -5 l6 5 H104 l5 8 l8 -30 l8 34 l6 -12 H150 l9 -6 l9 6 H240"/></svg>
+      <div class="cta">
+        <a class="btn primary" data-play aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>即將上架</span></a>
+        <a class="btn ghost" href="music/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10.6A4 4 0 1 0 14 17V7h4V3z"/></svg>聽原聲帶</a>
+      </div>
+      <p class="meta">兩位主角　兩個結局　七首原聲帶</p>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"></div>
+</section>
+<div class="startline" aria-hidden="true"><span>起跑線</span></div>
+
+<section class="blk" id="story">
+  <div class="wrap story">
+    <div class="intro rise">
+      <p class="eyebrow"><span class="lane">1</span>故事</p>
+      <h2 class="ttl">同一個下午，跑兩次</h2>
+      <p>高二那年的市運會選拔賽，程徹在八百公尺的起跑線上蹲下，腦袋裡只有剛才在終點線後面抬頭的那個女生。</p>
+      <p>很多年後，林向晚才告訴他：那天販賣機前掉在地上的十塊錢，是她算好的。</p>
+      <p>同一個下午，你先當他跑一次，再當她走一次。槍響之前，有些事早就決定了。</p>
+    </div>
+    <figure class="excerpt rise">
+      <p class="label">原文節錄</p>
+      <p>發令槍響前，世界會有大約兩秒的死寂。</p>
+      <p>「各就位。」<br>「預備——」</p><!-- speak-tw-ok 原文照錄 -->
+      <p>在那個「預備」的停頓裡，所有人都屏住了呼吸，全身肌肉繃緊成一張弓。就在那個所有人都在等待槍響的空檔，程徹心裡浮現的不是「我要贏」，而是「等跑完，我要去認識她」。</p><!-- speak-tw-ok 原文照錄 -->
+      <p class="beat">他的起跑，比發令槍早了整整兩個心跳。</p>
+      <a href="https://github.com/yazelin/larch-start-line/blob/master/canon/%E5%8E%9F%E6%96%87.md" target="_blank" rel="noopener">讀作者原文全文</a>
+    </figure>
+  </div>
+</section>
+
+<section class="blk" id="people" style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow rise"><span class="lane">2</span>兩位主角</p>
+    <h2 class="ttl rise">他在跑道上，她在看台後面</h2>
+    <div class="people">
+      <article class="who cheng rise">
+        <div class="fig">
+          <img class="teen" data-a="art/portraits/cheng-hs-calm.webp" alt="高中時的程徹，穿深藍色田徑背心，胸前別著號碼布" loading="lazy">
+          <img class="adult" data-a="art/portraits/cheng-adult-smile.webp" alt="幾年後的程徹，穿深灰色毛衣" loading="lazy">
+        </div>
+        <div class="txt">
+          <h3>程徹</h3>
+          <p class="role">八百公尺選手。第一輪由你扮演他。</p>
+          <blockquote>「等跑完，我要去認識她。」</blockquote>
+          <div class="seg" role="group" aria-label="切換時期"><button aria-pressed="true" data-age="teen">那年</button><button aria-pressed="false" data-age="adult">幾年後</button></div>
+        </div>
+      </article>
+      <article class="who lin rise">
+        <div class="fig">
+          <img class="teen" data-a="art/portraits/lin-hs-smile.webp" alt="高中時的林向晚，綁著馬尾，穿深藍色田徑背心" loading="lazy">
+          <img class="adult" data-a="art/portraits/lin-adult-smile.webp" alt="幾年後的林向晚，穿米白色毛衣" loading="lazy">
+        </div>
+        <div class="txt">
+          <h3>林向晚</h3>
+          <p class="role">女子四百公尺第一名。第二輪換成她。</p>
+          <blockquote>「我蹲在起跑線上的時間，比你想像的都要長。」</blockquote>
+          <div class="seg" role="group" aria-label="切換時期"><button aria-pressed="true" data-age="teen">那年</button><button aria-pressed="false" data-age="adult">幾年後</button></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="gallery" style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow rise"><span class="lane">3</span>圖庫</p>
+    <h2 class="ttl rise">那一個下午，和之後的幾年</h2>
+    <div class="gallery" id="grid"></div>
+  </div>
+</section>
+
+<section class="blk" id="play-sec">
+  <div class="wrap">
+    <p class="eyebrow rise"><span class="lane">4</span>玩法與主題</p>
+    <h2 class="thesis rise">跑道上有人替你開槍，<br><em>愛情沒有。</em></h2>
+    <div class="narrow" style="margin:0">
+      <p class="lead rise">這次挑戰的主題是「自由與限制」。田徑場上的限制都看得見：起跑線、發令槍、裁判的哨子。走出跑道以後，沒有人會替你喊開始，所以扳機得自己扣。作品把這件事拆成三道鎖，一輪比一輪看不見。</p>
+    </div>
+    <div class="locks rise">
+      <div class="lock"><p class="where">第一輪・起跑前兩秒</p><b>看得見的束縛</b><p>槍響之前動一下就是偷跑，裁判吹哨，回到起跑線重來。</p></div>
+      <div class="lock"><p class="where">第二輪・看台後面</p><b>看不見的束縛</b><p>她不能被他發現，也不能太刻意：要躲在看台後面，先算好他的時間。</p></div>
+      <div class="lock"><p class="where">第二輪・販賣機前</p><b>心裡的束縛</b><p>沒有任何東西擋她。讓零錢掉下去，或轉身離開，只剩她自己決定。</p></div>
+    </div>
+
+    <div class="route rise">
+      <h3>一個下午的路線</h3>
+      <div class="lanes">
+        <div class="stop"><b>序章</b><p>原文的頭兩段。右上角的心跳第一次出現。</p></div>
+        <div class="stop"><b>第一輪：市運會選拔賽</b><span class="who-tag c">程徹</span><p>去檢錄處拿號碼布，經過終點線後方時和她四目相對，然後站上八百公尺的起跑線。</p><div class="cards"><span class="chip">起跑卡</span><span class="chip">配速卡</span></div></div>
+        <div class="stop"><b>販賣機前</b><span class="who-tag c">程徹</span><p>她的零錢掉在地上，他撿起來：「妳的十塊錢。」</p></div>
+        <div class="stop"><b>中章：後來他們真的在一起了</b><p>傳訊息時刪改三次的草稿，然後是花蓮的防波堤。她問：「你以為那是巧合？」</p><div class="cards"><span class="chip">草稿卡</span></div></div>
+        <div class="stop"><b>第二輪：同一天，更早的時間</b><span class="who-tag l">林向晚</span><p>同一張田徑場，換她走。躲在看台後面看他熱身，蒐集三條線索，算出自己該幾點出發。</p><div class="cards"><span class="chip">筆記卡</span></div></div>
+        <div class="stop" style="padding-bottom:0"><b>販賣機前，分岔</b><span class="who-tag l">林向晚</span>
+          <div class="fork">
+            <div><b>讓零錢掉下去</b>零錢卡 → 防波堤後半 → 台北的冬夜廚房（結局 A）</div>
+            <div><b>轉身離開</b>結局 B。結尾可以回到販賣機前重選。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mech">
+      <h3 class="mech-h rise">每一張卡，都是原文裡的一句話</h3>
+      <div class="mechs">
+        <article class="m wide rise">
+          <div class="mi"><img data-a="art/cards/start-pov.webp" alt="第一人稱的起跑視角：兩隻手撐在紅色跑道的白線後" loading="lazy"><span class="tag2">起跑卡</span></div>
+          <div class="mb">
+            <h4>偷跑判定</h4>
+            <p>第一人稱蹲在起跑線上，指尖貼著紅色跑道。「各就位」之後先選心裡在想什麼：<q>我要贏</q>、<q>配速</q>，或<q>等跑完，我要去認識她</q>。前兩個想法浮上來一下就散了，對應原文「腦袋裡沒有秒數、沒有配速」。</p>
+            <p>「預備」之後心跳一拍比一拍快，槍會在 1.5 到 3 秒之間的某一刻響。槍響前點一下畫面就是偷跑：畫面閃紅、哨音、「偷跑。回到起跑線。」偷跑幾次都可以重來。</p>
+          </div>
+        </article>
+        <article class="m rise">
+          <div class="mi"><img data-a="art/cards/pace-eyes.webp" alt="林向晚抬頭看過來的特寫" loading="lazy"><span class="tag2">配速卡</span></div>
+          <div class="mb">
+            <h4>配速</h4>
+            <p>八百公尺兩圈，照著每 650 毫秒一拍的節拍點畫面。跑到一半，她抬頭的眼神浮上來，節拍跟著亂掉；最後一百公尺變成衝刺。</p>
+            <p>原文寫定他拿了小組第一，所以怎麼跑都會過，跟得好不好只改變衝線時的那一句話。</p>
+          </div>
+        </article>
+        <article class="m rise">
+          <div class="mi"><img data-a="art/cg/cg-seawall.webp" alt="傍晚的防波堤，兩人並肩坐著" loading="lazy" style="object-position:50% 40%"><span class="tag2">草稿卡</span></div>
+          <div class="mb">
+            <h4>刪改三次的草稿</h4>
+            <p>原文說，在正式告白之前，有「傳訊息時字斟句酌刪改的三次草稿」。這張卡是一支手機：挑一句想傳的話，手指停住，文字一個字一個字被刪掉，再挑一次。刪滿三次，第四次才送得出去。</p>
+          </div>
+        </article>
+        <article class="m rise">
+          <div class="mi doodle"><img data-a="art/cards/doodle-stopwatch.webp" alt="水彩畫的碼錶" loading="lazy"><span class="tag2">筆記卡</span></div>
+          <div class="mb">
+            <h4>躲起來，再算好他的時間</h4>
+            <p>第二輪換成林向晚。從看台後面走出遮蔽，他頭上會跳出驚嘆號，她的心跳飆高，被拉回看台後。</p>
+            <p>她要蒐集三條線索：秩序冊上他那組的開跑時間、隊友說他跑完會先做什麼、她自己從看台走到體育館後門要多久。最後在筆記本上填出幾點從看台出發，填錯會被畫掉並給一句提示，可以一直重算。</p>
+          </div>
+        </article>
+        <article class="m rise">
+          <div class="mi"><img data-a="art/cg/cg-vending.webp" alt="販賣機前，程徹蹲下撿零錢，林向晚站在一旁" loading="lazy" style="object-position:40% 50%"><span class="tag2">零錢卡</span></div>
+          <div class="mb">
+            <h4>販賣機前的分岔</h4>
+            <p>到了販賣機前，選項只有兩個：讓零錢掉下去，或轉身離開。</p>
+            <p>讓零錢掉下去，接著是一條時機條：他從體育館轉角走過來，指針走到中間那一段才鬆手。太早，零錢滾到腳邊他還沒看見；太晚，他已經走到面前。兩種都能重來。</p>
+          </div>
+        </article>
+        <article class="m wide flip rise">
+          <div class="mi doodle"><img data-a="art/cards/doodle-hearts.webp" alt="水彩畫的一串愛心" loading="lazy"><span class="tag2">心跳</span></div>
+          <div class="mb">
+            <h4>從頭跟到尾的心跳</h4>
+            <p>右上角一顆水彩的心，依數字搏動。地圖事件和每張卡都會改它：「預備」時每一拍往上加，差點被他發現時跳到 150，台北廚房那一夜降到 72。</p>
+            <p>原文開頭是「心臟撞擊胸膛」，結尾是「平穩卻堅定的心跳」，這顆心走的就是這段路。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="ends">
+      <article class="end rise">
+        <img data-a="art/cg/cg-kitchen.webp" alt="雨夜的小廚房，程徹從身後抱住林向晚" loading="lazy" style="object-position:50% 30%">
+        <div class="eb">
+          <p class="k">結局 A</p>
+          <h4>台北的冬夜</h4>
+          <p>防波堤後半，接到台北下著細雨的小廚房。最後拿到一副備用鑰匙，說明只有一句：</p>
+          <blockquote>「把自己的門，交給另一個人。」</blockquote>
+        </div>
+      </article>
+      <article class="end rise">
+        <img data-a="art/cards/coin-bg.webp" alt="沒有人的販賣機前" loading="lazy" style="object-position:62% 50%">
+        <div class="eb">
+          <p class="k">結局 B</p>
+          <h4>她沒有繞過去</h4>
+          <p>程徹一個人在販賣機前買了水，回去收操。後來在別的比賽又遇過幾次，誰也沒有先開口。</p>
+          <blockquote>「她一直很自由，自由到始終沒有起跑。」</blockquote>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="ost">
+  <div class="wrap ost-grid">
+    <div class="rise">
+      <p class="eyebrow"><span class="lane">5</span>原聲帶</p>
+      <h2 class="ttl">七首，照劇情排</h2>
+      <p class="ost-note">每首都用在作品裡的某一段。播放時，背景會換成那一段的畫面；介面可以整個收起來，只留圖和音樂。</p>
+      <p class="ost-note">起跑卡刻意沒有配樂，只留心跳與槍響，對應原文「發令槍響前，世界會有大約兩秒的死寂」。</p>
+      <p style="margin-top:26px"><a class="btn primary" href="music/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>打開播放器</a></p>
+    </div>
+    <ol class="ost-list rise" id="ostList"></ol>
+  </div>
+</section>
+
+<section class="blk" id="making" style="padding-top:0">
+  <div class="wrap">
+    <p class="eyebrow rise"><span class="lane">6</span>製作</p>
+    <h2 class="ttl rise">誰做了什麼</h2>
+    <dl class="credits rise">
+      <div><dt>原文</dt><dd>作者林亞澤撰寫。遊戲裡的原文一字不改，只依段落切到各張卡片。</dd></div>
+      <div><dt>新寫文字</dt><dd>結局 B、線索、訊息草稿等原文以外的句子，由 AI 依原文語氣起草，作者定稿。</dd></div>
+      <div><dt>美術</dt><dd>CG、立繪、地圖與卡片圖都由 AI 生成（本機 codex 生圖與自架服務），統一成柔和水彩。</dd></div>
+      <div><dt>原聲帶</dt><dd>七首都由作者用 AI 音樂工具生成。</dd></div>
+      <div><dt>程式</dt><dd>田徑場與廚房兩張地圖、事件、心跳 HUD 與五張自製插件卡，由 AI 協作寫成，跑在 Larch 的 RPG 擴充功能上。</dd></div>
+      <div><dt>平台</dt><dd><a href="https://larch.ink/" target="_blank" rel="noopener">Larch</a>，第三屆創作者挑戰《自由與限制》。</dd></div>
+    </dl>
+    <div class="lic rise" id="license">
+      <p><b>授權</b></p>
+      <p>程式碼採 <a href="https://github.com/yazelin/larch-start-line/blob/master/LICENSE" target="_blank" rel="noopener">MIT</a>。故事文字、美術與原聲帶採 <a href="https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC 4.0</a>：可以分享與改作，請標示「林亞澤（Yaze Lin），《起跑總在開始前》」，不可用於商業用途。</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap in">
+    <p>《起跑總在開始前》　林亞澤（Yaze Lin）</p>
+    <nav class="footer-icons" aria-label="作者連結">
+      <a class="footer-icon" href="https://github.com/yazelin/larch-start-line" target="_blank" rel="noopener" aria-label="GitHub 原始碼" title="GitHub 原始碼"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+      <a class="footer-icon" href="https://www.facebook.com/yaze.lin.gm" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+      <a class="footer-icon" href="https://buymeacoffee.com/yazelin" target="_blank" rel="noopener" aria-label="請作者喝杯咖啡 Buy me a coffee" title="請作者喝杯咖啡 Buy me a coffee"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.2-1.756.205-.656.004-1.31-.025-1.966-.022-.699.004-1.556-.06-2.095-.58-.475-.458-.54-1.174-.605-1.793l-.731-7.013-.322-3.094c-.037-.351-.286-.695-.678-.678-.336.015-.718.3-.678.679l.228 2.185.949 9.112c.147 1.344 1.174 2.068 2.446 2.272.742.12 1.503.144 2.257.156.966.016 1.942.053 2.892-.122 1.408-.258 2.465-1.198 2.616-2.657.34-3.332.683-6.663 1.024-9.995l.215-2.087a.484.484 0 01.39-.426c.402-.078.787-.212 1.074-.518.455-.488.546-1.124.385-1.766zm-1.478.772c-.145.137-.363.201-.578.233-2.416.359-4.866.54-7.308.46-1.748-.06-3.477-.254-5.207-.498-.17-.024-.353-.055-.47-.18-.22-.236-.111-.71-.054-.995.052-.26.152-.609.463-.646.484-.057 1.046.148 1.526.22.577.088 1.156.159 1.737.212 2.48.226 5.002.19 7.472-.14.45-.06.899-.13 1.345-.21.399-.072.84-.206 1.08.206.166.281.188.657.162.974a.544.544 0 01-.169.364zm-6.159 3.9c-.862.37-1.84.788-3.109.788a5.884 5.884 0 01-1.569-.217l.877 9.004c.065.78.717 1.38 1.5 1.38 0 0 1.243.065 1.658.065.447 0 1.786-.065 1.786-.065.783 0 1.434-.6 1.499-1.38l.94-9.95a3.996 3.996 0 00-1.322-.238c-.826 0-1.491.284-2.26.613z"/></svg></a>
+    </nav>
+  </div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="圖片檢視">
+  <div class="lb-top"><span id="lbCount"></span><button class="ib" id="lbClose" aria-label="關閉"><svg viewBox="0 0 24 24"><path d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7l-1.4-1.4L9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z" transform="translate(1.4 0)"/></svg></button></div>
+  <div class="lb-stage">
+    <button class="ib lb-nav lb-prev" id="lbPrev" aria-label="上一張"><svg viewBox="0 0 24 24"><path d="M15.4 5.4 14 4l-8 8 8 8 1.4-1.4L8.8 12z"/></svg></button>
+    <img id="lbImg" alt="">
+    <button class="ib lb-nav lb-next" id="lbNext" aria-label="下一張"><svg viewBox="0 0 24 24"><path d="M8.6 18.6 10 20l8-8-8-8-1.4 1.4 6.6 6.6z"/></svg></button>
+  </div>
+  <div class="lb-bot"><div class="lb-cap" id="lbCap"></div><button class="lb-dl" id="lbDl"><svg viewBox="0 0 24 24"><path d="M11 4h2v9l3.5-3.5 1.4 1.4L12 16.8 6.1 10.9l1.4-1.4L11 13zM5 18h14v2H5z"/></svg>下載原圖</button></div>
+</dialog>
+
+<script src="assets-site/site.js"></script>
+<script src="assets-site/tracks.js"></script>
+<script>
+"use strict";
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var hero = document.querySelector(".hero-img");
+  if (hero.complete && hero.naturalWidth) hero.classList.add("on"); else hero.addEventListener("load", function () { hero.classList.add("on"); });
+
+  /* 主角：那年／幾年後 */
+  document.querySelectorAll(".who").forEach(function (who) {
+    who.querySelectorAll(".seg button").forEach(function (b) {
+      b.onclick = function () {
+        var adult = b.dataset.age === "adult";
+        who.classList.toggle("grown", adult);
+        who.querySelectorAll(".seg button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      };
+    });
+  });
+
+  /* 圖庫：照劇情順序 */
+  var G = [
+    ["art/cover/cover.webp", "起跑線", "標題畫面"],
+    ["art/cg/cg-gaze.webp", "終點線後，視線撞在一起", "第一輪"],
+    ["art/cards/start-pov.webp", "指尖貼著紅色跑道", "第一輪・起跑卡"],
+    ["art/cards/pace-eyes.webp", "她抬頭的眼神", "第一輪・配速卡"],
+    ["art/cg/cg-finish.webp", "衝過終點，望向看台", "第一輪"],
+    ["art/cg/cg-vending.webp", "妳的十塊錢", "第一輪・販賣機前"],
+    ["art/cards/lin-avatar.webp", "訊息另一頭的她", "中章・草稿卡", "50% 22%"],
+    ["art/cg/cg-seawall.webp", "花蓮的防波堤", "中章"],
+    ["art/maps/stadium.webp", "田徑場", "地圖"],
+    ["art/cards/coin-bg.webp", "體育館後門的販賣機", "第二輪・零錢卡"],
+    ["art/maps/kitchen.webp", "台北的小廚房", "結局 A・地圖"],
+    ["art/cg/cg-kitchen.webp", "台北的冬夜廚房", "結局 A"]
+  ];
+  var grid = $("grid");
+  grid.innerHTML = G.map(function (g, i) {
+    return '<button class="shot rise' + (i === 0 ? " big" : "") + '" data-i="' + i + '" aria-label="放大：' + g[1] + '"><div class="ph"><img data-a="' + g[0] + '" alt="' + g[1] + '" loading="lazy"' + (g[3] ? ' style="object-position:' + g[3] + '"' : "") + '></div><figcaption>' + g[1] + "<small>" + g[2] + "</small></figcaption></button>";
+  }).join("");
+  grid.querySelectorAll("img").forEach(function (im) { im.addEventListener("load", function () { im.classList.add("ok"); }); });
+  SITE.apply(grid);
+
+  var lb = $("lb"), cur = 0;
+  function show(i) {
+    cur = (i + G.length) % G.length; var g = G[cur], img = $("lbImg");
+    img.style.opacity = 0;
+    img.onload = function () { img.style.opacity = 1; };
+    img.src = SITE.asset(g[0]); img.alt = g[1];
+    $("lbCap").innerHTML = g[1] + "<small>" + g[2] + "</small>";
+    $("lbCount").textContent = (cur + 1) + " / " + G.length;
+  }
+  grid.addEventListener("click", function (e) {
+    var b = e.target.closest(".shot"); if (!b) return;
+    show(+b.dataset.i); if (lb.showModal) lb.showModal(); else lb.setAttribute("open", "");
+  });
+  $("lbClose").onclick = function () { lb.close(); };
+  $("lbPrev").onclick = function () { show(cur - 1); };
+  $("lbNext").onclick = function () { show(cur + 1); };
+  $("lbDl").onclick = function () { var g = G[cur]; SITE.download(SITE.asset(g[0]), "起跑總在開始前-" + g[0].split("/").pop(), $("lbDl")); };
+  lb.addEventListener("click", function (e) { if (e.target === lb || e.target.classList.contains("lb-stage")) lb.close(); });
+  document.addEventListener("keydown", function (e) { if (!lb.open) return; if (e.key === "ArrowLeft") show(cur - 1); else if (e.key === "ArrowRight") show(cur + 1); });
+  var sx = null;
+  lb.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener("touchend", function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1)); sx = null; });
+
+  /* 原聲帶入口 */
+  var fmt = function (s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+  var ol = $("ostList");
+  ol.innerHTML = TRACKS.map(function (t) {
+    return '<li><a href="music/#' + t.n + '"><span class="no">' + String(t.n).padStart(2, "0") + '</span><img data-a="' + t.cover + '" alt="" loading="lazy" style="object-position:' + t.pos + '"><span><b>' + t.title + "</b><span>" + t.scene + '</span></span><span class="d">' + fmt(t.dur) + "</span></a></li>";
+  }).join("");
+  SITE.apply(ol);
+
+  /* 後來才加進去的 .rise 也要接上進場動畫 */
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }); }, { rootMargin: "0px 0px -6% 0px" });
+    grid.querySelectorAll(".rise").forEach(function (el) { io.observe(el); });
+  } else grid.querySelectorAll(".rise").forEach(function (el) { el.classList.add("in"); });
+})();
+</script>
+<!-- yz-promo-footer v11 | 三件套+BMC 注意力效果 | https://github.com/yazelin/promo-footer-skill -->
+<script>
+(function(){"use strict";
+if(window.__yzPromoInit)return;window.__yzPromoInit=1;
+/* 開啟計數。只送站名,後端只記「哪天、哪站、幾次」,不存 IP、不設 cookie、不給識別碼。
+   有一半的作品是純靜態沒後端,以前根本不知道有沒有人在用。這行要放在下面那個
+   prefers-reduced-motion 的 return 之前,不然關動畫的人就不會被算到。 */
+try{if(location.hostname==="yazelin.github.io"&&navigator.sendBeacon)navigator.sendBeacon("https://k-rider-api.yazelinj303.workers.dev/hit?s=larch-start-line")}catch(e){}
+try{if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return}catch(e){}
+var REPO="larch-start-line",INJECT=false,ADDBLOG=true;
+var GH=REPO?"https://github.com/yazelin/"+REPO:"https://github.com/yazelin";
+var LINES=["嘿，這裡這裡，我是咖啡按鈕","我是一顆很努力的按鈕，求被點一下","噓，亞澤不知道我在偷偷拉贊助","你看我跳得這麼賣力，不請一杯嗎？","不請也沒關係，你來玩我就很開心","免費給你玩的，想寵亞澤再說","一杯咖啡，是下一個作品的燃料","你的咖啡會變成下一個作品，真的","咖啡因進入亞澤體內，程式碼就會自己寫完","亞澤說，有人請咖啡他會開心一整天","只是一杯咖啡，但亞澤會記得你","用愛發電中，咖啡因可提升發電效率","覺得好玩嗎？抖內一下下","這個網站沒有廣告，只有我這顆按鈕"];
+var ICONS={blog:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>',gh:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',fb:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>',bmc:'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.216 6.415l-.132-.666c-.119-.598-.388-1.163-1.001-1.379-.197-.069-.42-.098-.57-.241-.152-.143-.196-.366-.231-.572-.065-.378-.125-.756-.192-1.133-.057-.325-.102-.69-.25-.987-.195-.4-.597-.634-.996-.788a5.723 5.723 0 00-.626-.194c-1-.263-2.05-.36-3.077-.416a25.834 25.834 0 00-3.7.062c-.915.083-1.88.184-2.75.5-.318.116-.646.256-.888.501-.297.302-.393.77-.177 1.146.154.267.415.456.692.58.36.162.737.284 1.123.366 1.075.238 2.189.331 3.287.37 1.218.05 2.437.01 3.65-.118.299-.033.598-.073.896-.119.352-.054.578-.513.474-.834-.124-.383-.457-.531-.834-.473-.466.074-.96.108-1.382.146-1.177.08-2.358.082-3.536.006a22.228 22.228 0 01-1.157-.107c-.086-.01-.18-.025-.258-.036-.243-.036-.484-.08-.724-.13-.111-.027-.111-.185 0-.212h.005c.277-.06.557-.108.838-.147h.002c.131-.009.263-.032.394-.048a25.076 25.076 0 013.426-.12c.674.019 1.347.067 2.017.144l.228.031c.267.04.533.088.798.145.392.085.895.113 1.07.542.055.137.08.288.111.431l.319 1.484a.237.237 0 01-.199.284h-.003c-.037.006-.075.01-.112.015a36.704 36.704 0 01-4.743.295 37.059 37.059 0 01-4.699-.304c-.14-.017-.293-.042-.417-.06-.326-.048-.649-.108-.973-.161-.393-.065-.768-.032-1.123.161-.29.16-.527.404-.675.701-.154.316-.199.66-.267 1-.069.34-.176.707-.135 1.056.087.753.613 1.365 1.37 1.502a39.69 39.69 0 0011.343.376.483.483 0 01.535.53l-.071.697-1.018 9.907c-.041.41-.047.832-.125 1.237-.122.637-.553 1.028-1.182 1.171-.577.131-1.165.2-1.756.205-.656.004-1.31-.025-1.966-.022-.699.004-1.556-.06-2.095-.58-.475-.458-.54-1.174-.605-1.793l-.731-7.013-.322-3.094c-.037-.351-.286-.695-.678-.678-.336.015-.718.3-.678.679l.228 2.185.949 9.112c.147 1.344 1.174 2.068 2.446 2.272.742.12 1.503.144 2.257.156.966.016 1.942.053 2.892-.122 1.408-.258 2.465-1.198 2.616-2.657.34-3.332.683-6.663 1.024-9.995l.215-2.087a.484.484 0 01.39-.426c.402-.078.787-.212 1.074-.518.455-.488.546-1.124.385-1.766zm-1.478.772c-.145.137-.363.201-.578.233-2.416.359-4.866.54-7.308.46-1.748-.06-3.477-.254-5.207-.498-.17-.024-.353-.055-.47-.18-.22-.236-.111-.71-.054-.995.052-.26.152-.609.463-.646.484-.057 1.046.148 1.526.22.577.088 1.156.159 1.737.212 2.48.226 5.002.19 7.472-.14.45-.06.899-.13 1.345-.21.399-.072.84-.206 1.08.206.166.281.188.657.162.974a.544.544 0 01-.169.364zm-6.159 3.9c-.862.37-1.84.788-3.109.788a5.884 5.884 0 01-1.569-.217l.877 9.004c.065.78.717 1.38 1.5 1.38 0 0 1.243.065 1.658.065.447 0 1.786-.065 1.786-.065.783 0 1.434-.6 1.499-1.38l.94-9.95a3.996 3.996 0 00-1.322-.238c-.826 0-1.491.284-2.26.613z"/></svg>'};
+var CSS="@keyframes yzIdle{0%,55%,100%{transform:translateY(0)}62%{transform:translateY(-4px)}70%{transform:translateY(0)}78%{transform:translateY(-2px)}84%{transform:translateY(0)}}"+
+".yz-idle{animation:yzIdle 2.6s ease-in-out infinite}"+
+"@keyframes yzHop{0%,100%{transform:translateY(0)}20%{transform:translateY(-6px) scale(1.04)}40%{transform:translateY(0) scale(1)}55%{transform:translateY(-3px)}70%{transform:translateY(0)}}"+
+".yz-hop{animation:yzHop .9s cubic-bezier(.36,.07,.19,.97)}"+
+".yz-bubble{position:fixed;z-index:2147483000;max-width:200px;padding:6px 11px;border-radius:14px;background:#fffdf7;color:#4a3f35;border:1px solid rgba(0,0,0,.1);box-shadow:0 4px 14px rgba(0,0,0,.18);font:13px/1.5 system-ui,-apple-system,'Noto Sans TC',sans-serif;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .25s ease,transform .25s ease}"+
+".yz-bubble.yz-on{opacity:1;transform:translateY(0)}"+
+".yz-bubble::after{content:'';position:absolute;left:var(--yz-tail,50%);margin-left:-6px;border:6px solid transparent}"+
+".yz-bubble.yz-above::after{bottom:-6px;border-bottom:0;border-top:6px solid #fffdf7}"+
+".yz-bubble.yz-below::after{top:-6px;border-top:0;border-bottom:6px solid #fffdf7}"+
+".yz-cluster{position:fixed;right:12px;bottom:12px;z-index:2147482999;display:flex;gap:10px}"+
+".yz-cluster a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:rgba(22,26,35,.72);color:#fff;border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);transition:transform .15s,background .15s}"+
+".yz-cluster a:hover{transform:translateY(-2px);background:rgba(22,26,35,.92)}";
+var bubble,anchor;
+function addCss(){if(document.getElementById("yz-promo-css"))return;var s=document.createElement("style");s.id="yz-promo-css";s.textContent=CSS;document.head.appendChild(s)}
+function inFooter(el){try{return !!(el.closest&&el.closest('footer,nav,[class*="footer"],[id*="footer"]'))}catch(e){return false}}
+function findAnchor(){var as=document.querySelectorAll('a[href*="buymeacoffee.com/yazelin"]');if(!as.length)return null;
+var vis=[],i,r;for(i=0;i<as.length;i++){r=as[i].getBoundingClientRect();if(r.width||r.height)vis.push(as[i])}
+var pool=vis.length?vis:[].slice.call(as);
+for(i=0;i<pool.length;i++)if(inFooter(pool[i]))return pool[i];
+return pool[pool.length-1]}
+function inject(){if(!INJECT||findAnchor()||document.querySelector(".yz-cluster"))return;
+var n=document.createElement("nav");n.className="yz-cluster";n.setAttribute("aria-label","作者連結");
+n.innerHTML='<a href="'+GH+'" target="_blank" rel="noopener" aria-label="GitHub 原始碼" title="GitHub 原始碼">'+ICONS.gh+'</a>'+
+'<a href="https://www.facebook.com/yaze.lin.gm" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook">'+ICONS.fb+'</a>'+
+'<a href="https://buymeacoffee.com/yazelin" target="_blank" rel="noopener" aria-label="請亞澤喝杯咖啡 Buy me a coffee" title="請亞澤喝杯咖啡 Buy me a coffee">'+ICONS.bmc+'</a>'+
+(ADDBLOG?'<a class="yz-blog" href="https://yazelin.github.io/" target="_blank" rel="noopener" aria-label="亞澤的部落格" title="亞澤的部落格">'+ICONS.blog+'</a>':'');
+document.body.appendChild(n)}
+function blogLinked(){var as=document.querySelectorAll('a[href^="https://yazelin.github.io"]');for(var i=0;i<as.length;i++){try{if(new URL(as[i].href).pathname==="/")return true}catch(e){}}return false}
+function addBlog(){if(!ADDBLOG||document.querySelector(".yz-blog")||blogLinked()||!inFooter(anchor))return;
+var c=anchor.cloneNode(true);c.classList.remove("yz-hop","yz-idle");c.classList.add("yz-blog");
+c.href="https://yazelin.github.io/";c.setAttribute("aria-label","亞澤的部落格");c.setAttribute("title","亞澤的部落格");
+if(c.querySelector("svg")){var hasText=!!c.textContent.trim();c.innerHTML=ICONS.blog+(hasText?"部落格":"")}else{c.textContent="部落格"}
+anchor.parentNode.insertBefore(c,anchor.nextSibling)}
+function hop(){anchor.classList.remove("yz-hop");void anchor.offsetWidth;anchor.classList.add("yz-hop")}
+var shown=0,MAX_SHOWS=3;
+function say(){if(document.hidden)return;var r=anchor.getBoundingClientRect();if(!r.width&&!r.height)return;if(r.bottom<0||r.top>innerHeight)return;shown++;
+bubble.textContent=LINES[Math.floor(Math.random()*LINES.length)];
+bubble.classList.remove("yz-on","yz-above","yz-below");
+bubble.style.left="0px";bubble.style.top="0px";
+var bw=bubble.offsetWidth,bh=bubble.offsetHeight,cx=r.left+r.width/2;
+var left=Math.max(8,Math.min(cx-bw/2,innerWidth-bw-8));
+var above=r.top-bh-12>=8;
+bubble.style.left=left+"px";
+bubble.style.top=(above?r.top-bh-12:r.bottom+12)+"px";
+bubble.classList.add(above?"yz-above":"yz-below");
+bubble.style.setProperty("--yz-tail",Math.max(12,Math.min(cx-left,bw-12))+"px");
+hop();
+requestAnimationFrame(function(){bubble.classList.add("yz-on")});
+setTimeout(function(){bubble.classList.remove("yz-on")},4200)}
+function start(){addCss();inject();anchor=findAnchor();if(!anchor)return false;
+try{if(getComputedStyle(anchor).display==="inline")anchor.style.display="inline-block"}catch(e){}
+anchor.classList.add("yz-idle");
+anchor.addEventListener("animationend",function(e){if(e.animationName==="yzHop")anchor.classList.remove("yz-hop")});
+try{addBlog()}catch(e){}
+bubble=document.createElement("div");bubble.className="yz-bubble";bubble.setAttribute("aria-hidden","true");document.body.appendChild(bubble);
+window.__yzPromo=say;
+(function loop(first){if(shown>=MAX_SHOWS)return;setTimeout(function(){say();loop(false)},first?18e3+Math.random()*12e3:9e4+Math.random()*9e4)})(true);
+return true}
+function boot(){var tries=0;(function t(){if(start())return;if(++tries<20)setTimeout(t,1500)})()}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+</body>
+</html>

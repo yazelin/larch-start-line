@@ -394,6 +394,14 @@ def race_watch_echoes_round1():
     pick = lambda score: next(a['cardId'] for a in _active(e, dict(base, pace_score=str(score)))['actions'] if a['kind'] == 'dialogue')
     assert pick(30) == 'r2-watch-steady' and pick(3) == 'r2-watch-distracted', (pick(30), pick(3))
 
+@test
+def vending_choice_not_eaten_by_enter():
+    """按 Enter 互動的那一下不能直接選掉選項：販賣機分支的選項前要先有一句要按的對話。"""
+    m, e = _event('m-stadium', 'coins')
+    v2 = next(pg for pg in e['pages'] if pg['id'] == 'vending2')
+    kinds = [a['kind'] for a in v2['actions']]
+    assert kinds.index('dialogue') < kinds.index('choice'), kinds
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

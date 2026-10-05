@@ -50,6 +50,7 @@ ul{list-style:none;padding:0;margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .hw{display:block;max-width:100%;height:auto}
 #title .hw{max-height:46px}
+#title:has(.hw){background:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style></head>
 <body>
@@ -105,7 +106,7 @@ L.onInit(function (values) {
   document.getElementById('begin').onclick = function () { document.getElementById('intro').hidden = true; document.getElementById('hh').focus(); };
   hw(document.getElementById('question'), S.question, values.hwQuestion);
   document.getElementById('submit').textContent = S.submit;
-  var spots = [['left', 'right:18px;bottom:14px'], ['right', 'right:22px;top:18px'], ['left', 'left:24px;bottom:-6px'], ['right', 'left:26px;bottom:10px']];
+  var spots = [['left', 'right:18px;bottom:14px'], ['right', 'right:22px;top:18px'], ['left', 'right:28px;top:26px'], ['right', 'left:26px;bottom:10px']];   /* 愛心放標題旁，不壓到劃掉的答案 */
   (values.doodles || '').split(',').filter(Boolean).forEach(function (u, i) {
     if (!spots[i]) return; var im = document.createElement('img'); im.className = 'doodle'; im.alt = ''; im.src = u;
     im.style.cssText = spots[i][1] + ';rotate:' + ((i % 2 ? 1 : -1) * (6 + i * 3)) + 'deg'; document.getElementById(spots[i][0]).appendChild(im);

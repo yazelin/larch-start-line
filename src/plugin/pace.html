@@ -65,9 +65,12 @@ function plan() {
   var t = 1200, end = S.duration * 0.85;
   while (t < end) {
     var f = t / S.duration, mess = (f > .33 && f < .45) || (f > .58 && f < .70);
-    t += mess ? 380 + Math.random() * 600 : 650;
-    beats.push({ t: t, hit: false });
+    /* 她的臉浮上來時：故意忽近忽遠（很近 250–330ms 或很遠 1100–1400ms），不規則 */
+    var gap = mess ? (Math.random() < 0.5 ? 250 + Math.random() * 80 : 1100 + Math.random() * 300) : 650;
+    t += gap;
+    beats.push({ t: t, hit: false, mess: mess, gap: Math.round(gap) });
   }
+  window.paceBeats = beats;   /* 給測試讀 */
 }
 function parallax(now) {
   var dt = Math.min(now - lastT, 100); lastT = now;

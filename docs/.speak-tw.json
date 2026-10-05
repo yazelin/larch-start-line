@@ -1,0 +1,1 @@
+{ "public": ["index.html", "music/index.html"], "exclude": ["specs/", "plans/", "bgm-prompts.md"] }
