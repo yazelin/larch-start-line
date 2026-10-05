@@ -108,6 +108,8 @@ export const CARDS = {
   },
   'coin-drop': async (ui, f) => {
     await tapUntil(f, /他快來了|零錢/);
+    const g = await f.locator('#guide').boundingBox(); const vw = await f.evaluate(() => innerWidth);
+    assert(/讓零錢掉下去/.test(await f.locator('#guide').innerText()) && Math.abs(g.x + g.width / 2 - vw / 2) < vw * 0.05, 'coin-drop：操作說明在畫面正中間');
     await tap(f);
     await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await sleep(800);
     await ui.page.screenshot({ path: 'dist/shots/card-coin-window.png' });
@@ -116,8 +118,24 @@ export const CARDS = {
     for (let i = 0; i < 5; i++) { await until('wait'); await tap(f); await waitMsg(f, /轉角還是空的/); await tap(f); }
     for (let i = 0; i < 5; i++) { await until('late'); await tap(f); await waitMsg(f, /走到面前/); await tap(f); }
     assert(true, 'coin-drop：太早、太晚各 5 次都能重來');
-    await until('window'); await tap(f);
+    await until('window'); await sleep(300);
+    const inZone = await f.evaluate(() => { const m = document.getElementById('needle').getBoundingClientRect(), z = document.querySelector('#meter .ok').getBoundingClientRect(); const x = m.left + m.width / 2; return x >= z.left && x <= z.right; });
+    assert(inZone, 'coin-drop：時機窗內指針在「剛好」那一段');
+    assert(/portraits/.test(await f.locator('#him img').getAttribute('src')), 'coin-drop：走進來的是程徹的立繪');
+    assert(/portraits/.test(await f.locator('#lin img').getAttribute('src')), 'coin-drop：販賣機旁站著林向晚的立繪');
+    await sleep(1200);
+    const vis = await f.evaluate(() => ['lin', 'him'].map(id => { const r = document.querySelector('#' + id + ' img').getBoundingClientRect(); return r.height > innerHeight * 0.45 && r.height < innerHeight && r.left < innerWidth - r.width * 0.4 && r.right > 0; }));   // 他至少四成身體入鏡
+    assert(vis[0] && vis[1], 'coin-drop：兩人的立繪都看得見、大小正常（' + vis + '）');
+    await tap(f);
     await f.waitForFunction(() => document.body.dataset.state === 'ok', null, { timeout: 5000 });
+    assert(await f.locator('.coin.drop').count() === 3, 'coin-drop：三枚零錢掉下去');
+    assert(/coin\.webp/.test(await f.evaluate(() => getComputedStyle(document.querySelector('.coin')).backgroundImage)), 'coin-drop：零錢用畫好的硬幣圖');
+    await sleep(1600);
+    const above = await f.evaluate(() => { const p = document.getElementById('panel').getBoundingClientRect(); return [...document.querySelectorAll('.coin')].every(c => c.getBoundingClientRect().bottom <= p.top); });
+    assert(above, 'coin-drop：零錢落在對話框上方，看得到');
+    const xs = await f.evaluate(() => [...document.querySelectorAll('.coin')].map(c => Math.round(c.getBoundingClientRect().left)));
+    assert(Math.max(...xs) - Math.min(...xs) > 40, 'coin-drop：三枚零錢落點分開（' + xs + '）');
+    await ui.page.screenshot({ path: `dist/shots/card-coin-ok${process.env.MOBILE ? '-mobile' : ''}.png` });
   },
 };
 const expect = {

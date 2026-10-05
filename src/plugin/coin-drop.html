@@ -5,29 +5,53 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:"Noto Serif TC","Noto
 #scene{position:absolute;inset:0;background:linear-gradient(#e7ddcf 0 62%,#cfc3b2 62%);background-size:cover;background-position:center}
 #machine{position:absolute;left:12vw;bottom:30vh;width:14vw;height:38vh;background:#7d9fb6;border-radius:10px;border:3px solid #4b6577}
 #corner{position:absolute;right:0;bottom:30vh;width:12vw;height:52vh;background:#b9ab98}
-#him{position:absolute;bottom:30vh;width:7vh;height:22vh;border-radius:3vh 3vh 1vh 1vh;background:#2f3e5c;left:100vw;transition:left .1s linear}
 body.has-bg #machine,body.has-bg #corner{display:none}
-#him.sprite{border-radius:0;background-color:transparent;background-repeat:no-repeat;image-rendering:auto;width:12vh;height:16vh}
-#coin{position:absolute;left:30vw;bottom:44vh;width:3vh;height:3vh;border-radius:50%;background:#d8b64a;border:2px solid #9c7f22;opacity:0}
-#coin.drop{opacity:1;animation:drop 1s cubic-bezier(.3,0,.7,1) forwards}
-@keyframes drop{to{translate:12vw 13vh;rotate:540deg}}
 #tap{position:absolute;inset:0}
 #panel{position:absolute;left:5vw;right:5vw;bottom:5vh;padding:2.4vh 3vw;background:rgba(255,250,242,.92);border:1px solid #d8cbb8;border-radius:12px;font-size:clamp(17px,2.6vh,26px);line-height:1.7;pointer-events:none}
 #hint{position:absolute;right:6vw;bottom:2vh;font-size:13px;color:#7a6d62;pointer-events:none}
+/* 立繪：正常比例、站在地面上（畫面下緣），他從右邊轉角走進來 */
+.actor{position:absolute;bottom:0;height:74vh;aspect-ratio:2/3;translate:-50% 0;pointer-events:none}
+.actor img{height:100%;width:auto;display:block;margin:0 auto;filter:drop-shadow(0 6px 12px rgb(0 0 0/.18))}
+#lin{left:13vw}   /* 站在販賣機左邊，不擋住背景的販賣機 */
+#him{left:120vw}
+#him.walking img{animation:bob .55s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -0.8vh}}
+/* 零錢：從她手的位置掉下去，彈兩下滾向他 */
+.coin{position:absolute;left:21vw;bottom:34vh;width:5vh;height:5vh;background-size:contain;background-repeat:no-repeat;background-position:center;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c0,#d8b64a 55%,#9c7f22);box-shadow:0 1px 2px rgb(0 0 0/.35);opacity:0;pointer-events:none}
+.coin.drop{opacity:1;animation:fall 1.25s cubic-bezier(.35,0,.6,1) forwards}
+.coin.c2.drop{animation-delay:.08s;left:22vw;--end:30vw}
+.coin.c3.drop{animation-delay:.16s;left:20.5vw;--end:14vw}
+@keyframes fall{0%{translate:0 0;rotate:0deg}45%{translate:2vw 14vh;rotate:240deg}60%{translate:5vw 9vh;rotate:330deg}75%{translate:8vw 14vh;rotate:420deg}85%{translate:10vw 12.5vh;rotate:470deg}100%{translate:var(--end,22vw) 14vh;rotate:720deg}}
+@media (prefers-reduced-motion:reduce){.coin.drop{animation-duration:.01s}#him.walking img{animation:none}}
+#guide{position:absolute;left:50%;top:14vh;translate:-50% 0;max-width:min(82vw,720px);padding:14px 24px;border-radius:12px;background:rgba(43,37,34,.82);color:#fffaf2;font:600 clamp(18px,3.2vh,30px)/1.5 "Noto Sans TC",sans-serif;text-align:center;pointer-events:none;box-shadow:0 8px 24px rgb(0 0 0/.18);animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{scale:1.03}}
+body[data-state="ok"] #guide{opacity:0;transition:opacity .3s}
+@media (prefers-reduced-motion:reduce){#guide{animation:none}}
+#meter{position:relative;display:flex;height:16px;margin:12px 0 4px;border-radius:999px;overflow:visible;background:#4b423c}
+#meter span{display:block;height:100%}
+#meter .early{background:#8a7f76;border-radius:999px 0 0 999px}
+#meter .ok{background:#e0b64a;box-shadow:0 0 10px rgba(224,182,74,.7)}
+#meter .late{background:#a8574c;border-radius:0 999px 999px 0}
+#needle{position:absolute;top:-6px;width:4px;height:28px;margin-left:-2px;border-radius:2px;background:#fffaf2;box-shadow:0 0 6px #000a;left:0}
+#labels{display:flex;font-size:clamp(13px,1.9vh,17px);font-weight:600;opacity:.9}
+#labels span{text-align:center}
 </style></head>
 <body data-state="intro">
-<div id="scene"></div><div id="machine"></div><div id="him"></div><div id="corner"></div><div id="coin"></div>
+<div id="scene"></div><div id="machine"></div><div id="corner"></div>
+<div id="lin" class="actor"></div><div id="him" class="actor"></div>
+<div class="coin c1"></div><div class="coin c2"></div><div class="coin c3"></div>
 <div id="tap"></div>
 <div id="panel"><span id="msg"></span></div>
-<div id="hint">在對的那一刻點畫面或按空白鍵，讓零錢掉下去</div>
+<div id="guide" role="note"><span id="guideText"></span><div id="meter" aria-hidden="true"><span class="early"></span><span class="ok"></span><span class="late"></span><i id="needle"></i></div><div id="labels" aria-hidden="true"><span></span><span></span><span></span></div></div>
 <script src="common.js"></script>
 <script>
 var S = {}, t0 = 0, raf = 0, tries = 0, bpm = 120;
-var msg = document.getElementById('msg'), him = document.getElementById('him'), coin = document.getElementById('coin');
+var msg = document.getElementById('msg'), him = document.getElementById('him'), coins = document.querySelectorAll('.coin');
+function drop(on) { coins.forEach(function (c) { c.classList.remove('drop'); if (on) { void c.offsetWidth; c.classList.add('drop'); } }); }
 function state(s) { document.body.dataset.state = s; }
 function cur() { return document.body.dataset.state; }
 function start() {
-  coin.className = ''; him.style.left = '100vw'; msg.textContent = S.intro; t0 = performance.now(); state('wait');
+  drop(false); document.getElementById('needle').style.left = '0%'; him.style.left = '120vw'; him.classList.add('walking'); msg.textContent = S.intro; t0 = performance.now(); state('wait');
   raf = requestAnimationFrame(tick);
 }
 function tick() {
@@ -36,31 +60,37 @@ function tick() {
   else if (t < S.appear + S.window) state('window');
   else if (t < S.arrive) state('late');
   else { fail(S.lateText); return; }
-  var walk = Math.max(0, Math.min(1, (t - S.appear) / (S.arrive - S.appear)));
-  him.style.left = (88 - walk * 52) + 'vw';
+  document.getElementById('needle').style.left = (100 * Math.min(t, S.arrive) / S.arrive) + '%';
+  /* 他在 appear 前 1.2 秒就從畫面外起步，appear 那一刻剛好轉進畫面；時機窗結束時大半身入鏡，最後停在她面前（72vw） */
+  var walk = Math.max(0, Math.min(1, (t - (S.appear - 1200)) / (S.arrive - (S.appear - 1200))));
+  him.style.left = (118 - walk * 46) + 'vw';
   var b = Math.round(120 + walk * 40); if (b !== bpm) { bpm = b; L.set('bpm', b); }
   raf = requestAnimationFrame(tick);
 }
-function fail(text) { cancelAnimationFrame(raf); tries += 1; L.set('coin_tries', tries); state('retry'); msg.textContent = text; }
+function fail(text) { cancelAnimationFrame(raf); him.classList.remove('walking'); tries += 1; L.set('coin_tries', tries); state('retry'); msg.textContent = text; }
 L.press(function () {
   var s = cur();
   if (s === 'intro' || s === 'retry') { start(); return; }
-  if (s === 'wait') { coin.className = 'drop'; fail(S.earlyText); return; }
+  if (s === 'wait') { drop(true); fail(S.earlyText); return; }
   if (s === 'late') { fail(S.lateText); return; }
   if (s === 'window') {
-    cancelAnimationFrame(raf); tries += 1; L.set('coin_tries', tries); state('ok');
-    coin.className = 'drop'; L.set('coin_ok', true);
-    setTimeout(function () { clearInterval(window.walkT); L.done(); }, 1500);
+    cancelAnimationFrame(raf); him.classList.remove('walking'); tries += 1; L.set('coin_tries', tries); state('ok');
+    drop(true); L.set('coin_ok', true);
+    setTimeout(function () { L.done(); }, 2200);
   }
 });
 L.onInit(function (values) {
-  S = L.script(); S.appear = S.appear || 2000; S.window = S.window || 2000; S.arrive = S.arrive || 6500;
+  S = L.script(); document.getElementById('guideText').textContent = S.guide || ''; S.appear = S.appear || 2000; S.window = S.window || 2000; S.arrive = S.arrive || 6500;
   tries = Number(L.get('coin_tries', 0)) || 0;
+  var parts = [S.appear, S.window, S.arrive - S.appear - S.window];
+  ['early', 'ok', 'late'].forEach(function (k, i) { document.querySelector('#meter .' + k).style.flex = String(parts[i]); });
+  var lab = document.querySelectorAll('#labels span');
+  (S.labels || []).forEach(function (t, i) { lab[i].textContent = t; lab[i].style.flex = String(parts[i]); });
   if (values.bg) { document.getElementById('scene').style.backgroundImage = 'url("' + values.bg + '")'; document.body.classList.add('has-bg'); }
-  if (values.him) {   /* 3 欄 × 4 列走路圖，取第 2 列（面向左）輪播 */
-    him.classList.add('sprite'); him.style.backgroundImage = 'url("' + values.him + '")'; him.style.backgroundSize = '300% 400%';
-    var fr = 0; window.walkT = setInterval(function () { if (cur() === 'window' || cur() === 'late' || cur() === 'wait') { fr = (fr + 1) % 3; him.style.backgroundPosition = (fr * 50) + '% 33.333%'; } }, 180);
-  }
+  function portrait(el, url) { if (!url) return; var im = document.createElement('img'); im.src = url; im.alt = ''; el.appendChild(im); }
+  portrait(document.getElementById('lin'), values.linImg);
+  portrait(him, values.himImg);
+  if (values.coinImg) coins.forEach(function (c) { c.style.background = 'url("' + values.coinImg + '") center/contain no-repeat'; c.style.boxShadow = 'none'; c.style.borderRadius = '0'; });
   msg.textContent = S.intro;
 });
 </script>

@@ -260,6 +260,41 @@ def nobody_tags_along():
     for a in db['actors']:
         assert a.get('join') == 'later' or a.get('role') != 'party' or a.get('joinVariable'), f"{a['id']} 會自動跟在主角身邊"
 
+@test
+def kitchen_uses_adult_clothes():
+    """台北廚房是幾年後：兩人都不能還穿田徑隊服。"""
+    import build, art
+    a = art.FILES
+    m, intro = _event('m-kitchen', 'k-intro')
+    heroes = [x['value'] for x in intro['actions'] if x['kind'] == 'hero']
+    assert heroes == ['chengche-adult'], f'廚房換成的主角是 {heroes}'
+    lin = next(e for e in m['events'] if e['id'] == 'lin-k')
+    assert 'adult' in lin['sprite']['url'], f"廚房的林向晚走路圖是 {lin['sprite']['url']}"
+    db = json.loads(build.build()['settings']['plugins']['larch-rpg-system']['settings']['database'])
+    adult = next(x for x in db['actors'] if x['id'] == 'chengche-adult')
+    assert 'adult' in adult['walk']['url'] and adult.get('join') == 'later', adult
+
+def _route_cells(start, route):
+    x, y = start; cells = []
+    for leg in route:
+        dx, dy = {'left': (-1, 0), 'right': (1, 0), 'up': (0, -1), 'down': (0, 1)}[leg['dir']]
+        for _ in range(leg['steps']): x += dx; y += dy; cells.append((x, y))
+    return cells
+
+@test
+def race_runs_a_full_lap():
+    import map_stadium as S
+    for eid, start in [('race-done', S.START_LINE), ('che-race', S.CHE_RACE)]:
+        m, e = _event('m-stadium', eid)
+        mv = next(a for a in e['actions'] if a['kind'] == 'move')
+        cells = _route_cells(start, mv['move']['route'])
+        assert len(mv['move']['route']) <= 8 and all(l['steps'] <= 20 for l in mv['move']['route']), '路線超過 8 段或單段超過 20 格'
+        assert len(cells) >= 80, f'{eid} 只跑了 {len(cells)} 格，不像一圈'
+        assert cells[-1] == S.FINISH, f'{eid} 停在 {cells[-1]}，不是終點'
+        bad = [c for c in cells if S.cell(*c) not in ('track', 'line')]
+        assert not bad, f'{eid} 跑出跑道：{bad[:3]}'
+        assert S.START_LINE not in cells, f'{eid} 經過起跑線事件格，會再觸發起跑卡'
+
 if __name__ == '__main__':
     only = sys.argv[1:]
     bad = 0

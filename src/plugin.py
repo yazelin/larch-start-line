@@ -32,7 +32,7 @@ def _script(card_id):
     if card_id == 'drafts':
         return {'drafts': text.lines('草稿'), 'sendLabel': '送出', 'to': '林向晚'}
     if card_id == 'coin-drop':
-        return {'intro': new('零錢開場'), 'earlyText': new('零錢太早'), 'lateText': new('零錢太晚')}
+        return {'intro': new('零錢開場'), 'earlyText': new('零錢太早'), 'lateText': new('零錢太晚'), 'guide': new('零錢操作說明'), 'labels': text.lines('零錢時機標籤')}
     raise KeyError(card_id)
 
 
@@ -54,7 +54,7 @@ HUD = {'id': 'heart', 'title': '心跳', 'anchor': 'top-right', 'width': 132, 'h
 
 def card_art(card_id, a):
     """每張卡從美術路徑表取哪些圖（缺圖就不帶）。"""
-    want = {'start-gun': {'bg': 'start-pov'}, 'pace': {'eyesImg': 'pace-eyes'}, 'coin-drop': {'bg': 'coin-bg', 'him': 'walk-cheng'}}
+    want = {'start-gun': {'bg': 'start-pov'}, 'pace': {'eyesImg': 'pace-eyes'}, 'coin-drop': {'bg': 'coin-bg', 'himImg': 'p-cheng', 'linImg': 'p-lin', 'coinImg': 'coin'}}
     return {k: a[v] for k, v in want.get(card_id, {}).items() if a.get(v)}
 
 

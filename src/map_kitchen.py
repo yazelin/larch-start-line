@@ -22,10 +22,10 @@ def walls():
 
 def build_kitchen(art):
     events = [
-        ev('hero', *HERO_START, actor='player', direction='up', sprite=walker(art['walk-cheng']), actorId='chengche'),
+        ev('hero', *HERO_START, actor='player', direction='up', sprite=walker(art['walk-cheng-adult']), actorId='chengche-adult'),
         ev('k-intro', 10, 7, trigger='auto', once=True,
-           actions=[A('hero', value='chengche'), setv('phase', 'kitchen'), setv('bpm', 80)]),
-        npc('lin-k', *LIN, walker(art['walk-lin']), direction='up'),
+           actions=[A('hero', value='chengche-adult'), setv('phase', 'kitchen'), setv('bpm', 80)]),
+        npc('lin-k', *LIN, walker(art['walk-lin-adult']), direction='up'),
         ev('hug', *HUG, trigger='touch', conditions=[cond('phase', 'kitchen')],
            actions=[setv('phase', 'proposal'), setv('bpm', 72), card('kitchen'), item('key', '備用鑰匙'), say(new('備用鑰匙說明')), jump('fin')]),
     ]

@@ -155,7 +155,7 @@ try {
   await f.waitForFunction(() => document.body.dataset.state === 'window', null, { timeout: 15000 }); await tap(f);
   await ui.waitText(/那天我早就在看台後面/, 20000);
   assert(true, '零錢卡：太早一次，再成功');
-  await drainUntil(/走到她身後/);
+  await drainUntil(/走到她身後/); await sleep(1500); await shot('08b-kitchen-map');
   await goto(6, 4);
   await ui.waitText(/幾年後的一個冬夜/); await sleep(1500); await shot('09-kitchen'); await drainUntil(/我們結婚吧/);
   await drainUntil(/把自己的門，交給另一個人/);

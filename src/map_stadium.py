@@ -46,6 +46,11 @@ def walls():
 R1 = cond('round', 1)
 
 
+def lap(from_y):
+    """沿跑道跑一圈回到終點（14,22）。去程走內側、回程走最外側那條（y=23），不會踩到起跑線事件格。"""
+    return [('left', 20), ('up', from_y - 7), ('right', 20), ('right', 9), ('down', 16), ('left', 19), ('up', 1)]   # 右側走 x=33，避開壓到跑道角的體育館
+
+
 def round1_events(art):
     lin = walker(art['walk-lin'])
     ev_list = [
@@ -71,7 +76,7 @@ def round1_events(art):
                   page('startline-go', [R1, cond('phase', 'start'), cond('gaze_seen', True)],
                        [jump(plugin.NODE['start-gun'])], trigger='touch')]),
         ev('race-done', 2, 28, trigger='condition', conditions=[R1, cond('phase', 'start'), cond('pace_score', -1, 'neq')],
-           actions=[move([('left', START_LINE[0] - FINISH[0])], face='up'), camera(*STANDS_SEAT, hold=1800),
+           actions=[move(lap(START_LINE[1]), face='up'), camera(*STANDS_SEAT, hold=1800),
                     card('r1-finish'), setv('bpm', 110), setv('phase', 'vending')]),
         ev('coins', *COINS, conditions=[R1, cond('phase', 'vending')],
            actions=[item('coin10', '十塊錢'), card('vending'), remove('coin10', '十塊錢'),
@@ -107,7 +112,7 @@ def round2_events(art):
            actions=[jump(plugin.NODE['notebook'])]),   # 跳卡前不改狀態：卡沒玩完就讀檔，販賣機那格還能重進
         npc('che-race', *CHE_RACE, che, conditions=[R2, cond('phase', 'clue'), cond('calc_ok', True)], direction='left',
             trigger='auto', once=True,
-            actions=[camera(*CHE_RACE, hold=600, back=False), move([('left', CHE_RACE[0] - FINISH[0])], who='self', face='up'),
+            actions=[camera(19, 14, hold=600, back=False), move(lap(CHE_RACE[1]), who='self', face='up'),
                      balloon('heart', target='player', ms=2200), say(new('看他比賽')), setv('bpm', 140), setv('phase', 'vending2')]),
         ev('ending-b-menu', 5, 28, trigger='condition', conditions=[R2, cond('ending', 'B')],
            actions=[A('choice', text='', choice={'options': [

@@ -45,7 +45,8 @@ def rpg_database(a):
         return {'id': id, 'name': name, 'title': '', 'profile': '', 'role': 'party', 'walk': mapkit.walker(a[walk]),
                 'portrait': a[portrait], 'join': 'later', 'kit': 'none', 'rig': '', 'joinVariable': ''}
     return {'version': 1, 'heroId': 'chengche', 'leadSwitch': False,
-            'actors': [actor('chengche', '程徹', 'walk-cheng', 'p-cheng'), actor('xiangwan', '林向晚', 'walk-lin', 'p-lin')]}
+            'actors': [actor('chengche', '程徹', 'walk-cheng', 'p-cheng'), actor('xiangwan', '林向晚', 'walk-lin', 'p-lin'),
+                       actor('chengche-adult', '程徹', 'walk-cheng-adult', 'p-cheng-adult')]}
 
 
 # 卡片 id：地圖事件與插件共用，只在這裡定義

@@ -40,6 +40,6 @@ if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
     grid(S, 'stadium')
     grid(K, 'kitchen')
-    for n, c in [('walk-cheng', '#2f3e7a'), ('walk-lin', '#7a2f4e'), ('walk-judge', '#e8e8e8'), ('walk-mate', '#2f6a7a'), ('walk-runner', '#b02a2a')]:
+    for n, c in [('walk-cheng', '#2f3e7a'), ('walk-lin', '#7a2f4e'), ('walk-judge', '#e8e8e8'), ('walk-mate', '#2f6a7a'), ('walk-runner', '#b02a2a'), ('walk-cheng-adult', '#55585e'), ('walk-lin-adult', '#e9e0cf')]:
         walker(n, c)
     print('ok', sorted(p.name for p in OUT.iterdir()))
