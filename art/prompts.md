@@ -319,6 +319,14 @@ Painting style: delicate transparent watercolor on textured cold-press paper, ex
 Wide 16:9 landscape composition. Keep all important subjects and faces in the upper two thirds of the frame; the bottom third should be calm, low-detail ground or background (a dialogue box will cover it). Correct anatomy: each hand has exactly five fingers, left and right hands on the correct sides. No text, no letters, no numbers, no logos, no brand names, no signage, no watermark.
 ```
 
+- 2026-10-29 修手：原圖程徹雙手交扣、手指糊成一團。用 .11 codex-image 整張精修（原圖當 Image 1，只改手），改成兩手分開各放大腿近膝處；產四張（手放膝上、手撐堤邊各兩張），作者選手放膝上第 2 張。輸出 1536x1024，置中裁成 16:9 再放大到 1920x1080。修圖提示詞：
+
+```
+This is a precise retouch edit. Image 1 is the original painting. Keep EVERYTHING exactly the same — composition, both people, faces, hair, clothes, shoes, the seawall, the waves, the sky, the mountains, the watercolor style and paper texture, the wide 16:9 framing. Only change the one thing described below.
+
+The young man on the right (short black hair, grey T-shirt, dark pants) currently has his two hands clasped together over his knee, and the fingers are tangled and malformed. Redraw ONLY his hands and forearms: his two hands are now SEPARATE and do not touch each other. The hand on the viewer's left side rests relaxed on top of his own left thigh near the knee, and the hand on the viewer's right side rests relaxed on top of his own right thigh near the knee, each palm down, fingers loosely together. Each hand clearly shows exactly five natural fingers including one thumb, correct male hand anatomy, wrist watch stays on the same wrist. Same watercolor painting style as the rest of Image 1, soft transparent washes, no sharp digital rendering. No text, no watermark.
+```
+
 ## cg/cg-kitchen.webp
 
 - 參考圖：style-b（image 1，畫風錨）、lin-b（image 2，林向晚）、cheng-a（image 3，程徹）
