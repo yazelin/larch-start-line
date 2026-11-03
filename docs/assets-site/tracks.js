@@ -3,7 +3,7 @@
    bpm 是生成時提示詞指定的速度，只拿來讓播放器的心跳線跟著打拍子。路徑都相對於 assets/。 */
 window.TRACKS = [
   { n: 1, bpm: 72, file: "audio/bgm-01-title.mp3", title: "Slow Light Through Curtains", scene: "標題畫面、序章", dur: 129,
-    line: "在槍響之前，在所有裁判與觀眾以為一切正要開始之前，有些事早就已經塵埃落定。",
+    line: "在槍響之前，在所有裁判與觀眾以為一切正要開始之前，有些事早就決定了。",
     cover: "art/cover/cover.webp", pos: "70% 50%", slides: ["art/cover/cover.webp", "art/cards/pace-sky.webp"] },
   { n: 2, bpm: 96, file: "audio/bgm-02-stadium.mp3", title: "Waiting for the Whistle", scene: "第一輪：程徹在田徑場", dur: 172,
     line: "風把她額前的碎髮吹亂，她忽然抬頭，兩人的視線撞在了一起。",
@@ -18,7 +18,7 @@ window.TRACKS = [
     line: "我算了你的時間，知道你習慣比完賽去那台販賣機買水。",
     cover: "art/cards/lin-avatar.webp", pos: "50% 40%", slides: ["art/maps/stadium.webp", "art/cards/coin-bg.webp", "art/cg/cg-vending.webp"] },
   { n: 6, bpm: 66, file: "audio/bgm-06-ending-a.mp3", title: "Tea and Midnight Rain", scene: "結局 A：防波堤後半、台北廚房", dur: 172,
-    line: "窗外的雨聲細碎，像極了多年前田徑場上細碎的風聲。",
+    line: "窗外的雨聲細碎，像極了多年前田徑場上的風聲。",
     cover: "art/cg/cg-kitchen.webp", pos: "50% 35%", slides: ["art/cg/cg-seawall.webp", "art/cg/cg-kitchen-backhug.webp", "art/cg/cg-kitchen.webp"] },
   { n: 7, bpm: 60, file: "audio/bgm-07-ending-b.mp3", title: "Weight of an Empty Chair", scene: "結局 B", dur: 93,
     line: "她一直很自由，自由到始終沒有起跑。",

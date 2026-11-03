@@ -97,13 +97,13 @@ def story_cards(board, a):
     N(cards.dialogue(MID, '後來', para('後來他們真的在一起了', '人們總以為愛情的開始')))
     if a['bgm-04']: board['nodes'][-1]['data'].update(bgm=a['bgm-04'], bgmVolume=0.5, bgmLoop=True)   # 中章到防波堤
     N(cards.dialogue(SEAWALL, '花蓮防波堤', para('大三那年夏天', '程徹愣住了') + [new('換人提示')], bg=a['cg-seawall']))
-    N(cards.dialogue(SEAWALL2, '她的起跑線', para('那天我早就在看台後面', '起跑總在開始前，如同'), bg=a['cg-seawall']))
+    N(cards.dialogue(SEAWALL2, '她的起跑線', para('那天我早就在看台後面', '起跑總在開始前。就像暴雨'), bg=a['cg-seawall']))
     if a['bgm-06']: board['nodes'][-1]['data'].update(bgm=a['bgm-06'], bgmVolume=0.5, bgmLoop=True)   # 防波堤後半到廚房
     N(cards.dialogue(ENDING_B, '沒有起跑', text.blocks('結局B'), bg=a['coin-bg']))
     if a['bgm-07']: board['nodes'][-1]['data'].update(bgm=a['bgm-07'], bgmVolume=0.5, bgmLoop=True)   # 結局 B
     # 冬夜廚房拆兩張：前半他從背後抱住她（下巴抵在肩窩），她轉過身來之後換成回抱、吻髮旋那張
     N(cards.dialogue(KITCHEN, '冬夜', para('幾年後的一個冬夜', '「我們結婚吧。」'), bg=a['cg-kitchen-backhug']))
-    N(cards.dialogue('kitchen-2', '好啊', para('林向晚停下手中的湯勺', '世人總在等那聲槍響'), bg=a['cg-kitchen']))
+    N(cards.dialogue('kitchen-2', '好啊', para('林向晚停下手中的湯勺', '大家總在等那聲槍響'), bg=a['cg-kitchen']))
     N(cards.dialogue(VENDING, '販賣機前', [('程徹', '妳的十塊錢。')], bg=a['cg-vending']))
     # 第二輪她的內心話（立繪表情：害羞、被嚇到）
     N(cards.dialogue('r2-peek', '偷看', [new('偷看'), ('林向晚', new('偷看心聲'))], actors=[cards.actor('林向晚', a['p-lin-shy'])]))
