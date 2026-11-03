@@ -24,7 +24,8 @@ def build():
     story_cards(board, a)
     if a['bgm-01']: p['settings'].setdefault('titleScreen', {})['bgm'] = a['bgm-01']   # 標題音樂
     p['settings']['titleCoverImage'] = a['cover']        # 專用封面：左半留給標題與選單
-    p['settings']['projectThumbnail'] = a['cover']
+    title = ROOT / 'assets' / 'title.json'   # 動態縮圖：larch-handoff/tools/title_push.py start 上傳的
+    p['settings']['projectThumbnail'] = json.loads(title.read_text())['title_loop_url'] if title.exists() else a['cover']
     board['thumbnail'] = a['style']   # 白板縮圖：每塊都放（照《續》、餘燼）；第一章沿用市集上原本那張畫風錨
     # CG 收藏：只放遊戲裡實際演出的劇情 CG 與封面
     p['settings']['cgGallerySource'] = 'picked'
