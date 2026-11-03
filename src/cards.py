@@ -7,12 +7,28 @@ def _pos():
     return {'x': (_x[0] % 8) * 360, 'y': (_x[0] // 8) * 260}
 
 
+LONG = 100   # 超過這個字數的一段折成四五行，會把對話框撐高、蓋住 CG（作者 2026-11-03）
+
+
+def split_long(tx):
+    """太長的一段在最靠近中間的句號切成兩頁；字一個不改，接回去要跟原文一樣。"""
+    if len(tx) <= LONG: return [tx]
+    cuts = [i + 1 + (tx[i + 1:i + 2] == '」') for i, ch in enumerate(tx) if ch == '。' and i + 1 < len(tx)]
+    cuts = [c for c in cuts if 15 <= c <= len(tx) - 15]
+    if not cuts: return [tx]
+    c = min(cuts, key=lambda c: abs(c - len(tx) / 2))
+    parts = split_long(tx[:c]) + split_long(tx[c:])
+    assert ''.join(parts) == tx
+    return parts
+
+
 def dialogue(id, title, lines, bg='', start=False, speaker='', actors=None):
-    """lines：字串（旁白）或 (講者, 文字)。"""
+    """lines：字串（旁白）或 (講者, 文字)。太長的一段自動切成兩頁（split_long）。"""
     dl = []
-    for i, l in enumerate(lines):
+    for l in lines:
         sp, tx = (l if isinstance(l, tuple) else (speaker, l))
-        dl.append({'id': f'{id}-l{i}', 'speaker': sp, 'text': tx})
+        for part in split_long(tx):
+            dl.append({'id': f'{id}-l{len(dl)}', 'speaker': sp, 'text': part})
     data = {'type': 'dialogue', 'title': title, 'speaker': dl[0]['speaker'], 'text': dl[0]['text'],
             'dialogueLines': dl, 'stage': {'actors': actors or []}}
     if bg: data['background'] = bg

@@ -26,8 +26,11 @@ def new_section():
 @test
 def every_original_para_used():
     import build
-    blob = json.dumps(build.build(), ensure_ascii=False)
-    missing = [s[:24] for s in text.all_paras() if s[:24] not in blob]
+    p = build.build()
+    # 太長的段落會被切成好幾頁（cards.split_long），所以把同一張卡的各頁接起來再找整段
+    blob = json.dumps(p, ensure_ascii=False) + '\n'.join(''.join(l['text'] for l in n['data'].get('dialogueLines') or [])
+                                                     for b in p['boards'] for n in b['nodes'])
+    missing = [s[:24] for s in text.all_paras() if s not in blob and s[:24] not in blob]
     assert not missing, '原文沒放進遊戲的段落：' + ' / '.join(missing)
 
 def gate_problems(card_html, read, write):
